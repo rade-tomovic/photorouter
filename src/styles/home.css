@@ -40,6 +40,11 @@
 .home .code .n { color: var(--muted); }
 
 /* Map labels keep a ring of the background colour so they read over dots and lines. */
+/* Each route on the hero map opens its demo in the planner. */
+.home .wm-link { cursor: pointer; }
+.home .wm-link:hover .wm-route, .home .wm-link:focus-visible .wm-route { filter: drop-shadow(0 0 6px var(--c)); }
+.home .wm-link:focus-visible { outline: none; }
+.home .wm-link:focus-visible text { text-decoration: underline; }
 .home .wm-dots { stroke: color-mix(in oklab, var(--ink) 17%, transparent); }
 .home .halo {
   paint-order: stroke;

@@ -93,7 +93,15 @@ function preview(demo: Demo | undefined): Trip {
   return plan?.trip ?? { title: '', summary: '', tz: 'UTC', cities: {}, legs: {}, days: [], spots: [], arrival: null };
 }
 
-const firstDemo = defaultDemo();
+/** A demo named in the URL (`/app/?demo=asia-tokyo-kyoto`), as the home page links do. */
+function requestedDemo(): Demo | undefined {
+  if (typeof location === 'undefined') return undefined;
+  const id = new URLSearchParams(location.search).get('demo');
+  return id ? DEMOS.find((d) => d.id === id) : undefined;
+}
+
+const linked = requestedDemo();
+const firstDemo = linked ?? defaultDemo();
 setTrip(preview(firstDemo));
 
 export const useStore = create<State>((set) => ({
@@ -171,4 +179,10 @@ export function loadExample(): ImportResult | null {
 export function clearPlan() {
   const s = useStore.getState();
   show(preview(DEMOS.find((d) => d.id === s.demo)), null, { answer: '', result: null });
+}
+
+// Arriving from a demo link: open that demo with its route already loaded.
+if (linked) {
+  loadExample();
+  useStore.setState({ tab: 'day' });
 }

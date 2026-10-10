@@ -43,18 +43,26 @@ const lights = Object.entries(LIGHT_LABEL) as [Light, string][];
     <ul class="mt-5 grid list-none gap-5 p-0 sm:grid-cols-2 lg:grid-cols-3">
       {
         cards.map(({ demo, color, continent, stats }) => (
-          <li class="flex flex-col rounded-[22px] border border-line bg-surface p-4 shadow-card">
+          <li class="flex">
+            <a
+              href={`/app/?demo=${demo.id}`}
+              class="group flex w-full flex-col rounded-[22px] border border-line bg-surface p-4 text-ink no-underline shadow-card transition-colors hover:border-muted"
+            >
             <MiniRoute demo={demo} color={color} />
             <p class={`${color} mt-4 mb-0 flex items-center gap-1.5 font-mono text-[10.5px] tracking-[0.08em] text-muted uppercase`}>
               <span class="size-2 rounded-full bg-(--c)" aria-hidden="true" />
               {continent}
             </p>
-            <h3 class="mt-1.5 mb-0 text-lg leading-snug font-bold">{demo.label}</h3>
+            <h3 class="mt-1.5 mb-0 text-lg leading-snug font-bold group-hover:underline">{demo.label}</h3>
             <p class="mt-1 mb-4 text-[14.5px] leading-relaxed text-muted">{demo.blurb}</p>
             <p class="mt-auto mb-0 border-t border-line pt-3 font-mono text-[11px] leading-relaxed tracking-[0.04em] text-muted">
               {stats.days} days · {stats.cities} cities · {stats.spots} spots
               <span class="block">Travel: {stats.modes.join(', ').toLowerCase()}</span>
             </p>
+            <span class="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-accent">
+              Open this trip <span aria-hidden="true">→</span>
+            </span>
+            </a>
           </li>
         ))
       }

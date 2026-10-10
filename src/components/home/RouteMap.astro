@@ -70,7 +70,7 @@ const routes = DEMOS.map((demo, i) => {
 const desc = `${routes.length} demo trips: ${routes.map((r) => `${r.label} (${r.continent})`).join(', ')}.`;
 ---
 
-<svg viewBox={`0 0 ${W} ${H}`} class="block h-auto w-full" role="img" aria-labelledby="world-map-title world-map-desc">
+<svg viewBox={`0 0 ${W} ${H}`} class="block h-auto w-full" role="group" aria-labelledby="world-map-title world-map-desc">
   <title id="world-map-title">World map of the demo trips</title>
   <desc id="world-map-desc">{desc}</desc>
 
@@ -78,6 +78,7 @@ const desc = `${routes.length} demo trips: ${routes.map((r) => `${r.label} (${r.
 
   {
     routes.map((r) => (
+      <a href={`/app/?demo=${r.id}`} aria-label={`Open the ${r.label} demo trip`} class="wm-link">
       <g class={`${r.color} wm-route`} style={`--d:${r.delay}s`}>
         <path
           d={`M${r.centre[0]} ${r.centre[1]}L${r.pin.lx} ${r.pin.ly}`}
@@ -110,19 +111,22 @@ const desc = `${routes.length} demo trips: ${routes.map((r) => `${r.label} (${r.
           </text>
         </g>
       </g>
+      </a>
     ))
   }
 </svg>
 
-<ul class="m-0 mt-3 grid list-none grid-cols-1 gap-x-4 gap-y-2 p-0 min-[400px]:grid-cols-2 sm:hidden" aria-hidden="true">
+<ul class="m-0 mt-3 grid list-none grid-cols-1 gap-x-4 gap-y-2 p-0 min-[400px]:grid-cols-2 sm:hidden">
   {
     routes.map((r) => (
-      <li class={`${r.color} flex items-start gap-2 text-[13px] leading-snug`}>
-        <span class="mt-1 size-2.5 shrink-0 rounded-full bg-(--c)" />
-        <span>
-          <span class="block font-mono text-[10.5px] tracking-[0.08em] text-muted uppercase">{r.continent}</span>
-          <span class="font-semibold">{r.label}</span>
-        </span>
+      <li class={r.color}>
+        <a href={`/app/?demo=${r.id}`} class="flex items-start gap-2 text-[13px] leading-snug text-ink no-underline hover:underline">
+          <span class="mt-1 size-2.5 shrink-0 rounded-full bg-(--c)" aria-hidden="true" />
+          <span>
+            <span class="block font-mono text-[10.5px] tracking-[0.08em] text-muted uppercase">{r.continent}</span>
+            <span class="font-semibold">{r.label}</span>
+          </span>
+        </a>
       </li>
     ))
   }
