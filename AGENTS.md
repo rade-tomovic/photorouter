@@ -1,6 +1,6 @@
 # AGENTS.md: photorouter
 
-Static Astro site: a home page and a client-side React planner at `/app/` that builds a prompt for the user's own AI and turns the JSON answer into a photo route on a 3D map. No backend, no built-in planner. Deploys as pure static output to Cloudflare Pages.
+Static Astro site: a home page and a client-side React planner at `/app/` that builds a prompt for the user's own AI and turns the JSON answer (cities, spots with coordinates, travel and the day plan, for any destination) into a photo route on a 3D map. No backend, no built-in planner. Deploys as pure static output to Cloudflare Pages.
 
 ## No AI or session attribution (strict, no exceptions)
 
@@ -19,7 +19,7 @@ Describe work by what changed and why. The only files that may name the tooling 
 - Never commit or push to `main`. Every change goes through a pull request.
 - Branch names: `<type>/<short-kebab-description>`, type one of `feat`, `fix`, `docs`, `refactor`, `perf`, `chore`.
 - Commit messages and PR titles: Conventional Commits, `<type>(<optional scope>): <summary>`.
-- `bun run build` and `bun run check-links` pass before a PR is opened.
+- `bun run check-demos`, `bun run build` and `bun run check-links` pass before a PR is opened.
 - `CONTRIBUTING.md` is the human-facing version of these rules; keep the two consistent.
 
 ## Writing style
@@ -30,6 +30,7 @@ Professional, plain prose in copy, docs and comments. No em dashes or double das
 
 ```
 bun run dev          # astro dev on localhost:4321
+bun run check-demos  # every demo trip imports with no errors or warnings
 bun run build        # astro check + static build into dist/, MUST pass before any commit
 bun run check-links  # post-build internal link checker, MUST pass before any commit
 ```
@@ -37,7 +38,8 @@ bun run check-links  # post-build internal link checker, MUST pass before any co
 ## Architecture
 
 - `src/photorouter/lib/byoai.ts` is the contract: the request payload, the JSON Schema (`/plan.schema.json`) and `importResponse`, which validates an answer against the schema and the trip rules. `src/photorouter/lib/prompt.ts` states the same rules to the AI. Change them together.
-- `src/photorouter/lib/planner.ts` does not plan. It knows which slots each day allows (`allowedLabels`) and suggests (`slotLabels`), and `assemble` turns validated picks into planned days with kit, light windows, travel order and walking distance.
-- `src/photorouter/data/example-plan.json` is a finished answer for the default brief. It must import with no errors.
+- `src/photorouter/lib/planner.ts` does not plan. It derives each day's kind (`dayKind`), the slots it allows (`labelsFor`) and its stop limit (`stopCap`), and `assemble` turns validated picks into planned days with kit, light windows, travel order and walking distance.
+- `src/photorouter/lib/data.ts` holds the active trip as live module bindings (`TRIP`, `SPOT`, `SPOTS`, `CITY_IDS`), swapped by `setTrip`. The store calls it together with its own update (`show` in `store.ts`), so every reader sees the same trip.
+- `src/photorouter/data/demos/*.json` are the demo trips, one per continent. Each must pass `bun scripts/check-demo.ts <file>` with no errors and no warnings, and its coordinates should be checked with `bun scripts/verify-coords.ts <file>` (Nominatim, one request per second, so run files one at a time).
 - React is mounted from a bundled module script on `/app/`, not an island, so production pages carry no inline scripts and `script-src 'self'` holds. In dev, the app page adds Vite's React refresh preamble.
 - `public/_headers` sets the CSP. The MapLibre worker (`/_astro/maplibre-gl-worker.*`) gets its own CSP that allows the tile hosts.
