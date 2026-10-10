@@ -17,22 +17,42 @@
       "label": "Filters"
     },
     {
-      "kind": "other",
-      "label": "Extras"
+      "kind": "drone",
+      "label": "Drone"
+    },
+    {
+      "kind": "light",
+      "label": "Lighting"
     }
   ],
   "items": [
     {
       "id": "ff-body",
       "kind": "body",
-      "label": "Full-frame mirrorless",
-      "short": "FF body"
+      "label": "Full-frame camera",
+      "short": "FF body",
+      "crop": 1
     },
     {
       "id": "apsc-body",
       "kind": "body",
-      "label": "APS-C mirrorless",
-      "short": "APS-C body"
+      "label": "APS-C camera",
+      "short": "APS-C body",
+      "crop": 1.5
+    },
+    {
+      "id": "mft-body",
+      "kind": "body",
+      "label": "Micro Four Thirds camera",
+      "short": "MFT body",
+      "crop": 2
+    },
+    {
+      "id": "mf-body",
+      "kind": "body",
+      "label": "Medium format camera",
+      "short": "MF body",
+      "crop": 0.79
     },
     {
       "id": "compact",
@@ -55,68 +75,12 @@
       ]
     },
     {
-      "id": "uwz-14-24",
-      "kind": "lens",
-      "label": "14–24mm f/2.8",
-      "short": "14–24",
+      "id": "action",
+      "kind": "body",
+      "label": "Action camera",
+      "short": "Action cam",
       "focal": [
         "ultrawide"
-      ]
-    },
-    {
-      "id": "wz-16-35",
-      "kind": "lens",
-      "label": "16–35mm f/4",
-      "short": "16–35",
-      "focal": [
-        "ultrawide",
-        "wide"
-      ]
-    },
-    {
-      "id": "std-24-70",
-      "kind": "lens",
-      "label": "24–70mm f/2.8",
-      "short": "24–70",
-      "focal": [
-        "wide",
-        "standard"
-      ]
-    },
-    {
-      "id": "p35",
-      "kind": "lens",
-      "label": "35mm f/1.4",
-      "short": "35mm",
-      "focal": [
-        "wide"
-      ]
-    },
-    {
-      "id": "p50",
-      "kind": "lens",
-      "label": "50mm f/1.8",
-      "short": "50mm",
-      "focal": [
-        "standard"
-      ]
-    },
-    {
-      "id": "tz-70-200",
-      "kind": "lens",
-      "label": "70–200mm f/2.8",
-      "short": "70–200",
-      "focal": [
-        "tele"
-      ]
-    },
-    {
-      "id": "tz-100-400",
-      "kind": "lens",
-      "label": "100–400mm",
-      "short": "100–400",
-      "focal": [
-        "tele"
       ]
     },
     {
@@ -126,10 +90,40 @@
       "short": "Tripod"
     },
     {
+      "id": "tripod-full",
+      "kind": "support",
+      "label": "Full-size tripod",
+      "short": "Big tripod"
+    },
+    {
       "id": "clamp",
       "kind": "support",
       "label": "Mini tripod or clamp",
       "short": "Clamp"
+    },
+    {
+      "id": "monopod",
+      "kind": "support",
+      "label": "Monopod",
+      "short": "Monopod"
+    },
+    {
+      "id": "gimbal",
+      "kind": "support",
+      "label": "Gimbal",
+      "short": "Gimbal"
+    },
+    {
+      "id": "cpl",
+      "kind": "filter",
+      "label": "Circular polariser",
+      "short": "CPL"
+    },
+    {
+      "id": "nd3",
+      "kind": "filter",
+      "label": "3-stop ND",
+      "short": "3-stop ND"
     },
     {
       "id": "nd6",
@@ -144,22 +138,657 @@
       "short": "10-stop ND"
     },
     {
-      "id": "cpl",
+      "id": "nd15",
       "kind": "filter",
-      "label": "Circular polariser",
-      "short": "CPL"
+      "label": "15-stop ND",
+      "short": "15-stop ND"
+    },
+    {
+      "id": "vnd",
+      "kind": "filter",
+      "label": "Variable ND",
+      "short": "Variable ND"
+    },
+    {
+      "id": "gnd",
+      "kind": "filter",
+      "label": "Graduated ND",
+      "short": "Grad ND"
     },
     {
       "id": "drone",
-      "kind": "other",
-      "label": "Drone, under 250 g",
+      "kind": "drone",
+      "label": "Mini drone, under 250 g",
+      "short": "Mini drone"
+    },
+    {
+      "id": "drone-mid",
+      "kind": "drone",
+      "label": "Mid-size drone, 250 to 900 g",
       "short": "Drone"
     },
     {
+      "id": "drone-large",
+      "kind": "drone",
+      "label": "Large drone, over 900 g",
+      "short": "Large drone"
+    },
+    {
       "id": "flash",
-      "kind": "other",
-      "label": "Small flash",
+      "kind": "light",
+      "label": "Compact flash",
       "short": "Flash"
+    },
+    {
+      "id": "speedlight",
+      "kind": "light",
+      "label": "Full-size speedlight",
+      "short": "Speedlight"
+    },
+    {
+      "id": "strobe",
+      "kind": "light",
+      "label": "Portable strobe, about 200 Ws",
+      "short": "Strobe"
+    },
+    {
+      "id": "strobe-large",
+      "kind": "light",
+      "label": "Battery strobe, 400 Ws or more, with stand",
+      "short": "Big strobe"
+    },
+    {
+      "id": "led",
+      "kind": "light",
+      "label": "LED panel",
+      "short": "LED panel"
+    }
+  ],
+  "lenses": [
+    {
+      "id": "p14-18",
+      "type": "prime",
+      "min": 14,
+      "max": 14,
+      "f": 1.8
+    },
+    {
+      "id": "p14-28",
+      "type": "prime",
+      "min": 14,
+      "max": 14,
+      "f": 2.8
+    },
+    {
+      "id": "p20",
+      "type": "prime",
+      "min": 20,
+      "max": 20,
+      "f": 1.8
+    },
+    {
+      "id": "p24-14",
+      "type": "prime",
+      "min": 24,
+      "max": 24,
+      "f": 1.4
+    },
+    {
+      "id": "p24-18",
+      "type": "prime",
+      "min": 24,
+      "max": 24,
+      "f": 1.8
+    },
+    {
+      "id": "p24-28",
+      "type": "prime",
+      "min": 24,
+      "max": 24,
+      "f": 2.8
+    },
+    {
+      "id": "p28",
+      "type": "prime",
+      "min": 28,
+      "max": 28,
+      "f": 2
+    },
+    {
+      "id": "p35-12",
+      "type": "prime",
+      "min": 35,
+      "max": 35,
+      "f": 1.2
+    },
+    {
+      "id": "p35",
+      "type": "prime",
+      "min": 35,
+      "max": 35,
+      "f": 1.4
+    },
+    {
+      "id": "p35-18",
+      "type": "prime",
+      "min": 35,
+      "max": 35,
+      "f": 1.8
+    },
+    {
+      "id": "p40",
+      "type": "prime",
+      "min": 40,
+      "max": 40,
+      "f": 2
+    },
+    {
+      "id": "p50-12",
+      "type": "prime",
+      "min": 50,
+      "max": 50,
+      "f": 1.2
+    },
+    {
+      "id": "p50-14",
+      "type": "prime",
+      "min": 50,
+      "max": 50,
+      "f": 1.4
+    },
+    {
+      "id": "p50",
+      "type": "prime",
+      "min": 50,
+      "max": 50,
+      "f": 1.8
+    },
+    {
+      "id": "p85-12",
+      "type": "prime",
+      "min": 85,
+      "max": 85,
+      "f": 1.2
+    },
+    {
+      "id": "p85-14",
+      "type": "prime",
+      "min": 85,
+      "max": 85,
+      "f": 1.4
+    },
+    {
+      "id": "p85-18",
+      "type": "prime",
+      "min": 85,
+      "max": 85,
+      "f": 1.8
+    },
+    {
+      "id": "p105-14",
+      "type": "prime",
+      "min": 105,
+      "max": 105,
+      "f": 1.4
+    },
+    {
+      "id": "p135-18",
+      "type": "prime",
+      "min": 135,
+      "max": 135,
+      "f": 1.8
+    },
+    {
+      "id": "p135-2",
+      "type": "prime",
+      "min": 135,
+      "max": 135,
+      "f": 2
+    },
+    {
+      "id": "p200-2",
+      "type": "prime",
+      "min": 200,
+      "max": 200,
+      "f": 2
+    },
+    {
+      "id": "p300-4",
+      "type": "prime",
+      "min": 300,
+      "max": 300,
+      "f": 4
+    },
+    {
+      "id": "p400-28",
+      "type": "prime",
+      "min": 400,
+      "max": 400,
+      "f": 2.8
+    },
+    {
+      "id": "p500-56",
+      "type": "prime",
+      "min": 500,
+      "max": 500,
+      "f": 5.6
+    },
+    {
+      "id": "p600-4",
+      "type": "prime",
+      "min": 600,
+      "max": 600,
+      "f": 4
+    },
+    {
+      "id": "p600-63",
+      "type": "prime",
+      "min": 600,
+      "max": 600,
+      "f": 6.3
+    },
+    {
+      "id": "p800-63",
+      "type": "prime",
+      "min": 800,
+      "max": 800,
+      "f": 6.3
+    },
+    {
+      "id": "p12-2",
+      "type": "prime",
+      "min": 12,
+      "max": 12,
+      "f": 2,
+      "format": "apsc"
+    },
+    {
+      "id": "p16-14",
+      "type": "prime",
+      "min": 16,
+      "max": 16,
+      "f": 1.4,
+      "format": "apsc"
+    },
+    {
+      "id": "p23-14",
+      "type": "prime",
+      "min": 23,
+      "max": 23,
+      "f": 1.4,
+      "format": "apsc"
+    },
+    {
+      "id": "p33-14",
+      "type": "prime",
+      "min": 33,
+      "max": 33,
+      "f": 1.4,
+      "format": "apsc"
+    },
+    {
+      "id": "p56-12",
+      "type": "prime",
+      "min": 56,
+      "max": 56,
+      "f": 1.2,
+      "format": "apsc"
+    },
+    {
+      "id": "p12-14m",
+      "type": "prime",
+      "min": 12,
+      "max": 12,
+      "f": 1.4,
+      "format": "mft"
+    },
+    {
+      "id": "p17-12m",
+      "type": "prime",
+      "min": 17,
+      "max": 17,
+      "f": 1.2,
+      "format": "mft"
+    },
+    {
+      "id": "p25-14m",
+      "type": "prime",
+      "min": 25,
+      "max": 25,
+      "f": 1.4,
+      "format": "mft"
+    },
+    {
+      "id": "p45-18m",
+      "type": "prime",
+      "min": 45,
+      "max": 45,
+      "f": 1.8,
+      "format": "mft"
+    },
+    {
+      "id": "p100-macro",
+      "type": "prime",
+      "min": 100,
+      "max": 100,
+      "f": 2.8,
+      "special": "macro"
+    },
+    {
+      "id": "p60-macro",
+      "type": "prime",
+      "min": 60,
+      "max": 60,
+      "f": 2.8,
+      "special": "macro"
+    },
+    {
+      "id": "p15-fish",
+      "type": "prime",
+      "min": 15,
+      "max": 15,
+      "f": 2.8,
+      "special": "fisheye"
+    },
+    {
+      "id": "z8-15-fish",
+      "type": "zoom",
+      "min": 8,
+      "max": 15,
+      "f": 4,
+      "special": "fisheye"
+    },
+    {
+      "id": "p17-ts",
+      "type": "prime",
+      "min": 17,
+      "max": 17,
+      "f": 4,
+      "special": "tilt-shift"
+    },
+    {
+      "id": "p24-ts",
+      "type": "prime",
+      "min": 24,
+      "max": 24,
+      "f": 3.5,
+      "special": "tilt-shift"
+    },
+    {
+      "id": "z12-24-28",
+      "type": "zoom",
+      "min": 12,
+      "max": 24,
+      "f": 2.8
+    },
+    {
+      "id": "z12-24-4",
+      "type": "zoom",
+      "min": 12,
+      "max": 24,
+      "f": 4
+    },
+    {
+      "id": "uwz-14-24",
+      "type": "zoom",
+      "min": 14,
+      "max": 24,
+      "f": 2.8
+    },
+    {
+      "id": "z14-30",
+      "type": "zoom",
+      "min": 14,
+      "max": 30,
+      "f": 4
+    },
+    {
+      "id": "z16-35-28",
+      "type": "zoom",
+      "min": 16,
+      "max": 35,
+      "f": 2.8
+    },
+    {
+      "id": "wz-16-35",
+      "type": "zoom",
+      "min": 16,
+      "max": 35,
+      "f": 4
+    },
+    {
+      "id": "z17-28",
+      "type": "zoom",
+      "min": 17,
+      "max": 28,
+      "f": 2.8
+    },
+    {
+      "id": "z20-70",
+      "type": "zoom",
+      "min": 20,
+      "max": 70,
+      "f": 4
+    },
+    {
+      "id": "z10-18",
+      "type": "zoom",
+      "min": 10,
+      "max": 18,
+      "f": 4,
+      "format": "apsc"
+    },
+    {
+      "id": "z10-20",
+      "type": "zoom",
+      "min": 10,
+      "max": 20,
+      "f": 4,
+      "format": "apsc"
+    },
+    {
+      "id": "z11-20",
+      "type": "zoom",
+      "min": 11,
+      "max": 20,
+      "f": 2.8,
+      "format": "apsc"
+    },
+    {
+      "id": "z7-14m",
+      "type": "zoom",
+      "min": 7,
+      "max": 14,
+      "f": 2.8,
+      "format": "mft"
+    },
+    {
+      "id": "std-24-70",
+      "type": "zoom",
+      "min": 24,
+      "max": 70,
+      "f": 2.8
+    },
+    {
+      "id": "z24-70-4",
+      "type": "zoom",
+      "min": 24,
+      "max": 70,
+      "f": 4
+    },
+    {
+      "id": "z28-75",
+      "type": "zoom",
+      "min": 28,
+      "max": 75,
+      "f": 2.8
+    },
+    {
+      "id": "z24-105",
+      "type": "zoom",
+      "min": 24,
+      "max": 105,
+      "f": 4
+    },
+    {
+      "id": "z24-120",
+      "type": "zoom",
+      "min": 24,
+      "max": 120,
+      "f": 4
+    },
+    {
+      "id": "z24-240",
+      "type": "zoom",
+      "min": 24,
+      "max": 240,
+      "f": 4,
+      "fTele": 6.3
+    },
+    {
+      "id": "z28-200",
+      "type": "zoom",
+      "min": 28,
+      "max": 200,
+      "f": 2.8,
+      "fTele": 5.6
+    },
+    {
+      "id": "z16-55",
+      "type": "zoom",
+      "min": 16,
+      "max": 55,
+      "f": 2.8,
+      "format": "apsc"
+    },
+    {
+      "id": "z18-55",
+      "type": "zoom",
+      "min": 18,
+      "max": 55,
+      "f": 2.8,
+      "format": "apsc",
+      "fTele": 4
+    },
+    {
+      "id": "z18-135",
+      "type": "zoom",
+      "min": 18,
+      "max": 135,
+      "f": 3.5,
+      "format": "apsc",
+      "fTele": 5.6
+    },
+    {
+      "id": "z18-300",
+      "type": "zoom",
+      "min": 18,
+      "max": 300,
+      "f": 3.5,
+      "format": "apsc",
+      "fTele": 6.3
+    },
+    {
+      "id": "z12-40m",
+      "type": "zoom",
+      "min": 12,
+      "max": 40,
+      "f": 2.8,
+      "format": "mft"
+    },
+    {
+      "id": "z12-100m",
+      "type": "zoom",
+      "min": 12,
+      "max": 100,
+      "f": 4,
+      "format": "mft"
+    },
+    {
+      "id": "tz-70-200",
+      "type": "zoom",
+      "min": 70,
+      "max": 200,
+      "f": 2.8
+    },
+    {
+      "id": "z70-200-4",
+      "type": "zoom",
+      "min": 70,
+      "max": 200,
+      "f": 4
+    },
+    {
+      "id": "z70-180",
+      "type": "zoom",
+      "min": 70,
+      "max": 180,
+      "f": 2.8
+    },
+    {
+      "id": "z70-300",
+      "type": "zoom",
+      "min": 70,
+      "max": 300,
+      "f": 4.5,
+      "fTele": 5.6
+    },
+    {
+      "id": "tz-100-400",
+      "type": "zoom",
+      "min": 100,
+      "max": 400,
+      "f": 4.5,
+      "fTele": 5.6
+    },
+    {
+      "id": "z100-500",
+      "type": "zoom",
+      "min": 100,
+      "max": 500,
+      "f": 4.5,
+      "fTele": 7.1
+    },
+    {
+      "id": "z150-600",
+      "type": "zoom",
+      "min": 150,
+      "max": 600,
+      "f": 5,
+      "fTele": 6.3
+    },
+    {
+      "id": "z200-600",
+      "type": "zoom",
+      "min": 200,
+      "max": 600,
+      "f": 5.6,
+      "fTele": 6.3
+    },
+    {
+      "id": "z50-140",
+      "type": "zoom",
+      "min": 50,
+      "max": 140,
+      "f": 2.8,
+      "format": "apsc"
+    },
+    {
+      "id": "z40-150m",
+      "type": "zoom",
+      "min": 40,
+      "max": 150,
+      "f": 2.8,
+      "format": "mft"
+    },
+    {
+      "id": "z100-400m",
+      "type": "zoom",
+      "min": 100,
+      "max": 400,
+      "f": 5,
+      "format": "mft",
+      "fTele": 6.3
     }
   ],
   "styles": [

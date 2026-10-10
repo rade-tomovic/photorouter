@@ -47,10 +47,13 @@ export interface Spot {
 
 export interface GearItem {
   id: string;
-  kind: 'body' | 'lens' | 'support' | 'filter' | 'other';
+  kind: 'body' | 'lens' | 'support' | 'filter' | 'drone' | 'light';
   label: string;
   short: string;
+  /** Fixed-lens bodies: the focal classes they cover. */
   focal?: Focal[];
+  /** Interchangeable-lens bodies: crop factor against full frame. */
+  crop?: number;
 }
 
 export interface StyleDef {

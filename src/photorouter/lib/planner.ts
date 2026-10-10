@@ -1,4 +1,5 @@
-import { GEAR_BY_ID, dayLabel, weekday } from './data';
+import { dayLabel, weekday } from './data';
+import { cropFactor, gearItem, lensFocals, lensFor, type Lens } from './gear';
 import { km } from './geo';
 import { hhmm, sunDay, tzOffset } from './sun';
 import type { Brief, CityId, DayFrame, DayKind, DayStep, Focal, KitItem, Light, Plan, PlannedDay, PlannedSlot, Spot, Trip } from './types';
@@ -102,31 +103,39 @@ export interface GearProfile {
   focals: Set<Focal>;
   tripod: boolean;
   clamp: boolean;
+  /** The strongest ND filter in the bag, for long exposures in daylight. */
   nd: string | null;
   cpl: boolean;
-  drone: boolean;
-  lenses: string[];
+  /** The drone in the bag, if any: mini, mid-size or large. */
+  drone: string | null;
+  /** Lenses with the focal classes they cover on this body. */
+  lenses: { lens: Lens; focals: Focal[] }[];
 }
 
+const ND_ORDER = ['nd15', 'nd10', 'vnd', 'nd6', 'nd3'];
+
 export function gearProfile(brief: Brief): GearProfile {
+  const crop = cropFactor(brief.gear);
   const focals = new Set<Focal>();
-  const lenses: string[] = [];
+  const lenses: GearProfile['lenses'] = [];
   for (const id of brief.gear) {
-    const g = GEAR_BY_ID[id];
-    if (!g) continue;
-    g.focal?.forEach((f) => focals.add(f));
-    if (g.kind === 'lens') lenses.push(id);
+    const lens = lensFor(id);
+    if (lens) {
+      const f = lensFocals(lens, crop);
+      lenses.push({ lens, focals: f });
+      f.forEach((x) => focals.add(x));
+    } else gearItem(id)?.focal?.forEach((f) => focals.add(f));
   }
-  const hasBody = brief.gear.some((id) => GEAR_BY_ID[id]?.kind === 'body');
+  const hasBody = brief.gear.some((id) => gearItem(id)?.crop);
   // An interchangeable body with no lens listed: assume a kit zoom.
-  if (hasBody && !lenses.length && !focals.size) { focals.add('wide'); focals.add('standard'); }
+  if (hasBody && !lenses.length) { focals.add('wide'); focals.add('standard'); }
   return {
     focals,
-    tripod: brief.gear.includes('tripod'),
+    tripod: brief.gear.includes('tripod') || brief.gear.includes('tripod-full'),
     clamp: brief.gear.includes('clamp'),
-    nd: brief.gear.includes('nd10') ? 'nd10' : brief.gear.includes('nd6') ? 'nd6' : null,
+    nd: ND_ORDER.find((id) => brief.gear.includes(id)) ?? null,
     cpl: brief.gear.includes('cpl'),
-    drone: brief.gear.includes('drone'),
+    drone: ['drone-large', 'drone-mid', 'drone'].find((id) => brief.gear.includes(id)) ?? null,
     lenses,
   };
 }
@@ -141,31 +150,35 @@ function buildKit(spot: Spot, label: string, ctx: Ctx): { kit: KitItem[]; warnin
   const kit: KitItem[] = [];
   const warnings: string[] = [];
   const add = (id: string) => {
-    const g = GEAR_BY_ID[id];
+    const g = gearItem(id);
     if (g && !kit.some((k) => k.id === id)) kit.push({ id, label: g.short });
   };
+  const window = SLOT[label]!.lights[0];
+  // After dark the fastest lens for each focal range; otherwise the first one listed.
   for (const f of spot.focal) {
-    const lens = gear.lenses.find((id) => GEAR_BY_ID[id]!.focal?.includes(f));
-    if (lens) add(lens);
+    const fits = gear.lenses.filter((l) => l.focals.includes(f));
+    const pick = window === 'night' ? fits.sort((a, b) => a.lens.f - b.lens.f)[0] : fits[0];
+    if (pick) add(pick.lens.id);
     if (kit.length >= 2) break;
   }
   if (!kit.length) {
-    const body = brief.gear.find((id) => GEAR_BY_ID[id]?.focal);
+    const body = brief.gear.find((id) => gearItem(id)?.focal);
     if (body) add(body);
   }
-  const window = SLOT[label]!.lights[0];
   if (spot.tripod === 'banned') {
     if (gear.tripod) warnings.push('No tripods here. Leave it at the hotel.');
   } else if (spot.tripod === 'needed' || spot.tripod === 'helps') {
-    if (gear.tripod) add('tripod');
+    if (gear.tripod) add(brief.gear.includes('tripod') ? 'tripod' : 'tripod-full');
     else if (gear.clamp) add('clamp');
     else if (spot.tripod === 'needed') warnings.push('Wants a tripod: brace on a railing and raise ISO.');
   }
   if (gear.nd && spot.styles.includes('long-exposure') && (window === 'golden' || window === 'day')) add(gear.nd);
   if (gear.cpl && spot.styles.includes('landscape') && window !== 'night') add('cpl');
   if (gear.drone && spot.drone) {
-    add('drone');
-    warnings.push('Check the local drone rules and no-fly zones before flying.');
+    add(gear.drone);
+    warnings.push(gear.drone === 'drone'
+      ? 'Check the local drone rules and no-fly zones before flying.'
+      : 'At this weight most countries require registration and a pilot licence: check the rules and no-fly zones before flying.');
   }
   if (!spot.focal.some((f) => gear.focals.has(f))) warnings.push(`Best shot at ${spot.focal[0]}; work with what you have.`);
   return { kit, warnings };

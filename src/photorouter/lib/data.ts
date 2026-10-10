@@ -1,12 +1,8 @@
-import gearJson from '../data/gear.json';
-import type { CityId, GearItem, Light, Spot, StyleDef, Trip } from './types';
+import type { CityId, Light, Spot, Trip } from './types';
 
-// No backend: the gear list and styles ship as JSON. The trip itself (cities,
-// spots, travel, days) comes from the user's AI or a bundled demo.
-export const GEAR = gearJson.items as GearItem[];
-export const GEAR_BY_ID: Record<string, GearItem> = Object.fromEntries(GEAR.map((g) => [g.id, g]));
-export const GEAR_GROUPS = gearJson.groups as { kind: GearItem['kind']; label: string }[];
-export const STYLES = gearJson.styles as StyleDef[];
+// No backend: gear and styles ship as JSON (see ./gear). The trip itself
+// (cities, spots, travel, days) comes from the user's AI or a bundled demo.
+export { GEAR, GEAR_GROUPS, STYLES, gearItem } from './gear';
 
 // The active trip. One trip is shown at a time, and the map, panels and
 // timeline all read it, so it lives here as live module bindings rather than

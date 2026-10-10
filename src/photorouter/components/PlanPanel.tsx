@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { ArrowRight, Check, ClipboardCopy, Download, FileJson, Pause, Play, Route, Trash2, TriangleAlert, Upload } from 'lucide-react';
-import { GEAR_BY_ID, STYLES, tripDates } from '../lib/data';
+import { STYLES, gearItem, tripDates } from '../lib/data';
 import { SCHEMA_PATH, planSchema, toResponse, type ImportResult } from '../lib/byoai';
 import { buildPrompt, estimateTokens } from '../lib/prompt';
 import { clearPlan, importPlan, loadExample, useStore } from '../store';
@@ -90,7 +90,7 @@ function TripStep() {
   const chips = [
     ...(brief.destination ? [brief.destination] : []),
     `${brief.days} days from ${brief.start}`,
-    ...brief.gear.map((g) => GEAR_BY_ID[g]?.short ?? g),
+    ...brief.gear.map((g) => gearItem(g)?.short ?? g),
     ...brief.styles.map((s) => STYLES.find((x) => x.id === s)?.label ?? s),
     `${brief.pace} pace`,
     brief.work ? 'works weekdays' : 'on holiday',

@@ -55,7 +55,7 @@ export const REQUIRED_RULES = [
   `A spot fits a slot when one of the spot's "lights" is in the slot type's "lights" (${LIGHTS}). "Blue hour" and "Sunset" are the same time of day, so use at most one of them per day.`,
   'Use each spot at most once in the whole trip.',
   'The brief\'s "text" is the photographer\'s own description: use it for taste and context. Where it disagrees with the structured brief fields, the fields win.',
-  `Follow the brief. Prefer spots whose "styles" match the brief's styles (${STYLE_NAMES}) and whose "focal" ranges the photographer's lenses cover. Never use a "tripod": "needed" spot when the gear has neither a tripod nor a clamp, unless it is a must-see. Plan every place in "mustSee"; if one truly cannot fit, list it in "skipped" with the reason. Never plan a place in "skip". With "avoidCrowds", never use a crowd-3 spot unless it is a must-see. Walking "low" means avoid effort-2 and effort-3 spots and never use a "hike": true spot.`,
+  `Follow the brief. Prefer spots whose "styles" match the brief's styles (${STYLE_NAMES}) and whose "focal" ranges the photographer's lenses cover (each lens lists its focal classes on this body; a fast lens, f/2 or brighter, makes handheld night spots realistic). Never use a "tripod": "needed" spot when the gear has neither a tripod nor a clamp, unless it is a must-see. Plan every place in "mustSee"; if one truly cannot fit, list it in "skipped" with the reason. Never plan a place in "skip". With "avoidCrowds", never use a crowd-3 spot unless it is a must-see. Walking "low" means avoid effort-2 and effort-3 spots and never use a "hike": true spot.`,
 ];
 
 export const OPTIONAL_RULES: Record<RuleId, { label: string; text: string }> = {

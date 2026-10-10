@@ -1,4 +1,5 @@
-import { GEAR_BY_ID, LIGHT_LABEL, STYLES, tripDates, weekday } from './data';
+import { LIGHT_LABEL, STYLES, tripDates, weekday } from './data';
+import { FORMAT_LABEL, cropFactor, gearItem, lensFocals, lensFor } from './gear';
 import { arc, km } from './geo';
 import { SLOT, assemble, dayKind, gearProfile, labelsFor, slotCity, stopCap, type Pick } from './planner';
 import { validTimeZone } from './sun';
@@ -170,6 +171,24 @@ export interface PlanResponse {
   skipped: { name: string; reason: string }[];
 }
 
+/** One piece of gear as the AI sees it: lenses with their focal range, aperture and focal classes on this body. */
+function gearForRequest(id: string, crop: number) {
+  const item = gearItem(id);
+  const lens = lensFor(id);
+  if (!lens) return { id, kind: item?.kind ?? 'other', label: item?.label ?? id, ...(item?.focal ? { focal: item.focal } : {}) };
+  return {
+    id,
+    kind: 'lens',
+    label: item!.label,
+    type: lens.type,
+    focalMm: lens.type === 'prime' ? lens.min : [lens.min, lens.max],
+    maxAperture: lens.fTele && lens.fTele !== lens.f ? [lens.f, lens.fTele] : lens.f,
+    ...(lens.special ? { special: lens.special } : {}),
+    ...(lens.format ? { madeFor: FORMAT_LABEL[lens.format] } : {}),
+    focal: lensFocals(lens, crop),
+  };
+}
+
 /** Everything the AI needs, as one JSON document. */
 export function buildRequest(brief: Brief) {
   const dates = tripDates(brief.start, brief.days);
@@ -191,7 +210,8 @@ export function buildRequest(brief: Brief) {
     },
     brief: {
       text: brief.text,
-      gear: brief.gear.map((id) => ({ id, label: GEAR_BY_ID[id]?.label ?? id, focal: GEAR_BY_ID[id]?.focal ?? null })),
+      gear: brief.gear.map((id) => gearForRequest(id, cropFactor(brief.gear))),
+      sensorCrop: cropFactor(brief.gear),
       styles: brief.styles,
       pace: brief.pace,
       walking: brief.walking,

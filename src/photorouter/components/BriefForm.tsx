@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { GEAR, GEAR_GROUPS, STYLES, tripDates } from '../lib/data';
 import { CONTINENT_LABEL, DEMOS } from '../lib/demos';
 import { chooseDemo, useStore } from '../store';
+import { LensField } from './LensPicker';
 import { Kicker, Seg, Toggle, cx } from './ui';
 
 const field = 'w-full rounded-xl border border-line bg-surface px-3 text-sm text-ink outline-none placeholder:text-muted focus:border-accent';
@@ -86,11 +87,15 @@ export function BriefForm() {
         {GEAR_GROUPS.map((g) => (
           <div key={g.kind} className="grid gap-1.5">
             <Kicker>{g.label}</Kicker>
-            <div className="flex flex-wrap gap-1.5">
-              {GEAR.filter((i) => i.kind === g.kind).map((i) => (
-                <Toggle key={i.id} on={brief.gear.includes(i.id)} onClick={() => toggle('gear', i.id)}>{i.label}</Toggle>
-              ))}
-            </div>
+            {g.kind === 'lens' ? (
+              <LensField />
+            ) : (
+              <div className="flex flex-wrap gap-1.5">
+                {GEAR.filter((i) => i.kind === g.kind).map((i) => (
+                  <Toggle key={i.id} on={brief.gear.includes(i.id)} onClick={() => toggle('gear', i.id)}>{i.label}</Toggle>
+                ))}
+              </div>
+            )}
           </div>
         ))}
       </fieldset>

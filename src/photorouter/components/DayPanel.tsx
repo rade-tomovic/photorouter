@@ -1,6 +1,6 @@
 import { useMemo, type KeyboardEvent } from 'react';
 import { BedDouble, Bus, Car, FileJson, Footprints, MapPinned, Plane, Route, Ship, Sparkles, Sunrise, Sunset, TrainFront, TriangleAlert } from 'lucide-react';
-import { CITY_IDS, GEAR, GEAR_BY_ID, KIND_LABEL, LIGHT_LABEL, SPOT, SPOTS, TRIP, cityStyle, dayLabel, dayNum, monthName, weekday } from '../lib/data';
+import { CITY_IDS, KIND_LABEL, LIGHT_LABEL, SPOT, SPOTS, TRIP, cityStyle, dayLabel, dayNum, gearItem, monthName, weekday } from '../lib/data';
 import { hhmm, sunDay, tzOffset } from '../lib/sun';
 import type { Light, Plan } from '../lib/types';
 import { loadExample, useStore, type Tab } from '../store';
@@ -306,7 +306,7 @@ function KitView() {
   if (!plan) return <NoPlan />;
   const uses = new Map<string, number>();
   plan.days.forEach((d) => d.slots.forEach((s) => s.kit.forEach((k) => uses.set(k.id, (uses.get(k.id) ?? 0) + 1))));
-  const owned = GEAR.filter((g) => brief.gear.includes(g.id) && g.kind !== 'body');
+  const owned = brief.gear.map((id) => gearItem(id)).filter((g): g is NonNullable<typeof g> => !!g && g.kind !== 'body');
   const unused = owned.filter((g) => !uses.has(g.id));
   const max = Math.max(1, ...uses.values());
 
@@ -317,7 +317,7 @@ function KitView() {
         <ul className="m-0 mt-2 grid list-none gap-2 p-0">
           {[...uses.entries()].sort((a, b) => b[1] - a[1]).map(([id, n]) => (
             <li key={id} className="grid grid-cols-[110px_minmax(0,1fr)_auto] items-center gap-3 text-sm">
-              <span className="truncate font-semibold">{GEAR_BY_ID[id]?.short}</span>
+              <span className="truncate font-semibold">{gearItem(id)?.short}</span>
               <span className="h-2 overflow-hidden rounded-full bg-surface-2"><span className="block h-full rounded-full bg-accent" style={{ width: `${(n / max) * 100}%` }} /></span>
               <span className="font-mono text-xs text-muted">{n} stops</span>
             </li>
