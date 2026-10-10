@@ -1,20 +1,27 @@
-/* Home page only. Text colours that need more contrast on the light theme, and
-   the illustration animations, which run only when the reader allows motion. */
+/* Home page only. Route colours, text colours that need more contrast on the
+   light theme, and the illustration animations, which run only when the
+   reader allows motion. */
 
 .home {
   --accent-text: var(--accent);
-  --sz-text: var(--sz);
-  --water: color-mix(in oklab, var(--night) 9%, transparent);
-  --water-line: color-mix(in oklab, var(--night) 30%, transparent);
+  --sz-text: var(--city-1);
+  --warn-text: var(--golden);
 }
 :root:not([data-theme='dark']) .home {
   --accent-text: #9a4a0e;
   --sz-text: #0a6a70;
+  --warn-text: #94430d;
 }
 
+.home .c-0 { --c: var(--city-0); }
+.home .c-1 { --c: var(--city-1); }
+.home .c-2 { --c: var(--city-2); }
+.home .c-3 { --c: var(--city-3); }
+.home .c-4 { --c: var(--city-4); }
+.home .c-5 { --c: var(--city-5); }
+
 .t-accent { color: var(--accent-text); }
-.t-c { color: var(--c); }
-:root:not([data-theme='dark']) .home .t-c { color: color-mix(in oklab, var(--c) 72%, var(--ink)); }
+.t-warn { color: var(--warn-text); }
 
 .home .grain {
   background-image:
@@ -32,37 +39,39 @@
 .home .code .s { color: var(--sz-text); }
 .home .code .n { color: var(--muted); }
 
+/* Map labels keep a ring of the background colour so they read over dots and lines. */
+.home .wm-dots { stroke: color-mix(in oklab, var(--ink) 17%, transparent); }
+.home .halo {
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+.home .halo-2 { stroke: var(--surface-2); }
+
 .home .train,
-.home .walker-dot { visibility: hidden; }
+.home .walker-dot,
+.home .wm-pulse { visibility: hidden; }
 
 @media (prefers-reduced-motion: no-preference) {
-  .home .rail-draw {
-    stroke-dasharray: 1000;
-    stroke-dashoffset: 1000;
-    animation: pr-draw 2.2s 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  }
-  .home .rail-ties {
+  .home .wm-route {
     opacity: 0;
-    animation: pr-fade 0.4s 2.2s ease-out forwards;
+    animation: pr-fade 0.7s var(--d, 0s) ease-out forwards;
+  }
+  .home .wm-pulse {
+    visibility: visible;
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: pr-pulse 3.6s calc(var(--d, 0s) + 0.8s) ease-out infinite;
   }
   .home .train {
     visibility: visible;
     stroke-dasharray: 16 984;
-    animation: pr-run 9s 2.4s linear infinite both;
+    animation: pr-run 9s 0.4s linear infinite both;
   }
   .home .walk {
     animation: pr-march 3s linear infinite;
-  }
-  .home .pulse {
-    transform-box: fill-box;
-    transform-origin: center;
-    animation: pr-pulse 2.8s ease-out infinite;
-  }
-  .home .pulse.d1 { animation-delay: 0.9s; }
-  .home .pulse.d2 { animation-delay: 1.8s; }
-  .home .spot {
-    opacity: 0;
-    animation: pr-fade 0.5s ease-out forwards;
   }
   .home .walker-dot {
     visibility: visible;
@@ -77,12 +86,11 @@
   .home .blink { animation: pr-blink 1.6s steps(1) infinite; }
 }
 
-@keyframes pr-draw { to { stroke-dashoffset: 0; } }
 @keyframes pr-run { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -1000; } }
 @keyframes pr-march { to { stroke-dashoffset: -14; } }
 @keyframes pr-pulse {
   0% { transform: scale(1); opacity: 0.7; }
-  100% { transform: scale(3.2); opacity: 0; }
+  100% { transform: scale(3); opacity: 0; }
 }
 @keyframes pr-fade { to { opacity: 1; } }
 @keyframes pr-spin { to { transform: rotate(360deg); } }

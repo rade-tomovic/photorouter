@@ -1,0 +1,95 @@
+---
+// One demo's route drawn from its coordinates: cities, the legs between them
+// and every photo spot coloured by its light. Cities sit at their projected
+// positions; each city's spots are spread out around it on a square-root scale
+// so a cluster a few kilometres across stays readable next to a 500 km leg.
+import { routeOf, type Demo } from './demoData';
+
+interface Props {
+  demo: Demo;
+  color: string;
+}
+const { demo, color } = Astro.props;
+const { cities, spots } = demo.answer;
+
+const W = 320;
+const H = 200;
+const PAD_X = 58;
+const PAD_Y = 52;
+const MAX_R = 32;
+
+const lats = cities.map((c) => c.lat);
+const lngs = cities.map((c) => c.lng);
+const [s0, n0, w0, e0] = [Math.min(...lats), Math.max(...lats), Math.min(...lngs), Math.max(...lngs)];
+const kx = Math.cos((((s0 + n0) / 2) * Math.PI) / 180);
+const spanX = Math.max((e0 - w0) * kx, 0.001);
+const spanY = Math.max(n0 - s0, 0.001);
+const scale = Math.min((W - 2 * PAD_X) / spanX, (H - 2 * PAD_Y) / spanY);
+const ox = (W - spanX * scale) / 2;
+const oy = (H - spanY * scale) / 2;
+const x = (lng: number) => ox + (lng - w0) * kx * scale;
+const y = (lat: number) => oy + (n0 - lat) * scale;
+const r1 = (n: number) => +n.toFixed(1);
+
+const pos = Object.fromEntries(cities.map((c) => [c.id, { x: x(c.lng), y: y(c.lat) }]));
+const gap = (id: string) => {
+  const p = pos[id]!;
+  const d = cities.filter((c) => c.id !== id).map((c) => Math.hypot(pos[c.id]!.x - p.x, pos[c.id]!.y - p.y));
+  return d.length ? Math.min(...d) : Infinity;
+};
+const radius = Object.fromEntries(cities.map((c) => [c.id, Math.min(MAX_R, gap(c.id) * 0.42)]));
+
+const dots = cities.flatMap((c) => {
+  const own = spots.filter((s) => s.cityId === c.id);
+  const off = own.map((s) => ({ s, dx: (s.lng - c.lng) * Math.cos((c.lat * Math.PI) / 180), dy: c.lat - s.lat }));
+  const far = Math.max(...off.map((o) => Math.hypot(o.dx, o.dy)), 1e-6);
+  return off.map(({ s, dx, dy }) => {
+    const d = Math.hypot(dx, dy);
+    const k = d ? (radius[c.id]! * Math.sqrt(d / far)) / d : 0;
+    return { city: c.id, light: s.light, cx: r1(pos[c.id]!.x + dx * k), cy: r1(pos[c.id]!.y + dy * k) };
+  });
+});
+
+const { stops, legs } = routeOf(demo.answer);
+const legPaths = legs.map((l) => {
+  const a = pos[l.from]!;
+  const b = pos[l.to]!;
+  if (l.mode !== 'flight') return { d: `M${r1(a.x)} ${r1(a.y)}L${r1(b.x)} ${r1(b.y)}`, flight: false };
+  const mx = (a.x + b.x) / 2 - (b.y - a.y) * 0.2;
+  const my = (a.y + b.y) / 2 + (b.x - a.x) * 0.2;
+  return { d: `M${r1(a.x)} ${r1(a.y)}Q${r1(mx)} ${r1(my)} ${r1(b.x)} ${r1(b.y)}`, flight: true };
+});
+
+// Each label sits just outside its cluster, above or below, away from the nearest other city.
+const markers = cities.map((c) => {
+  const p = pos[c.id]!;
+  const near = cities
+    .filter((o) => o.id !== c.id)
+    .sort((a, b) => Math.hypot(pos[a.id]!.x - p.x, pos[a.id]!.y - p.y) - Math.hypot(pos[b.id]!.x - p.x, pos[b.id]!.y - p.y))[0];
+  const above = near ? pos[near.id]!.y > p.y : true;
+  const half = (c.name.length * 6.4) / 2;
+  const lx = Math.min(Math.max(p.x, half + 4), W - half - 4);
+  const ys = [p.y, ...dots.filter((d) => d.city === c.id).map((d) => d.cy)];
+  const ly = above ? Math.max(14, Math.min(...ys) - 9) : Math.min(H - 6, Math.max(...ys) + 17);
+  return { name: c.name, cx: r1(p.x), cy: r1(p.y), lx: r1(lx), ly: r1(ly) };
+});
+
+const label = `Route map: ${stops.map((id) => cities.find((c) => c.id === id)!.name).join(' to ')}, with ${spots.length} photo spots.`;
+---
+
+<svg viewBox={`0 0 ${W} ${H}`} class={`${color} block h-auto w-full rounded-xl bg-surface-2`} role="img" aria-label={label}>
+  {
+    legPaths.map((p) => (
+      <path d={p.d} fill="none" stroke="var(--c)" stroke-width="2.4" stroke-linecap="round" stroke-dasharray={p.flight ? '1 5' : undefined} />
+    ))
+  }
+  {dots.map((d) => <circle cx={d.cx} cy={d.cy} r="2.8" class={`lt-${d.light}`} fill="var(--c)" />)}
+  {markers.map((m) => <circle cx={m.cx} cy={m.cy} r="4.5" fill="var(--surface-2)" stroke="var(--c)" stroke-width="2.4" />)}
+  {
+    markers.map((m) => (
+      <text x={m.lx} y={m.ly} text-anchor="middle" class="halo halo-2" font-size="11.5" font-weight="700" fill="var(--ink)">
+        {m.name}
+      </text>
+    ))
+  }
+</svg>

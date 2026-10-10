@@ -1,31 +1,42 @@
 ---
 import SectionHead from './SectionHead.astro';
+import { demoFor, importReport } from './demoData';
 
 const checks = [
   {
-    title: 'Schema',
-    text: 'The answer matches the JSON Schema: closed objects, every key present, known dates, slot labels and spot ids.',
+    title: 'Every date, in order',
+    text: 'Each trip date has one entry, even a day with no slots, and no date outside the trip appears.',
   },
-  { title: 'Right city', text: 'Each slot uses a spot in the city the trip is in that day.' },
+  {
+    title: 'A consistent chain of cities',
+    text: "A day that changes city needs travel from the previous night's city. A day without travel stays put.",
+  },
+  {
+    title: 'Spots near their city',
+    text: 'Every spot sits within 150 km of the city it is filed under, which catches wrong coordinates.',
+  },
   {
     title: 'Light fits the slot',
     text: 'Dawn spots go in early slots, golden and blue hour spots at sunset, night spots after dark.',
   },
-  { title: 'Working hours', text: 'On work days only the slots before and after work are open.' },
   {
-    title: 'Pace',
-    text: 'Stops per day stay within the relaxed, balanced or packed limit, and long outings only fit free days.',
+    title: 'Slots and stops per day',
+    text: 'Each day uses only the slots it allows and stays within its stop limit, both set by your pace and working hours.',
   },
-  { title: 'Tripod', text: 'Spots that need a tripod are rejected when the kit has none.' },
+  { title: 'Tripod', text: 'A spot that needs a tripod is rejected when the kit has neither a tripod nor a clamp.' },
   {
     title: 'Crowds and walking',
     text: 'The busiest spots are rejected when you avoid crowds, real hikes when you ask for easy walking.',
   },
   {
     title: 'Must-see and skip',
-    text: 'Every must-see is planned or listed as skipped with a reason. Spots on the skip list never appear.',
+    text: 'Places on the skip list are never planned. Every must-see is planned or listed as left out with a reason.',
   },
 ];
+
+const demo = demoFor('europe');
+const report = importReport(demo);
+const blocked = report.some((l) => l.level === 'error');
 ---
 
 <section id="validation" aria-labelledby="validation-title" class="scroll-mt-4 border-b border-line bg-surface-2/40">
@@ -34,8 +45,8 @@ const checks = [
       <SectionHead id="validation-title" kicker="Validation" title="Every answer is checked before it loads">
         <p>
           An AI can return a plan that reads well and still breaks the trip. PhotoRouter validates the pasted JSON against the
-          schema and against the same rules the prompt describes. Errors block the import and name the day and slot to fix.
-          Warnings are shown, and the plan still loads.
+          schema and against the same rules the prompt describes. Errors block the import and name the day, slot or spot to
+          fix. Warnings are shown, and the plan still loads.
         </p>
       </SectionHead>
       <ul class="mt-10 grid list-none gap-x-8 gap-y-6 p-0 sm:grid-cols-2">
@@ -61,29 +72,27 @@ const checks = [
         <div class="flex items-center justify-between gap-3 border-b border-line pb-3">
           <p class="m-0 font-mono text-[11px] tracking-[0.08em] text-muted uppercase">Import report</p>
           <span class="inline-flex h-6 items-center rounded-full border border-line bg-surface-2 px-2.5 text-xs font-semibold">
-            Blocked
+            {blocked ? 'Blocked' : 'Imported'}
           </span>
         </div>
         <ul class="m-0 mt-4 flex list-none flex-col gap-3 p-0 text-[13.5px] leading-snug">
-          <li class="c-gz rounded-xl border border-line bg-surface-2 p-3">
-            <p class="t-c m-0 font-mono text-[10.5px] font-semibold tracking-[0.08em] uppercase">Error</p>
-            <p class="mt-1 mb-0">
-              2026-11-18 slot 1: Lugard Road, The Peak is in Hong Kong, but that slot is in Guangzhou.
-            </p>
-          </li>
-          <li class="c-gz rounded-xl border border-line bg-surface-2 p-3">
-            <p class="t-c m-0 font-mono text-[10.5px] font-semibold tracking-[0.08em] uppercase">Error</p>
-            <p class="mt-1 mb-0">
-              2026-11-19 slot 1: Haizhu Bridge is shot at night, which a "Before work" slot doesn't have.
-            </p>
-          </li>
-          <li class="lt-golden rounded-xl border border-line bg-surface-2 p-3">
-            <p class="t-c m-0 font-mono text-[10.5px] font-semibold tracking-[0.08em] uppercase">Warning</p>
-            <p class="mt-1 mb-0">Must-see Dragon's Back was left out: both free Hong Kong days already have a long outing.</p>
-          </li>
+          {
+            report.map((line) => (
+              <li class={`${line.level === 'error' ? 'c-0' : 'lt-golden'} rounded-xl border border-line bg-surface-2 p-3`}>
+                <p class="m-0 flex items-center gap-1.5 font-mono text-[10.5px] font-semibold tracking-[0.08em] uppercase">
+                  <span class="size-2 rounded-full bg-(--c)" aria-hidden="true" />
+                  {line.level}
+                </p>
+                <p class="mt-1 mb-0 break-words">{line.text}</p>
+              </li>
+            ))
+          }
         </ul>
       </div>
-      <figcaption class="mt-3 px-1 text-[13px] text-muted">Example messages from the importer.</figcaption>
+      <figcaption class="mt-3 px-1 text-[13px] text-muted">
+        Importer messages for edited copies of the {demo.label} demo: a travel leg removed, a spot filed under the wrong
+        city, an evening spot put in a morning slot and a must-see left out.
+      </figcaption>
     </figure>
   </div>
 </section>

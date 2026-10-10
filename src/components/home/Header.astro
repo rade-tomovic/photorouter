@@ -1,7 +1,7 @@
 ---
 import Logo from './Logo.astro';
 import GitHubIcon from './GitHubIcon.astro';
-import { REPO_URL } from './links';
+import { APP_PATH, REPO_URL } from './links';
 ---
 
 <header class="border-b border-line">
@@ -14,6 +14,7 @@ import { REPO_URL } from './links';
       <a href="#how" class="no-underline hover:text-ink">How it works</a>
       <a href="#validation" class="no-underline hover:text-ink">Validation</a>
       <a href="#map" class="no-underline hover:text-ink">Map</a>
+      <a href="#demos" class="no-underline hover:text-ink">Demo trips</a>
       <a href="#privacy" class="no-underline hover:text-ink">Privacy</a>
       <a href="#developers" class="no-underline hover:text-ink">Developers</a>
     </nav>
@@ -26,7 +27,7 @@ import { REPO_URL } from './links';
         <span class="sr-only sm:not-sr-only">GitHub</span>
       </a>
       <a
-        href="/app/"
+        href={APP_PATH}
         class="inline-flex h-9 items-center rounded-full bg-accent px-3.5 text-[13px] font-semibold whitespace-nowrap text-accent-ink no-underline hover:brightness-110"
       >
         <span class="min-[400px]:hidden">Planner</span>

@@ -8,9 +8,12 @@ const points = [
     title: 'No built-in agent',
     text: 'You choose the AI. The prompt and the answer leave the browser only when you copy them there.',
   },
-  { title: 'Map tiles only', text: 'Map tiles are the only network requests the planner makes.' },
+  {
+    title: 'Map tiles only',
+    text: 'Map tiles are the only network requests the planner makes. The demo trips ship with the page, and the default one comes from the time zone setting, not a location lookup.',
+  },
 ];
-const inBrowser = ['Brief', 'Prompt', 'Validator', 'Map'];
+const inBrowser = ['Brief', 'Prompt', 'Validator', 'Map', 'Day sheets', 'Demo trips'];
 ---
 
 <section id="privacy" aria-labelledby="privacy-title" class="scroll-mt-4 border-b border-line bg-surface-2/40">
