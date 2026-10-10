@@ -29,13 +29,18 @@ export function MapView() {
       if (now.basemap !== prev.basemap) engine.setBasemap(now.basemap);
       if (now.terrain !== prev.terrain) engine.setTerrain(now.terrain);
       if (now.lights !== prev.lights) engine.setLights(now.lights);
-      if (now.plan !== prev.plan) {
+      // A new trip (a demo picked, or an answer loaded) rebuilds the markers and routes first.
+      if (now.trip !== prev.trip) {
+        engine.setTrip();
+        if (!now.plan) void engine.overview(1200);
+      }
+      if (now.plan !== prev.plan || now.trip !== prev.trip) {
         engine.setPlan(now.plan);
         engine.setSelected(now.spot);
         if (now.day != null) engine.setDay(now.day, { legsDrawn: true });
         else {
           engine.setDay(null);
-          if (!prev.plan && now.plan) void engine.overview(1200);
+          if (now.plan && (!prev.plan || now.trip !== prev.trip)) void engine.overview(1200);
         }
       }
     });
@@ -110,11 +115,12 @@ function MapTools() {
 
 function EmptyHint() {
   const plan = useStore((s) => s.plan);
+  useStore((s) => s.trip); // re-render when the demo changes
   if (plan) return null;
   return (
     <div className="pointer-events-none absolute inset-x-0 top-3 z-10 flex justify-center px-14">
       <div className="pointer-events-auto flex flex-wrap items-center justify-center gap-2 rounded-full border border-line bg-surface/95 py-1.5 pr-1.5 pl-4 text-[13px] shadow-card backdrop-blur">
-        <span className="text-muted">{Object.keys(SPOT).length} candidate spots. No route yet.</span>
+        <span className="text-muted">{TRIP.title ? `Demo: ${TRIP.title}` : 'No route yet'}</span>
         <Button size="sm" onClick={() => loadExample()}>
           <FileJson className="size-3.5" aria-hidden /> Load the example
         </Button>
@@ -130,20 +136,20 @@ function SpotCard() {
   const id = useStore((s) => s.spot);
   const plan = useStore((s) => s.plan);
   const [copied, setCopied] = useState<string | null>(null);
-  const zhRef = useRef<HTMLSpanElement>(null);
-  if (!id) return null;
+  const localRef = useRef<HTMLSpanElement>(null);
+  if (!id || !SPOT[id]) return null;
   const s = SPOT[id]!;
-  const zh = s.zh.split(' · ')[0]!;
+  const local = s.local;
   const dayIndex = plan?.days.findIndex((d) => d.slots.some((x) => x.spotId === id)) ?? -1;
   const slot = dayIndex >= 0 ? plan!.days[dayIndex]!.slots.find((x) => x.spotId === id) : undefined;
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(zh);
+      await navigator.clipboard.writeText(local ?? s.name);
       setCopied('Copied');
     } catch {
       const r = document.createRange();
-      r.selectNodeContents(zhRef.current!);
+      r.selectNodeContents(localRef.current!);
       const sel = getSelection();
       sel?.removeAllRanges();
       sel?.addRange(r);
@@ -158,10 +164,12 @@ function SpotCard() {
         <X className="size-4" aria-hidden />
       </button>
       <h3 className="m-0 pr-8 text-[17px] leading-tight font-bold text-balance">{s.name}</h3>
-      <div className="flex flex-wrap items-center gap-2">
-        <span ref={zhRef} lang="zh" className="font-zh text-base font-medium">{zh}</span>
-        <Button size="sm" onClick={copy}><Copy className="size-3" aria-hidden />{copied ?? 'Copy Chinese name'}</Button>
-      </div>
+      {local && (
+        <div className="flex flex-wrap items-center gap-2">
+          <span ref={localRef} className="font-zh text-base font-medium">{local}</span>
+          <Button size="sm" onClick={copy}><Copy className="size-3" aria-hidden />{copied ?? 'Copy local name'}</Button>
+        </div>
+      )}
       <div className="flex flex-wrap gap-1.5">
         <LightChip light={s.light} />
         <Pill className="font-mono font-medium">{s.when}</Pill>
@@ -178,12 +186,12 @@ function SpotCard() {
           <span className="text-muted">Not in this plan</span>
         ) : null}
         <a
-          href={`https://maps.apple.com/?q=${encodeURIComponent(zh)}&sll=${s.ll[1]},${s.ll[0]}`}
+          href={`https://www.openstreetmap.org/?mlat=${s.ll[1]}&mlon=${s.ll[0]}#map=17/${s.ll[1]}/${s.ll[0]}`}
           target="_blank"
           rel="noopener"
           className="inline-flex items-center gap-1 text-accent no-underline hover:underline"
         >
-          Apple Maps <ExternalLink className="size-3" aria-hidden />
+          Open in OpenStreetMap <ExternalLink className="size-3" aria-hidden />
         </a>
       </div>
     </div>

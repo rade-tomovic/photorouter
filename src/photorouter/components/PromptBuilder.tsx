@@ -1,6 +1,5 @@
 import { useState, type ReactNode } from 'react';
 import { ChevronDown, Lock, RotateCcw, Save } from 'lucide-react';
-import { CITY_IDS, TRIP } from '../lib/data';
 import {
   DEFAULT_PROMPT,
   OPTIONAL_RULES,
@@ -137,27 +136,6 @@ export function PromptBuilder() {
                 {REQUIRED_RULES.map((r) => <li key={r}>{r}</li>)}
               </ol>
             </details>
-          </div>
-
-          <div className="grid gap-2">
-            <Kicker>Scope</Kicker>
-            <div className="flex flex-wrap gap-1.5" role="group" aria-label="Cities to plan">
-              {CITY_IDS.map((c) => (
-                <Toggle
-                  key={c}
-                  dot
-                  className={`c-${c}`}
-                  on={cfg.cities.includes(c)}
-                  onClick={() => {
-                    const next = cfg.cities.includes(c) ? cfg.cities.filter((x) => x !== c) : [...cfg.cities, c];
-                    if (next.length) set({ cities: CITY_IDS.filter((x) => next.includes(x)) });
-                  }}
-                >
-                  {TRIP.cities[c].name}
-                </Toggle>
-              ))}
-            </div>
-            <Check label="Include spot tips (more context, ~2k tokens)" on={cfg.tips} onChange={(v) => set({ tips: v })} />
           </div>
 
           <div className="grid gap-2.5">

@@ -106,7 +106,7 @@ async function playDay(i: number, tok: number, from = 0): Promise<boolean> {
       prev = L.pts[L.pts.length - 1]!;
     } else {
       const slot = day.slots[step.slot]!;
-      const from: LngLat = prev ?? TRIP.cities[slot.city].base;
+      const from: LngLat = prev ?? TRIP.cities[slot.city]!.base;
       if (!(await engine.walkTo(from, slot.spotId, dur(1300)))) return false;
       useStore.setState({ activeStep: step.slot });
       engine.setCurrent(slot.spotId);

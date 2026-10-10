@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
 import { ArrowRight, Check, ClipboardCopy, Download, FileJson, Pause, Play, Route, Trash2, TriangleAlert, Upload } from 'lucide-react';
-import { GEAR_BY_ID, SPOTS, STYLES } from '../lib/data';
-import { PLAN_SCHEMA, SCHEMA_PATH, toResponse, type ImportResult } from '../lib/byoai';
+import { GEAR_BY_ID, STYLES, tripDates } from '../lib/data';
+import { SCHEMA_PATH, planSchema, toResponse, type ImportResult } from '../lib/byoai';
 import { buildPrompt, estimateTokens } from '../lib/prompt';
 import { clearPlan, importPlan, loadExample, useStore } from '../store';
 import { selectDay, stop, togglePlay } from '../map/player';
-import { BriefForm } from './BriefForm';
+import { BriefForm, DemoPicker } from './BriefForm';
 import { PromptBuilder } from './PromptBuilder';
 import { Button, cx } from './ui';
 
@@ -87,6 +87,8 @@ function TripStep() {
   const brief = useStore((s) => s.brief);
   const plan = useStore((s) => s.plan);
   const chips = [
+    ...(brief.destination ? [brief.destination] : []),
+    `${brief.days} days from ${brief.start}`,
     ...brief.gear.map((g) => GEAR_BY_ID[g]?.short ?? g),
     ...brief.styles.map((s) => STYLES.find((x) => x.id === s)?.label ?? s),
     `${brief.pace} pace`,
@@ -95,6 +97,7 @@ function TripStep() {
   ];
   return (
     <Step n={1} title="Describe the trip" id="step-trip">
+      <DemoPicker />
       <div className="flex flex-wrap gap-1">
         {chips.map((c) => (
           <span key={c} className="inline-flex h-5 items-center rounded-full border border-line px-2 text-[11px] text-muted">{c}</span>
@@ -125,8 +128,8 @@ function PromptStep() {
   return (
     <Step n={2} title="Build the prompt and run it in your AI" id="step-prompt">
       <p className="m-0 text-xs text-muted">
-        The prompt carries your brief, the 15-day frame and all {SPOTS.length} spots, and asks for JSON in a fixed format.
-        Paste it into any AI assistant, or send it through an API.
+        The prompt carries your brief, the trip dates and the rules, and asks your AI to pick the cities and photo spots and
+        return the plan as JSON in a fixed format. Paste it into any AI assistant, or send it through an API.
       </p>
       <PromptBuilder />
       <details className="group rounded-lg border border-line bg-surface">
@@ -147,7 +150,7 @@ function PromptStep() {
           <Download className="size-3.5" aria-hidden /> Download
         </Button>
         {cfg.target === 'api' && (
-          <Button onClick={() => void copy('schema', JSON.stringify(PLAN_SCHEMA, null, 2))}>
+          <Button onClick={() => void copy('schema', JSON.stringify(planSchema(tripDates(brief.start, brief.days)), null, 2))}>
             {state === 'schema' ? <Check className="size-3.5" aria-hidden /> : <FileJson className="size-3.5" aria-hidden />}
             {state === 'schema' ? 'Copied' : 'Copy schema'}
           </Button>
@@ -187,7 +190,7 @@ function AnswerStep() {
         </Button>
       </div>
       <p className="m-0 text-xs text-muted">
-        Code fences and text around the JSON are fine. The example is a finished answer for the demo brief; loading it resets the brief to match.
+        Code fences and text around the JSON are fine. The example is the ready-made answer for the selected demo trip; loading it resets the brief to match.
       </p>
       {result && <ImportReport result={result} />}
     </Step>
@@ -199,14 +202,14 @@ function ImportReport({ result }: { result: ImportResult }) {
   const ok = !!result.plan;
   return (
     <div role="status" className={cx('grid gap-1.5 rounded-lg p-3 text-xs', ok ? 'bg-accent-soft' : 'bg-surface')}>
-      <p className={cx('m-0 font-semibold', ok ? 'text-ink' : 'text-gz')}>
+      <p className={cx('m-0 font-semibold', ok ? 'text-ink' : 'text-danger')}>
         {ok
           ? `Loaded ${result.plan!.stops} stops over ${result.plan!.days.length} days.`
           : `Not loaded: ${result.errors.length} problem${result.errors.length > 1 ? 's' : ''} to fix. Send them back to your AI and paste its corrected answer.`}
       </p>
       {ok && result.summary && <p className="m-0 text-muted">{result.summary}</p>}
       {[...result.errors.map((e) => ['e', e] as const), ...result.warnings.map((w) => ['w', w] as const)].slice(0, 12).map(([k, m]) => (
-        <p key={m} className={cx('m-0 flex items-start gap-1.5', k === 'e' ? 'text-gz' : 'text-golden')}>
+        <p key={m} className={cx('m-0 flex items-start gap-1.5', k === 'e' ? 'text-danger' : 'text-golden')}>
           <TriangleAlert className="mt-px size-3 shrink-0" aria-hidden /> {m}
         </p>
       ))}
@@ -228,7 +231,7 @@ function ImportReport({ result }: { result: ImportResult }) {
 function ExportStep() {
   const plan = useStore((s) => s.plan)!;
   const { state, copy } = useCopy();
-  const json = () => JSON.stringify(toResponse(plan, 'Exported from PhotoRouter.'), null, 2);
+  const json = () => JSON.stringify(toResponse(plan), null, 2);
   return (
     <section className="grid gap-2.5 rounded-xl border border-line p-3.5" aria-labelledby="step-export">
       <h3 id="step-export" className="m-0 text-sm font-bold">Take this plan elsewhere</h3>

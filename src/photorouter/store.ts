@@ -1,9 +1,9 @@
 import { create } from 'zustand';
-import { TRIP } from './lib/data';
+import { TRIP, setTrip } from './lib/data';
 import { importResponse, type ImportResult } from './lib/byoai';
-import example from './data/example-plan.json';
-import { DEFAULT_PROMPT, inScopeDates, type PromptConfig } from './lib/prompt';
-import type { Brief, Light, Plan } from './lib/types';
+import { DEMOS, defaultDemo, type Demo } from './lib/demos';
+import { DEFAULT_PROMPT, type PromptConfig } from './lib/prompt';
+import type { Brief, Light, Plan, Trip } from './lib/types';
 
 export type Theme = 'light' | 'dark';
 export type Basemap = 'detailed' | 'clean';
@@ -11,6 +11,10 @@ export type Tab = 'day' | 'plan' | 'spots' | 'kit' | 'info';
 
 interface State {
   brief: Brief;
+  /** The demo the brief started from; its trip is shown on the map until a plan loads. */
+  demo: string | null;
+  /** The active trip, mirrored from `lib/data` so components and the map can subscribe to it. */
+  trip: Trip;
   plan: Plan | null;
 
   day: number | null;
@@ -67,8 +71,35 @@ function initialTheme(): Theme {
   return typeof matchMedia !== 'undefined' && matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
 }
 
+const EMPTY_BRIEF: Brief = {
+  destination: '',
+  start: new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10),
+  days: 10,
+  text: '',
+  gear: ['ff-body', 'std-24-70'],
+  styles: ['street', 'cityscape'],
+  pace: 'balanced',
+  walking: 'medium',
+  work: false,
+  fridayEarly: false,
+  avoidCrowds: false,
+  must: [],
+  avoid: [],
+};
+
+/** A demo's trip without its plan: the cities and spots to show before anything is loaded. */
+function preview(demo: Demo | undefined): Trip {
+  const plan = demo ? importResponse(JSON.stringify(demo.answer), demo.brief).plan : null;
+  return plan?.trip ?? { title: '', summary: '', tz: 'UTC', cities: {}, legs: {}, days: [], spots: [], arrival: null };
+}
+
+const firstDemo = defaultDemo();
+setTrip(preview(firstDemo));
+
 export const useStore = create<State>((set) => ({
-  brief: structuredClone(TRIP.brief),
+  brief: structuredClone(firstDemo?.brief ?? EMPTY_BRIEF),
+  demo: firstDemo?.id ?? null,
+  trip: TRIP,
   plan: null,
   day: null,
   spot: null,
@@ -97,27 +128,47 @@ export const useStore = create<State>((set) => ({
     }),
 }));
 
+const RESET = { day: null, spot: null, progress: 0, activeStep: null, playing: false } as const;
+
+/** Make a trip active: the data module first, then the store, so every reader sees it on the same update. */
+function show(trip: Trip, plan: Plan | null, extra: Partial<State> = {}) {
+  setTrip(trip);
+  useStore.setState({ trip, plan, ...RESET, ...extra });
+}
+
 /** Check the pasted answer and, when it passes, load it as the plan. Errors leave the current plan alone. */
 export function importPlan(): ImportResult {
   const s = useStore.getState();
-  const result = importResponse(s.answer, s.brief, { dates: inScopeDates(s.prompt), cities: s.prompt.cities, rules: s.prompt.rules });
-  useStore.setState(result.plan ? { result, plan: result.plan, day: null, spot: null, progress: 0, activeStep: null } : { result });
+  const result = importResponse(s.answer, s.brief, s.prompt.rules);
+  if (result.plan) show(result.plan.trip, result.plan, { result });
+  else useStore.setState({ result });
   return result;
+}
+
+/** Start from a demo: its brief goes into the form and its trip onto the map, with no plan loaded. */
+export function chooseDemo(id: string) {
+  const demo = DEMOS.find((d) => d.id === id);
+  if (!demo) return;
+  show(preview(demo), null, { demo: id, brief: structuredClone(demo.brief), answer: '', result: null });
 }
 
 /**
- * Load the bundled example answer with the brief it was written for, so the
- * map and playback can be tried before running a prompt anywhere.
+ * Load the current demo's ready-made answer with the brief it was written for,
+ * so the map and playback can be tried before running a prompt anywhere.
  */
-export function loadExample(): ImportResult {
-  const brief = structuredClone(TRIP.brief);
-  const answer = JSON.stringify(example, null, 2);
+export function loadExample(): ImportResult | null {
+  const s = useStore.getState();
+  const demo = DEMOS.find((d) => d.id === s.demo) ?? defaultDemo();
+  if (!demo) return null;
+  const brief = structuredClone(demo.brief);
+  const answer = JSON.stringify(demo.answer, null, 2);
   const result = importResponse(answer, brief);
-  useStore.setState({ brief, answer, result, tab: 'plan', ...(result.plan ? { plan: result.plan, day: null, spot: null, progress: 0, activeStep: null } : {}) });
+  if (result.plan) show(result.plan.trip, result.plan, { demo: demo.id, brief, answer, result, tab: 'plan' });
   return result;
 }
 
-/** Drop the plan and the pasted answer. The brief and prompt settings stay. */
+/** Drop the plan and the pasted answer and go back to the demo's map. The brief and prompt settings stay. */
 export function clearPlan() {
-  useStore.setState({ plan: null, answer: '', result: null, day: null, spot: null, playing: false, progress: 0, activeStep: null });
+  const s = useStore.getState();
+  show(preview(DEMOS.find((d) => d.id === s.demo)), null, { answer: '', result: null });
 }
