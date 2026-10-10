@@ -44,3 +44,24 @@ export const hhmm = (m: number) => {
   const r = Math.round(m);
   return `${String(Math.floor(r / 60)).padStart(2, '0')}:${String(r % 60).padStart(2, '0')}`;
 };
+
+/** Hours east of UTC for an IANA time zone on a date, daylight saving included. */
+export function tzOffset(iso: string, tz: string): number {
+  try {
+    const d = new Date(`${iso}T12:00:00Z`);
+    const local = new Date(d.toLocaleString('en-US', { timeZone: tz }));
+    const utc = new Date(d.toLocaleString('en-US', { timeZone: 'UTC' }));
+    return Math.round(((local.getTime() - utc.getTime()) / 3600000) * 4) / 4;
+  } catch {
+    return 0;
+  }
+}
+
+export function validTimeZone(tz: string): boolean {
+  try {
+    new Intl.DateTimeFormat('en-US', { timeZone: tz });
+    return true;
+  } catch {
+    return false;
+  }
+}

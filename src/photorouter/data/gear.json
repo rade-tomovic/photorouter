@@ -1,44 +1,203 @@
 {
   "groups": [
-    { "kind": "body", "label": "Camera" },
-    { "kind": "lens", "label": "Lenses" },
-    { "kind": "support", "label": "Support" },
-    { "kind": "filter", "label": "Filters" },
-    { "kind": "other", "label": "Extras" }
+    {
+      "kind": "body",
+      "label": "Camera"
+    },
+    {
+      "kind": "lens",
+      "label": "Lenses"
+    },
+    {
+      "kind": "support",
+      "label": "Support"
+    },
+    {
+      "kind": "filter",
+      "label": "Filters"
+    },
+    {
+      "kind": "other",
+      "label": "Extras"
+    }
   ],
   "items": [
-    { "id": "ff-body", "kind": "body", "label": "Full-frame mirrorless", "short": "FF body" },
-    { "id": "apsc-body", "kind": "body", "label": "APS-C mirrorless", "short": "APS-C body" },
-    { "id": "compact", "kind": "body", "label": "Fixed-lens compact", "short": "Compact", "focal": ["wide"] },
-    { "id": "phone", "kind": "body", "label": "Phone", "short": "Phone", "focal": ["ultrawide", "wide", "standard"] },
-
-    { "id": "uwz-14-24", "kind": "lens", "label": "14–24mm f/2.8", "short": "14–24", "focal": ["ultrawide"] },
-    { "id": "wz-16-35", "kind": "lens", "label": "16–35mm f/4", "short": "16–35", "focal": ["ultrawide", "wide"] },
-    { "id": "std-24-70", "kind": "lens", "label": "24–70mm f/2.8", "short": "24–70", "focal": ["wide", "standard"] },
-    { "id": "p35", "kind": "lens", "label": "35mm f/1.4", "short": "35mm", "focal": ["wide"] },
-    { "id": "p50", "kind": "lens", "label": "50mm f/1.8", "short": "50mm", "focal": ["standard"] },
-    { "id": "tz-70-200", "kind": "lens", "label": "70–200mm f/2.8", "short": "70–200", "focal": ["tele"] },
-    { "id": "tz-100-400", "kind": "lens", "label": "100–400mm", "short": "100–400", "focal": ["tele"] },
-
-    { "id": "tripod", "kind": "support", "label": "Travel tripod", "short": "Tripod" },
-    { "id": "clamp", "kind": "support", "label": "Mini tripod or clamp", "short": "Clamp" },
-
-    { "id": "nd6", "kind": "filter", "label": "6-stop ND", "short": "6-stop ND" },
-    { "id": "nd10", "kind": "filter", "label": "10-stop ND", "short": "10-stop ND" },
-    { "id": "cpl", "kind": "filter", "label": "Circular polariser", "short": "CPL" },
-
-    { "id": "drone", "kind": "other", "label": "Drone, under 250 g", "short": "Drone" },
-    { "id": "flash", "kind": "other", "label": "Small flash", "short": "Flash" }
+    {
+      "id": "ff-body",
+      "kind": "body",
+      "label": "Full-frame mirrorless",
+      "short": "FF body"
+    },
+    {
+      "id": "apsc-body",
+      "kind": "body",
+      "label": "APS-C mirrorless",
+      "short": "APS-C body"
+    },
+    {
+      "id": "compact",
+      "kind": "body",
+      "label": "Fixed-lens compact",
+      "short": "Compact",
+      "focal": [
+        "wide"
+      ]
+    },
+    {
+      "id": "phone",
+      "kind": "body",
+      "label": "Phone",
+      "short": "Phone",
+      "focal": [
+        "ultrawide",
+        "wide",
+        "standard"
+      ]
+    },
+    {
+      "id": "uwz-14-24",
+      "kind": "lens",
+      "label": "14–24mm f/2.8",
+      "short": "14–24",
+      "focal": [
+        "ultrawide"
+      ]
+    },
+    {
+      "id": "wz-16-35",
+      "kind": "lens",
+      "label": "16–35mm f/4",
+      "short": "16–35",
+      "focal": [
+        "ultrawide",
+        "wide"
+      ]
+    },
+    {
+      "id": "std-24-70",
+      "kind": "lens",
+      "label": "24–70mm f/2.8",
+      "short": "24–70",
+      "focal": [
+        "wide",
+        "standard"
+      ]
+    },
+    {
+      "id": "p35",
+      "kind": "lens",
+      "label": "35mm f/1.4",
+      "short": "35mm",
+      "focal": [
+        "wide"
+      ]
+    },
+    {
+      "id": "p50",
+      "kind": "lens",
+      "label": "50mm f/1.8",
+      "short": "50mm",
+      "focal": [
+        "standard"
+      ]
+    },
+    {
+      "id": "tz-70-200",
+      "kind": "lens",
+      "label": "70–200mm f/2.8",
+      "short": "70–200",
+      "focal": [
+        "tele"
+      ]
+    },
+    {
+      "id": "tz-100-400",
+      "kind": "lens",
+      "label": "100–400mm",
+      "short": "100–400",
+      "focal": [
+        "tele"
+      ]
+    },
+    {
+      "id": "tripod",
+      "kind": "support",
+      "label": "Travel tripod",
+      "short": "Tripod"
+    },
+    {
+      "id": "clamp",
+      "kind": "support",
+      "label": "Mini tripod or clamp",
+      "short": "Clamp"
+    },
+    {
+      "id": "nd6",
+      "kind": "filter",
+      "label": "6-stop ND",
+      "short": "6-stop ND"
+    },
+    {
+      "id": "nd10",
+      "kind": "filter",
+      "label": "10-stop ND",
+      "short": "10-stop ND"
+    },
+    {
+      "id": "cpl",
+      "kind": "filter",
+      "label": "Circular polariser",
+      "short": "CPL"
+    },
+    {
+      "id": "drone",
+      "kind": "other",
+      "label": "Drone, under 250 g",
+      "short": "Drone"
+    },
+    {
+      "id": "flash",
+      "kind": "other",
+      "label": "Small flash",
+      "short": "Flash"
+    }
   ],
   "styles": [
-    { "id": "street", "label": "Street", "words": ["street", "candid", "urban", "markets?"] },
-    { "id": "night", "label": "Night & neon", "words": ["night", "neon", "after dark", "nightlife"] },
-    { "id": "cityscape", "label": "Cityscapes", "words": ["cityscapes?", "skylines?", "city views?", "towers?"] },
-    { "id": "architecture", "label": "Architecture", "words": ["architecture", "buildings?", "facades?", "brutalis[mt]", "modernis[mt]"] },
-    { "id": "heritage", "label": "Heritage", "words": ["heritage", "old town", "history", "historic", "temples?", "colonial"] },
-    { "id": "people", "label": "People", "words": ["people", "portraits?", "locals"] },
-    { "id": "long-exposure", "label": "Long exposure", "words": ["long[ -]exposures?", "light trails?", "silky water"] },
-    { "id": "landscape", "label": "Landscape", "words": ["landscapes?", "nature", "hik(e|es|ing)", "mountains?", "coast(line)?", "sunrise hikes?"] },
-    { "id": "aerial", "label": "Aerial", "words": ["aerial", "drone shots?", "from above"] }
+    {
+      "id": "street",
+      "label": "Street"
+    },
+    {
+      "id": "night",
+      "label": "Night & neon"
+    },
+    {
+      "id": "cityscape",
+      "label": "Cityscapes"
+    },
+    {
+      "id": "architecture",
+      "label": "Architecture"
+    },
+    {
+      "id": "heritage",
+      "label": "Heritage"
+    },
+    {
+      "id": "people",
+      "label": "People"
+    },
+    {
+      "id": "long-exposure",
+      "label": "Long exposure"
+    },
+    {
+      "id": "landscape",
+      "label": "Landscape"
+    },
+    {
+      "id": "aerial",
+      "label": "Aerial"
+    }
   ]
 }

@@ -1,19 +1,31 @@
-import spotsJson from '../data/spots.json';
 import gearJson from '../data/gear.json';
-import tripJson from '../data/trip.json';
 import type { CityId, GearItem, Light, Spot, StyleDef, Trip } from './types';
 
-// No backend: the catalog, gear list and trip frame ship as JSON. They go into
-// the prompt for the user's AI and back the checks on its answer.
-export const SPOTS = spotsJson as Spot[];
-export const SPOT: Record<string, Spot> = Object.fromEntries(SPOTS.map((s) => [s.id, s]));
+// No backend: the gear list and styles ship as JSON. The trip itself (cities,
+// spots, travel, days) comes from the user's AI or a bundled demo.
 export const GEAR = gearJson.items as GearItem[];
 export const GEAR_BY_ID: Record<string, GearItem> = Object.fromEntries(GEAR.map((g) => [g.id, g]));
 export const GEAR_GROUPS = gearJson.groups as { kind: GearItem['kind']; label: string }[];
 export const STYLES = gearJson.styles as StyleDef[];
-export const TRIP = tripJson as unknown as Trip;
 
-export const CITY_IDS: CityId[] = ['gz', 'sz', 'hk'];
+// The active trip. One trip is shown at a time, and the map, panels and
+// timeline all read it, so it lives here as live module bindings rather than
+// being threaded through every component. `setTrip` swaps it; the store does
+// that together with the plan, so React re-renders on the same update.
+export let TRIP: Trip = { title: '', summary: '', tz: 'UTC', cities: {}, legs: {}, days: [], spots: [], arrival: null };
+export let SPOTS: Spot[] = [];
+export let SPOT: Record<string, Spot> = {};
+export let CITY_IDS: CityId[] = [];
+
+export function setTrip(trip: Trip) {
+  TRIP = trip;
+  SPOTS = trip.spots;
+  SPOT = Object.fromEntries(trip.spots.map((s) => [s.id, s]));
+  CITY_IDS = Object.values(trip.cities).sort((a, b) => a.color - b.color).map((c) => c.id);
+}
+
+/** CSS custom properties that colour an element by city (`text-(--c)`, `bg-(--c)`). */
+export const cityStyle = (id: CityId) => ({ '--c': `var(--city-${(TRIP.cities[id]?.color ?? 0) % 6})` }) as React.CSSProperties;
 
 export const LIGHT_LABEL: Record<Light, string> = {
   dawn: 'Dawn',
@@ -28,10 +40,19 @@ export const KIND_LABEL: Record<string, string> = {
   free: 'Free day',
   movefree: 'Travel + free day',
   movework: 'Travel + work day',
-  depart: 'Travel day',
 };
 
 const WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-export const weekday = (iso: string) => WD[new Date(`${iso}T12:00:00Z`).getUTCDay()]!;
+const MO = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const at = (iso: string) => new Date(`${iso}T12:00:00Z`);
+export const weekday = (iso: string) => WD[at(iso).getUTCDay()]!;
 export const dayNum = (iso: string) => Number(iso.slice(8, 10));
-export const dayLabel = (iso: string) => `${weekday(iso)} ${dayNum(iso)} Nov`;
+export const monthName = (iso: string) => MO[at(iso).getUTCMonth()]!;
+export const dayLabel = (iso: string) => `${weekday(iso)} ${dayNum(iso)} ${monthName(iso)}`;
+
+/** The trip's dates from a start date and a day count. */
+export function tripDates(start: string, days: number): string[] {
+  const t0 = at(start).getTime();
+  if (Number.isNaN(t0)) return [];
+  return Array.from({ length: Math.max(0, Math.min(days, 31)) }, (_, i) => new Date(t0 + i * 86400000).toISOString().slice(0, 10));
+}
