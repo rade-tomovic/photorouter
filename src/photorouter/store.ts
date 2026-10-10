@@ -96,6 +96,19 @@ const EMPTY_BRIEF: Brief = {
 };
 
 /** A demo's trip without its plan: the cities and spots to show before anything is loaded. */
+/**
+ * Leaving a demo for another place: its place-specific fields (must-see, skip, description) no
+ * longer apply, so they are cleared unless the photographer already edited them. Gear and taste stay.
+ */
+function leaveDemo(brief: Brief, demoId: string | null) {
+  const from = DEMOS.find((d) => d.id === demoId)?.brief;
+  if (!from) return;
+  const same = (x: string[], y: string[]) => x.join('\n') === y.join('\n');
+  if (same(brief.must, from.must)) brief.must = [];
+  if (same(brief.avoid, from.avoid)) brief.avoid = [];
+  if (brief.text === from.text) brief.text = '';
+}
+
 /** The photographer's own trip before any answer: their dates, no cities or spots yet. */
 function draft(brief: Brief): Trip {
   const days = tripDates(brief.start, brief.days).map((date, i) => ({ date, city: '', kind: dayKind(date, false, i === 0, brief), title: '' }));
@@ -114,14 +127,45 @@ function requestedDemo(): Demo | undefined {
   return id ? DEMOS.find((d) => d.id === id) : undefined;
 }
 
+// The last session in this browser: brief, demo, pasted answer and whether a plan was loaded.
+// Kept in local storage only, so a later visit reopens where the photographer left off.
+const SESSION_KEY = 'photorouter:session:v1';
+
+interface Session {
+  brief: Brief;
+  demo: string | null;
+  custom: boolean;
+  answer: string;
+  loaded: 'answer' | 'example' | null;
+}
+
+function readSession(): Session | null {
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (!raw) return null;
+    const s = JSON.parse(raw) as Partial<Session>;
+    if (!s.brief || typeof s.brief.start !== 'string') return null;
+    return {
+      brief: { ...EMPTY_BRIEF, ...s.brief },
+      demo: typeof s.demo === 'string' ? s.demo : null,
+      custom: s.custom === true,
+      answer: typeof s.answer === 'string' ? s.answer : '',
+      loaded: s.loaded === 'answer' || s.loaded === 'example' ? s.loaded : null,
+    };
+  } catch {
+    return null; // storage blocked or the saved value is unreadable: start fresh
+  }
+}
+
 const linked = requestedDemo();
-const firstDemo = linked ?? defaultDemo();
-setTrip(preview(firstDemo));
+const saved = linked ? null : readSession();
+const firstDemo = linked ?? DEMOS.find((d) => d.id === saved?.demo) ?? defaultDemo();
+setTrip(saved?.custom ? draft(saved.brief) : preview(firstDemo));
 
 export const useStore = create<State>((set) => ({
-  brief: structuredClone(firstDemo?.brief ?? EMPTY_BRIEF),
+  brief: saved?.brief ?? structuredClone(firstDemo?.brief ?? EMPTY_BRIEF),
   demo: firstDemo?.id ?? null,
-  custom: false,
+  custom: saved?.custom ?? false,
   exampleOf: null,
   trip: TRIP,
   plan: null,
@@ -137,21 +181,13 @@ export const useStore = create<State>((set) => ({
   terrain: false,
   lights: ['dawn', 'day', 'golden', 'night'],
   tab: 'plan',
-  answer: '',
+  answer: saved?.answer ?? '',
   result: null,
   set: (p) => set(p),
   setBrief: (b) =>
     set((s) => {
       const brief = { ...s.brief, ...b };
-      // A new destination: the demo's place-specific fields (must-see, skip, description) no longer
-      // apply, so they are cleared unless the photographer already edited them. Gear and taste stay.
-      const from = !s.custom && 'destination' in b ? DEMOS.find((d) => d.id === s.demo)?.brief : undefined;
-      if (from) {
-        const same = (x: string[], y: string[]) => x.join('\n') === y.join('\n');
-        if (same(brief.must, from.must)) brief.must = [];
-        if (same(brief.avoid, from.avoid)) brief.avoid = [];
-        if (brief.text === from.text) brief.text = '';
-      }
+      if (!s.custom && 'destination' in b) leaveDemo(brief, s.demo);
       // Changing where or when makes it the photographer's own trip. Without a plan,
       // the map and timeline switch to their dates (rebuilt only when the dates change).
       const changesTrip = 'start' in b || 'days' in b || ('destination' in b && !s.custom);
@@ -181,11 +217,26 @@ function show(trip: Trip, plan: Plan | null, extra: Partial<State> = {}) {
 }
 
 /** Check the pasted answer and, when it passes, load it as the plan. Errors leave the current plan alone. */
-export function importPlan(): ImportResult {
+export function importPlan(lenient = false): ImportResult {
   const s = useStore.getState();
-  const result = importResponse(s.answer, s.brief, s.prompt.rules);
-  if (result.plan) show(result.plan.trip, result.plan, { result, exampleOf: null });
-  else useStore.setState({ result });
+  let result = importResponse(s.answer, s.brief, { ...s.prompt.rules, lenient });
+  if (!result.plan) {
+    useStore.setState({ result });
+    return result;
+  }
+  // An answer made for other dates becomes the trip: the brief takes its dates (and its
+  // title as the destination), so the next prompt and a later visit match what is loaded.
+  const brief = result.adopted
+    ? { ...s.brief, start: result.adopted.start, days: result.adopted.days, destination: result.plan.trip.title || s.brief.destination }
+    : s.brief;
+  if (result.adopted && !s.custom) leaveDemo(brief, s.demo);
+  if (result.adopted) {
+    // Re-check against the brief as it now stands, so no warning quotes a leftover demo must-see.
+    const again = importResponse(s.answer, brief, { ...s.prompt.rules, lenient: true });
+    if (again.plan) result = { ...again, adopted: result.adopted, warnings: [result.warnings[0]!, ...again.warnings] };
+  }
+  const plan = result.plan!;
+  show(plan.trip, plan, { result, exampleOf: null, brief, ...(result.adopted ? { custom: true } : {}) });
   return result;
 }
 
@@ -225,4 +276,29 @@ export function clearPlan() {
 if (linked) {
   loadExample();
   useStore.setState({ tab: 'day' });
+} else if (saved?.loaded === 'answer') {
+  // Re-check the saved answer against the saved brief, as if it had just been pasted.
+  // Lenient: the brief's rules were already applied (or shown as warnings) when it was first loaded.
+  if (importPlan(true).plan) useStore.setState({ tab: 'day' });
+} else if (saved?.loaded === 'example') {
+  loadExample();
+  useStore.setState({ tab: 'day' });
 }
+
+let saveTimer: ReturnType<typeof setTimeout> | undefined;
+useStore.subscribe((s, prev) => {
+  if (s.brief === prev.brief && s.demo === prev.demo && s.custom === prev.custom && s.answer === prev.answer && s.plan === prev.plan && s.exampleOf === prev.exampleOf) return;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    const session: Session = {
+      brief: s.brief,
+      demo: s.demo,
+      custom: s.custom,
+      answer: s.answer,
+      loaded: s.plan ? (s.exampleOf ? 'example' : 'answer') : null,
+    };
+    try {
+      localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    } catch { /* storage full or blocked: the session just isn't remembered */ }
+  }, 300);
+});

@@ -65,7 +65,7 @@ export const OPTIONAL_RULES: Record<RuleId, { label: string; text: string }> = {
   },
   halfDay: {
     label: 'Half-day trips only on free mornings',
-    text: 'Effort-3 spots are half-day trips: only in a "Morning" or "Midday" slot on a "free" day.',
+    text: 'Effort-3 spots are half-day trips: only in a "Morning" or "Midday" slot on a "free" or "daytrip" day.',
   },
   together: {
     label: 'Keep each day compact',

@@ -276,6 +276,11 @@ export interface ImportResult {
   summary: string;
   errors: string[];
   warnings: string[];
+  /**
+   * Set when the answer covers other dates than the brief: it was made for another prompt
+   * and loaded as its own trip, with the brief's rules as warnings. These are its dates.
+   */
+  adopted?: { start: string; days: number };
 }
 
 /** Pull a JSON object out of whatever was pasted: fences, chatter around it, a trailing note. */
@@ -304,6 +309,8 @@ const sameName = (a: string, b: string) => {
 };
 
 export interface ImportRules {
+  /** Treat the brief's rules as warnings even when the dates match, e.g. when restoring a saved plan. */
+  lenient?: boolean;
   /** Work days take only walk-up spots, and a "Before work" stop gets 90 minutes. */
   workHours?: boolean;
   /** Half-day trips only on free mornings. */
@@ -390,19 +397,36 @@ export function importResponse(raw: string, brief: Brief, rules: ImportRules = {
     spotById.set(id, spot);
   }
 
-  // Days: every requested date, in order, with a consistent chain of cities.
-  const dates = tripDates(brief.start, brief.days);
+  // Days: the answer's own dates define the trip. They must run day by day with no gaps.
   const byDate = new Map<string, Obj>();
   for (const [i, d] of data.days.entries()) {
     if (!isObj(d)) { errors.push(`days[${i}] must be an object.`); continue; }
     const date = text(d.date);
-    if (!date || !dates.includes(date)) { errors.push(`days[${i}]: "${String(d.date)}" is not a trip date (${dates[0]} to ${dates.at(-1)}).`); continue; }
+    if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(Date.parse(`${date}T12:00:00Z`))) { errors.push(`days[${i}]: "${String(d.date)}" is not a date in YYYY-MM-DD form.`); continue; }
     if (byDate.has(date)) { errors.push(`${date} appears twice in "days".`); continue; }
     byDate.set(date, d);
   }
-  const missing = dates.filter((d) => !byDate.has(d));
-  if (missing.length) errors.push(`Every trip date needs an entry in "days", even with no slots. Missing: ${missing.join(', ')}.`);
   if (errors.length) return { plan: null, summary: '', errors, warnings };
+  const sorted = [...byDate.keys()].sort();
+  if (!sorted.length) return fail('"days" must list at least one day.');
+  if (sorted.length > 31) return fail('A trip can be at most 31 days.');
+  const dates = tripDates(sorted[0]!, sorted.length);
+  const gaps = dates.filter((d) => !byDate.has(d));
+  if (gaps.length) return fail(`Every date between the first and last day needs an entry in "days", even with no slots. Missing: ${gaps.join(', ')}.`);
+
+  // An answer for the brief's own dates is held to the brief. One for other dates came from
+  // another prompt: it loads as its own trip, and where it differs from this brief it is a warning.
+  const briefDates = tripDates(brief.start, brief.days);
+  const matches = !rules.lenient && dates.join() === briefDates.join();
+  if (!rules.lenient && !matches) {
+    warnings.push(`This answer covers ${dates[0]} to ${dates.at(-1)}, not the dates in your brief (${briefDates[0]} to ${briefDates.at(-1)}). It loads as its own trip, and anything that differs from your brief is a warning rather than an error.`);
+  }
+  /** A brief rule broken: an error for an answer to this brief, a warning otherwise. Returns true when it blocks the pick. */
+  const breach = (message: string) => {
+    if (matches) { errors.push(message); return true; }
+    warnings.push(message);
+    return false;
+  };
 
   const frames: DayFrame[] = [];
   const legs: Record<string, Leg> = {};
@@ -489,7 +513,7 @@ export function importResponse(raw: string, brief: Brief, rules: ImportRules = {
       const spot = spotById.get(text(s.spotId) ?? '');
       if (!label || !SLOT[label]) { errors.push(`${where}: unknown slot label "${String(s.label)}".`); continue; }
       if (!spot) { errors.push(`${where}: "${String(s.spotId)}" is not in "spots".`); continue; }
-      if (!allowed.includes(label)) { errors.push(`${where}: "${label}" doesn't fit ${frame.date}, a ${frame.kind} day. Allowed: ${allowed.join(', ')}.`); continue; }
+      if (!allowed.includes(label) && breach(`${where}: "${label}" doesn't fit ${frame.date}, a ${frame.kind} day. Allowed: ${allowed.join(', ')}.`)) continue;
       if (labels.has(label)) { errors.push(`${where}: "${label}" is used twice on ${frame.date}.`); continue; }
       const same = orders.get(SLOT[label]!.order);
       if (same) { errors.push(`${where}: "${label}" and "${same}" are the same time of day; use one of them on ${frame.date}.`); continue; }
@@ -503,20 +527,18 @@ export function importResponse(raw: string, brief: Brief, rules: ImportRules = {
         errors.push(`${where}: ${spot.name} is shot at ${LIGHT_LABEL[spot.light].toLowerCase()}, which a "${label}" slot doesn't have.`);
         continue;
       }
-      if (brief.avoid.some((a) => sameName(a, spot.name))) { errors.push(`${where}: ${spot.name} is on the skip list.`); continue; }
+      if (brief.avoid.some((a) => sameName(a, spot.name)) && breach(`${where}: ${spot.name} is on the skip list.`)) continue;
       if (used.has(spot.id)) { errors.push(`${where}: ${spot.name} is already planned on ${used.get(spot.id)}; each spot appears once.`); continue; }
       // Hard limits; a must-see overrides them.
       const must = isMust(spot);
-      if (!must && spot.tripod === 'needed' && !gear.tripod && !gear.clamp) { errors.push(`${where}: ${spot.name} needs a tripod, and the kit has neither a tripod nor a clamp.`); continue; }
-      if (!must && spot.hike && brief.walking === 'low') { errors.push(`${where}: ${spot.name} is a real hike, and the brief asks for easy walking.`); continue; }
-      if (!must && spot.crowd === 3 && brief.avoidCrowds) { errors.push(`${where}: ${spot.name} is one of the busiest spots, and the brief avoids crowds.`); continue; }
-      if (rules.workHours !== false && workish && spot.effort > 1) { errors.push(`${where}: ${spot.name} is a ${Math.round(spot.minutes / 60)}-hour outing, too long for a work day.`); continue; }
-      if (rules.workHours !== false && label === 'Before work' && spot.minutes > 90) { errors.push(`${where}: ${spot.name} takes ${spot.minutes} minutes; a "Before work" stop gets 90.`); continue; }
-      if (!must && frame.kind === 'movefree' && label === 'Morning' && spot.minutes > 120) { errors.push(`${where}: ${spot.name} takes ${spot.minutes} minutes; the morning before travelling gets 120.`); continue; }
-      if (rules.halfDay !== false && spot.effort === 3 && !(frame.kind === 'free' && (label === 'Morning' || label === 'Midday'))) {
-        errors.push(`${where}: ${spot.name} is a half-day trip; it only fits a "Morning" or "Midday" slot on a free day.`);
-        continue;
-      }
+      if (!must && spot.tripod === 'needed' && !gear.tripod && !gear.clamp && breach(`${where}: ${spot.name} needs a tripod, and the kit has neither a tripod nor a clamp.`)) continue;
+      if (!must && spot.hike && brief.walking === 'low' && breach(`${where}: ${spot.name} is a real hike, and the brief asks for easy walking.`)) continue;
+      if (!must && spot.crowd === 3 && brief.avoidCrowds && breach(`${where}: ${spot.name} is one of the busiest spots, and the brief avoids crowds.`)) continue;
+      if (rules.workHours !== false && workish && spot.effort > 1 && breach(`${where}: ${spot.name} is a ${Math.round(spot.minutes / 60)}-hour outing, too long for a work day.`)) continue;
+      if (rules.workHours !== false && label === 'Before work' && spot.minutes > 90 && breach(`${where}: ${spot.name} takes ${spot.minutes} minutes; a "Before work" stop gets 90.`)) continue;
+      if (!must && frame.kind === 'movefree' && label === 'Morning' && spot.minutes > 120 && breach(`${where}: ${spot.name} takes ${spot.minutes} minutes; the morning before travelling gets 120.`)) continue;
+      if (rules.halfDay !== false && spot.effort === 3 && !((frame.kind === 'free' || frame.kind === 'daytrip') && (label === 'Morning' || label === 'Midday'))
+        && breach(`${where}: ${spot.name} is a half-day trip; it only fits a "Morning" or "Midday" slot on a free day.`)) continue;
       labels.add(label);
       orders.set(SLOT[label]!.order, label);
       used.set(spot.id, frame.date);
@@ -524,7 +546,7 @@ export function importResponse(raw: string, brief: Brief, rules: ImportRules = {
       picks[i]!.push({ label, city, spotId: spot.id, why: text(s.why) ?? '', ...(note ? { note } : {}) });
     }
     const cap = stopCap(frame.kind, brief);
-    if (picks[i]!.length > cap) errors.push(`${frame.date}: ${picks[i]!.length} stops, but a ${brief.pace} pace allows ${cap} on a ${frame.kind} day.`);
+    if (picks[i]!.length > cap) breach(`${frame.date}: ${picks[i]!.length} stops, but a ${brief.pace} pace allows ${cap} on a ${frame.kind} day.`);
   }
 
   const plannedNames = [...used.keys()].map((id) => spotById.get(id)!);
@@ -553,5 +575,11 @@ export function importResponse(raw: string, brief: Brief, rules: ImportRules = {
     spots: spots.filter((s) => used.has(s.id)),
     arrival,
   };
-  return { plan: assemble(trip, brief, picks, skipped), summary: trip.summary, errors, warnings };
+  return {
+    plan: assemble(trip, brief, picks, skipped),
+    summary: trip.summary,
+    errors,
+    warnings,
+    ...(!matches && !rules.lenient ? { adopted: { start: dates[0]!, days: dates.length } } : {}),
+  };
 }

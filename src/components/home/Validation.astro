@@ -4,12 +4,12 @@ import { demoFor, importReport } from './demoData';
 
 const checks = [
   {
-    title: 'Every date, in order',
-    text: 'Each trip date has one entry, even a day with no slots, and no date outside the trip appears.',
+    title: 'Every date, day by day',
+    text: 'The dates run with no gaps and one entry each, even a day with no slots. An answer for other dates than your brief loads as its own trip, with your brief\'s rules as warnings.',
   },
   {
     title: 'A consistent chain of cities',
-    text: "A day that changes city needs travel from the previous night's city. A day without travel stays put.",
+    text: "A day that changes city needs travel from the previous night's city. A day without travel stays put, or makes a day trip out and back.",
   },
   {
     title: 'Spots near their city',
