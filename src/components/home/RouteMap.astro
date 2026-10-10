@@ -1,0 +1,79 @@
+---
+// Stylised map of the demo trip: the rail legs, each city's walking route and
+// all 42 spots coloured by the light they are shot in.
+import { CITIES, RAIL, SPOTS, VIEW, WALKS, WATER } from './routeData';
+
+const fullRail = `${RAIL.gzsz} L${RAIL.szhk.slice(1).split(' L').slice(1).join(' L')}`;
+const grid = Array.from({ length: 7 }, (_, i) => i);
+const labels = {
+  gz: { x: 236, y: 78, anchor: 'start' },
+  sz: { x: 344, y: 344, anchor: 'end' },
+  hk: { x: 630, y: 408, anchor: 'end' },
+} as const;
+---
+
+<svg
+  viewBox={`0 0 ${VIEW.w} ${VIEW.h}`}
+  class="block h-auto w-full"
+  role="img"
+  aria-labelledby="route-map-title route-map-desc"
+>
+  <title id="route-map-title">Map of the demo trip</title>
+  <desc id="route-map-desc">
+    High-speed rail from Guangzhou to Shenzhen to Hong Kong, with a walking route in each city and 42 photo spots coloured by
+    the light they are shot in: dawn, day, golden hour or night.
+  </desc>
+
+  <g stroke="var(--line)" stroke-width="1">
+    {grid.map((i) => <line x1={(i + 1) * 80} y1="0" x2={(i + 1) * 80} y2={VIEW.h} />)}
+    {grid.slice(0, 6).map((i) => <line x1="0" y1={(i + 1) * 80} x2={VIEW.w} y2={(i + 1) * 80} />)}
+  </g>
+
+  <path d={WATER} fill="var(--water)" stroke="var(--water-line)" stroke-width="1"></path>
+  <text x="150" y="500" class="font-mono" font-size="12.5" letter-spacing="1.5" fill="var(--muted)">PEARL RIVER ESTUARY</text>
+
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d={fullRail} pathLength="1000" class="rail-draw" stroke="var(--ink)" stroke-width="5"></path>
+    <path d={fullRail} pathLength="1000" class="rail-ties" stroke="var(--surface)" stroke-width="2" stroke-dasharray="6 6"></path>
+    <path d={fullRail} pathLength="1000" class="train" stroke="var(--accent)" stroke-width="9"></path>
+  </g>
+  <text x="250" y="190" class="font-mono" font-size="12.5" letter-spacing="1.2" fill="var(--muted)">RAIL · 40 MIN</text>
+  <text x="508" y="424" class="font-mono" font-size="12.5" letter-spacing="1.2" fill="var(--muted)">15 MIN</text>
+
+  {
+    CITIES.map((c) => (
+      <path d={WALKS[c.id]} class={`c-${c.id} walk`} fill="none" stroke="var(--c)" stroke-width="1.6" stroke-dasharray="3 4" stroke-linecap="round" stroke-linejoin="round" />
+    ))
+  }
+
+  {
+    SPOTS.map((s, i) => (
+      <circle cx={s.x} cy={s.y} r="4.4" class={`lt-${s.light} spot`} fill="var(--c)" stroke="var(--surface)" stroke-width="1.5" style={`animation-delay:${(0.6 + i * 0.04).toFixed(2)}s`} />
+    ))
+  }
+
+  {
+    CITIES.map((c, i) => (
+      <g class={`c-${c.id}`}>
+        <circle cx={c.x} cy={c.y} r="7" fill="none" stroke="var(--c)" stroke-width="2" class={`pulse d${i}`} />
+        <circle cx={c.x} cy={c.y} r="7" fill="var(--surface)" stroke="var(--c)" stroke-width="3" />
+      </g>
+    ))
+  }
+
+  {
+    CITIES.map((c) => {
+      const l = labels[c.id];
+      return (
+        <g class={`c-${c.id}`} text-anchor={l.anchor}>
+          <text x={l.x} y={l.y} class="font-display" font-size="26" font-weight="800" letter-spacing="1" fill="var(--ink)">
+            {c.name.toUpperCase()}
+          </text>
+          <text x={l.x} y={l.y + 22} class="font-zh" font-size="15" fill="var(--c)">
+            {c.zh}
+          </text>
+        </g>
+      );
+    })
+  }
+</svg>

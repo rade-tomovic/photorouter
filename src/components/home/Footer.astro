@@ -1,0 +1,26 @@
+---
+import Logo from './Logo.astro';
+import { AMPQ_URL, APP_PATH, REPO_URL, SCHEMA_PATH } from './links';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-line">
+  <div class="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-10 sm:px-6 md:flex-row md:items-center md:justify-between">
+    <div class="flex items-center gap-3">
+      <Logo class="size-7" />
+      <p class="m-0 text-sm text-muted">
+        <span class="font-semibold text-ink">PhotoRouter</span> · MIT licence · Built and maintained by{' '}
+        <a href={AMPQ_URL} class="font-semibold text-ink underline underline-offset-2">AMPQ</a>
+      </p>
+    </div>
+    <nav aria-label="Footer">
+      <ul class="m-0 flex list-none flex-wrap gap-x-5 gap-y-2 p-0 text-sm">
+        <li><a href={APP_PATH} class="text-muted no-underline hover:text-ink">Planner</a></li>
+        <li><a href={SCHEMA_PATH} class="text-muted no-underline hover:text-ink">Schema</a></li>
+        <li><a href={REPO_URL} class="text-muted no-underline hover:text-ink">GitHub</a></li>
+        <li><span class="font-mono text-xs text-muted">© {year}</span></li>
+      </ul>
+    </nav>
+  </div>
+</footer>

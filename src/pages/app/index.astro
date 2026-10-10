@@ -1,0 +1,36 @@
+---
+// The planner itself: a client-side React app over bundled JSON. React is
+// mounted from a bundled module script rather than an island, so pages keep
+// script-src 'self' with no inline scripts.
+import Base from '@/layouts/Base.astro';
+import '@/photorouter/styles.css';
+---
+
+<Base
+  title="PhotoRouter: plan a photo trip with your own AI"
+  description="Build a prompt from your trip, gear and style, run it in any AI assistant, paste the JSON it returns and play the route on a 3D map."
+>
+  {
+    import.meta.env.DEV && (
+      // Dev only: React fast refresh needs Vite's preamble, which Astro injects
+      // only for islands. Production has no inline scripts.
+      <script is:inline type="module" slot="head">
+        import RefreshRuntime from '/@react-refresh';
+        RefreshRuntime.injectIntoGlobalHook(window);
+        window.$RefreshReg$ = () => {};
+        window.$RefreshSig$ = () => (type) => type;
+        window.__vite_plugin_react_preamble_installed__ = true;
+      </script>
+    )
+  }
+  <div id="photorouter">
+    <div class="grid h-dvh place-items-center font-mono text-sm text-muted">Loading PhotoRouter…</div>
+  </div>
+  <noscript>
+    <p style="padding:24px;font-family:system-ui">PhotoRouter is an interactive map app and needs JavaScript.</p>
+  </noscript>
+  <script>
+    import { mount } from '@/photorouter/main';
+    mount(document.getElementById('photorouter')!);
+  </script>
+</Base>

@@ -1,0 +1,77 @@
+@import 'tailwindcss' source(none);
+@source '../';
+@import '@fontsource-variable/big-shoulders-display';
+@import '@fontsource-variable/figtree';
+@import '@fontsource-variable/jetbrains-mono';
+
+/* Shared by the home page and the app: warm accent, one colour per city,
+   one per kind of light, light and dark themes. */
+:root {
+  --bg: #ecf0f3; --surface: #ffffff; --surface-2: #f4f6f8; --ink: #14202c; --muted: #56636f; --line: #d3dae0;
+  --accent: #b45c17; --accent-ink: #ffffff; --accent-soft: color-mix(in oklab, var(--accent) 14%, var(--surface));
+  --route: #7a8794;
+  --gz: #c23b2c; --sz: #0d7c83; --hk: #b12e70;
+  --dawn: #c46a8b; --day: #9c7f10; --golden: #d06620; --night: #3a5cc2;
+  --shadow: 0 1px 2px rgb(20 32 44 / 0.06), 0 10px 28px rgb(20 32 44 / 0.08);
+  color-scheme: light;
+}
+:root[data-theme='dark'] {
+  --bg: #0c131a; --surface: #131c26; --surface-2: #192430; --ink: #e3e9ef; --muted: #94a1ae; --line: #253240;
+  --accent: #f29e4c; --accent-ink: #1b1205;
+  --route: #7f8e9d;
+  --gz: #f2725e; --sz: #3ec4c1; --hk: #f06cab;
+  --dawn: #e89cb6; --day: #d8bd4b; --golden: #f49352; --night: #809ef6;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 28px rgb(0 0 0 / 0.35);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-route: var(--route);
+  --color-gz: var(--gz);
+  --color-sz: var(--sz);
+  --color-hk: var(--hk);
+  --color-dawn: var(--dawn);
+  --color-day: var(--day);
+  --color-golden: var(--golden);
+  --color-night: var(--night);
+  --font-display: 'Big Shoulders Display Variable', 'Arial Narrow', Impact, sans-serif;
+  --font-sans: 'Figtree Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-zh: 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+  --shadow-card: var(--shadow);
+}
+
+@layer base {
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button { cursor: pointer; }
+}
+
+.c-gz { --c: var(--gz); }
+.c-sz { --c: var(--sz); }
+.c-hk { --c: var(--hk); }
+.lt-dawn { --c: var(--dawn); }
+.lt-day { --c: var(--day); }
+.lt-golden { --c: var(--golden); }
+.lt-night { --c: var(--night); }
+
+.scroll-thin { scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+

@@ -1,0 +1,89 @@
+---
+import SectionHead from './SectionHead.astro';
+
+const checks = [
+  {
+    title: 'Schema',
+    text: 'The answer matches the JSON Schema: closed objects, every key present, known dates, slot labels and spot ids.',
+  },
+  { title: 'Right city', text: 'Each slot uses a spot in the city the trip is in that day.' },
+  {
+    title: 'Light fits the slot',
+    text: 'Dawn spots go in early slots, golden and blue hour spots at sunset, night spots after dark.',
+  },
+  { title: 'Working hours', text: 'On work days only the slots before and after work are open.' },
+  {
+    title: 'Pace',
+    text: 'Stops per day stay within the relaxed, balanced or packed limit, and long outings only fit free days.',
+  },
+  { title: 'Tripod', text: 'Spots that need a tripod are rejected when the kit has none.' },
+  {
+    title: 'Crowds and walking',
+    text: 'The busiest spots are rejected when you avoid crowds, real hikes when you ask for easy walking.',
+  },
+  {
+    title: 'Must-see and skip',
+    text: 'Every must-see is planned or listed as skipped with a reason. Spots on the skip list never appear.',
+  },
+];
+---
+
+<section id="validation" aria-labelledby="validation-title" class="scroll-mt-4 border-b border-line bg-surface-2/40">
+  <div class="mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-[1.25fr_1fr] lg:items-start">
+    <div class="min-w-0">
+      <SectionHead id="validation-title" kicker="Validation" title="Every answer is checked before it loads">
+        <p>
+          An AI can return a plan that reads well and still breaks the trip. PhotoRouter validates the pasted JSON against the
+          schema and against the same rules the prompt describes. Errors block the import and name the day and slot to fix.
+          Warnings are shown, and the plan still loads.
+        </p>
+      </SectionHead>
+      <ul class="mt-10 grid list-none gap-x-8 gap-y-6 p-0 sm:grid-cols-2">
+        {
+          checks.map((c) => (
+            <li class="flex gap-3">
+              <svg viewBox="0 0 20 20" class="mt-0.5 size-5 shrink-0 text-accent" aria-hidden="true" focusable="false">
+                <circle cx="10" cy="10" r="9" fill="none" stroke="currentColor" stroke-width="1.6" />
+                <path d="m6 10.2 2.6 2.6L14 7.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <div>
+                <h3 class="m-0 text-[15px] font-bold">{c.title}</h3>
+                <p class="mt-1 mb-0 text-[14.5px] leading-relaxed text-muted">{c.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <figure class="m-0 min-w-0 lg:sticky lg:top-6">
+      <div class="rounded-[22px] border border-line bg-surface p-4 shadow-card sm:p-5">
+        <div class="flex items-center justify-between gap-3 border-b border-line pb-3">
+          <p class="m-0 font-mono text-[11px] tracking-[0.08em] text-muted uppercase">Import report</p>
+          <span class="inline-flex h-6 items-center rounded-full border border-line bg-surface-2 px-2.5 text-xs font-semibold">
+            Blocked
+          </span>
+        </div>
+        <ul class="m-0 mt-4 flex list-none flex-col gap-3 p-0 text-[13.5px] leading-snug">
+          <li class="c-gz rounded-xl border border-line bg-surface-2 p-3">
+            <p class="t-c m-0 font-mono text-[10.5px] font-semibold tracking-[0.08em] uppercase">Error</p>
+            <p class="mt-1 mb-0">
+              2026-11-18 slot 1: Lugard Road, The Peak is in Hong Kong, but that slot is in Guangzhou.
+            </p>
+          </li>
+          <li class="c-gz rounded-xl border border-line bg-surface-2 p-3">
+            <p class="t-c m-0 font-mono text-[10.5px] font-semibold tracking-[0.08em] uppercase">Error</p>
+            <p class="mt-1 mb-0">
+              2026-11-19 slot 1: Haizhu Bridge is shot at night, which a "Before work" slot doesn't have.
+            </p>
+          </li>
+          <li class="lt-golden rounded-xl border border-line bg-surface-2 p-3">
+            <p class="t-c m-0 font-mono text-[10.5px] font-semibold tracking-[0.08em] uppercase">Warning</p>
+            <p class="mt-1 mb-0">Must-see Dragon's Back was left out: both free Hong Kong days already have a long outing.</p>
+          </li>
+        </ul>
+      </div>
+      <figcaption class="mt-3 px-1 text-[13px] text-muted">Example messages from the importer.</figcaption>
+    </figure>
+  </div>
+</section>

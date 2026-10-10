@@ -1,0 +1,38 @@
+---
+import Base from '@/layouts/Base.astro';
+import Header from '@/components/home/Header.astro';
+import Hero from '@/components/home/Hero.astro';
+import HowItWorks from '@/components/home/HowItWorks.astro';
+import Validation from '@/components/home/Validation.astro';
+import MapPlayback from '@/components/home/MapPlayback.astro';
+import Privacy from '@/components/home/Privacy.astro';
+import Developers from '@/components/home/Developers.astro';
+import Cta from '@/components/home/Cta.astro';
+import Footer from '@/components/home/Footer.astro';
+import '@/styles/home.css';
+---
+
+<Base
+  title="PhotoRouter: plan a photo trip with your own AI"
+  description="PhotoRouter builds a prompt from your trip, gear and style for any AI assistant, validates the JSON plan it returns and plays the route on a 3D map. No account, no backend."
+>
+  <div class="home min-h-full overflow-x-clip">
+    <a
+      href="#main"
+      class="sr-only rounded-full bg-accent px-4 py-2 font-semibold text-accent-ink focus:not-sr-only focus:fixed focus:px-4 focus:py-2 focus:top-3 focus:left-3 focus:z-50"
+    >
+      Skip to content
+    </a>
+    <Header />
+    <main id="main" tabindex="-1" class="outline-none">
+      <Hero />
+      <HowItWorks />
+      <Validation />
+      <MapPlayback />
+      <Privacy />
+      <Developers />
+      <Cta />
+    </main>
+    <Footer />
+  </div>
+</Base>

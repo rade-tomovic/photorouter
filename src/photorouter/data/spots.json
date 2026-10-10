@@ -1,0 +1,1284 @@
+[
+ {
+  "id": "haizhu",
+  "city": "gz",
+  "name": "Haizhu Bridge",
+  "zh": "海珠桥",
+  "ll": [
+   113.2685,
+   23.1167
+  ],
+  "light": "night",
+  "lights": [
+   "night",
+   "golden"
+  ],
+  "when": "After 19:00",
+  "tip": "Steel truss bridge lit at night with river traffic underneath. Walk the north bank east toward Tianzi Pier for reflections.",
+  "styles": [
+   "cityscape",
+   "night",
+   "long-exposure"
+  ],
+  "focal": [
+   "wide",
+   "standard"
+  ],
+  "tripod": "helps",
+  "minutes": 60,
+  "effort": 1,
+  "crowd": 2,
+  "drone": false
+ },
+ {
+  "id": "tianzi",
+  "city": "gz",
+  "name": "Pearl River night cruise",
+  "zh": "天字码头",
+  "ll": [
+   113.2724,
+   23.1186
+  ],
+  "light": "night",
+  "lights": [
+   "night"
+  ],
+  "when": "Evening sailings",
+  "tip": "Board at Tianzi Pier. Sit at the back of the open upper deck; the Canton Tower and Liede Bridge come on the eastern stretch. Shoot wide and fast, the boat keeps moving.",
+  "styles": [
+   "cityscape",
+   "night",
+   "people"
+  ],
+  "focal": [
+   "ultrawide",
+   "wide"
+  ],
+  "tripod": "no",
+  "minutes": 75,
+  "effort": 1,
+  "crowd": 3,
+  "drone": false
+ },
+ {
+  "id": "shamian",
+  "city": "gz",
+  "name": "Shamian Island",
+  "zh": "沙面岛",
+  "ll": [
+   113.244,
+   23.1077
+  ],
+  "light": "dawn",
+  "lights": [
+   "dawn",
+   "day"
+  ],
+  "when": "07:00–08:30",
+  "tip": "Banyan avenues and 19th-century colonial facades. Before 08:00 you get tai chi groups and wedding shoots instead of crowds.",
+  "styles": [
+   "heritage",
+   "architecture",
+   "people",
+   "street"
+  ],
+  "focal": [
+   "wide",
+   "standard"
+  ],
+  "tripod": "no",
+  "minutes": 75,
+  "effort": 1,
+  "crowd": 1,
+  "drone": false
+ },
+ {
+  "id": "enning",
+  "city": "gz",
+  "name": "Enning Road & Yongqingfang",
+  "zh": "恩宁路 · 永庆坊",
+  "ll": [
+   113.2439,
+   23.1188
+  ],
+  "light": "dawn",
+  "lights": [
+   "dawn",
+   "day"
+  ],
+  "when": "07:30–08:30",
+  "tip": "The longest run of qilou arcades in the city. Shoot down the colonnades with morning light through the arches. Dim sum at Taotaoju (陶陶居) afterwards.",
+  "styles": [
+   "street",
+   "architecture",
+   "heritage"
+  ],
+  "focal": [
+   "wide",
+   "standard"
+  ],
+  "tripod": "no",
+  "minutes": 60,
+  "effort": 1,
+  "crowd": 2,
+  "drone": false
+ },
+ {
+  "id": "qingping",
+  "city": "gz",
+  "name": "Qingping Market",
+  "zh": "清平市场",
+  "ll": [
+   113.2475,
+   23.1117
+  ],
+  "light": "dawn",
+  "lights": [
+   "dawn",
+   "day"
+  ],
+  "when": "07:00–08:30",
+  "tip": "Dried seafood, herbs and morning trade in the Xiguan lanes behind Shamian. Ask before photographing stallholders close up.",
+  "styles": [
+   "street",
+   "people"
+  ],
+  "focal": [
+   "standard",
+   "wide"
+  ],
+  "tripod": "no",
+  "minutes": 60,
+  "effort": 1,
+  "crowd": 2,
+  "drone": false
+ },
+ {
+  "id": "cathedral",
+  "city": "gz",
+  "name": "Sacred Heart Cathedral",
+  "zh": "石室圣心大教堂",
+  "ll": [
+   113.2614,
+   23.1174
+  ],
+  "light": "night",
+  "lights": [
+   "night",
+   "golden"
+  ],
+  "when": "After dark",
+  "tip": "Granite Gothic twin spires, floodlit at night. Frame it from Yide Road with traffic trails in front.",
+  "styles": [
+   "architecture",
+   "night",
+   "long-exposure",
+   "heritage"
+  ],
+  "focal": [
+   "ultrawide",
+   "wide"
+  ],
+  "tripod": "helps",
+  "minutes": 45,
+  "effort": 1,
+  "crowd": 1,
+  "drone": false
+ },
+ {
+  "id": "beijinglu",
+  "city": "gz",
+  "name": "Beijing Road",
+  "zh": "北京路",
+  "ll": [
+   113.2696,
+   23.1247
+  ],
+  "light": "night",
+  "lights": [
+   "night"
+  ],
+  "when": "19:00–21:00",
+  "tip": "Pedestrian street with glass panels over the excavated old road surfaces. Neon and crowds after dark.",
+  "styles": [
+   "street",
+   "night",
+   "people"
+  ],
+  "focal": [
+   "wide",
+   "standard"
+  ],
+  "tripod": "no",
+  "minutes": 60,
+  "effort": 1,
+  "crowd": 3,
+  "drone": false
+ },
+ {
+  "id": "dongshan",
+  "city": "gz",
+  "name": "Dongshankou villas",
+  "zh": "东山口",
+  "ll": [
+   113.2943,
+   23.1236
+  ],
+  "light": "night",
+  "lights": [
+   "night",
+   "golden",
+   "day"
+  ],
+  "when": "18:30–21:00",
+  "tip": "1920s red-brick villas around Xinhepu Road, now cafes and small shops. Lit windows and quiet streets, best at blue hour.",
+  "styles": [
+   "architecture",
+   "street",
+   "heritage"
+  ],
+  "focal": [
+   "standard",
+   "wide"
+  ],
+  "tripod": "no",
+  "minutes": 75,
+  "effort": 1,
+  "crowd": 1,
+  "drone": false
+ },
+ {
+  "id": "huacheng",
+  "city": "gz",
+  "name": "Huacheng Square & Opera House",
+  "zh": "花城广场 · 广州大剧院",
+  "ll": [
+   113.3255,
+   23.1197
+  ],
+  "light": "golden",
+  "lights": [
+   "golden",
+   "night"
+  ],
+  "when": "17:40–18:20",
+  "tip": "The Zhujiang New Town axis, with Zaha Hadid's opera house at the south end. Go straight from work for blue hour.",
+  "styles": [
+   "architecture",
+   "cityscape"
+  ],
+  "focal": [
+   "ultrawide",
+   "wide"
+  ],
+  "tripod": "helps",
+  "minutes": 45,
+  "effort": 1,
+  "crowd": 2,
+  "drone": false
+ },
+ {
+  "id": "haixinsha",
+  "city": "gz",
+  "name": "Haixinsha & Canton Tower",
+  "zh": "海心沙 · 广州塔",
+  "ll": [
+   113.3238,
+   23.113
+  ],
+  "light": "night",
+  "lights": [
+   "night",
+   "golden"
+  ],
+  "when": "18:30–21:00",
+  "tip": "The island in the river opposite the Canton Tower. The best straight-on view of the tower and its reflection.",
+  "styles": [
+   "cityscape",
+   "night",
+   "long-exposure"
+  ],
+  "focal": [
+   "wide",
+   "standard",
+   "tele"
+  ],
+  "tripod": "needed",
+  "minutes": 60,
+  "effort": 1,
+  "crowd": 2,
+  "drone": false
+ },
+ {
+  "id": "liede",
+  "city": "gz",
+  "name": "Liede Bridge",
+  "zh": "猎德大桥",
+  "ll": [
+   113.3385,
+   23.1125
+  ],
+  "light": "night",
+  "lights": [
+   "night"
+  ],
+  "when": "19:00–21:00",
+  "tip": "Look west from the bridge or the Liede riverside for the whole skyline with the Canton Tower in one frame. A long exposure smooths the river.",
+  "styles": [
+   "cityscape",
+   "long-exposure",
+   "night"
+  ],
+  "focal": [
+   "wide",
+   "standard"
+  ],
+  "tripod": "needed",
+  "minutes": 60,
+  "effort": 1,
+  "crowd": 1,
+  "drone": false
+ },
+ {
+  "id": "chenclan",
+  "city": "gz",
+  "name": "Chen Clan Ancestral Hall",
+  "zh": "陈家祠",
+  "ll": [
+   113.2453,
+   23.1257
+  ],
+  "light": "day",
+  "lights": [
+   "day"
+  ],
+  "when": "From 08:30 opening",
+  "tip": "Carved stone, wood and ridge ceramics on an 1890s clan academy. Go at opening, before tour groups arrive.",
+  "styles": [
+   "heritage",
+   "architecture"
+  ],
+  "focal": [
+   "standard",
+   "tele",
+   "wide"
+  ],
+  "tripod": "no",
+  "minutes": 75,
+  "effort": 1,
+  "crowd": 2,
+  "drone": false
+ },
+ {
+  "id": "baiyun",
+  "city": "gz",
+  "name": "Baiyun Mountain, Moxing Ridge",
+  "zh": "白云山 · 摩星岭",
+  "ll": [
+   113.2985,
+   23.183
+  ],
+  "light": "dawn",
+  "lights": [
+   "dawn",
+   "golden"
+  ],
+  "when": "06:20–08:30",
+  "tip": "The highest point in the city. At dawn the towers of Yuexiu and Tianhe rise out of the haze, and a long lens compresses them into layers. Cable car from the south gate or a 45-minute climb.",
+  "styles": [
+   "landscape",
+   "cityscape"
+  ],
+  "focal": [
+   "tele",
+   "wide"
+  ],
+  "tripod": "helps",
+  "minutes": 150,
+  "effort": 2,
+  "crowd": 1,
+  "drone": false
+ },
+ {
+  "id": "xiaozhou",
+  "city": "gz",
+  "name": "Xiaozhou Village",
+  "zh": "小洲村",
+  "ll": [
+   113.36,
+   23.07
+  ],
+  "light": "day",
+  "lights": [
+   "day",
+   "dawn"
+  ],
+  "when": "09:00–12:00",
+  "tip": "A Lingnan water village with oyster-shell walls, banyans over the canals and artists' studios. Quiet on weekday mornings; about 40 minutes by metro and bus.",
+  "styles": [
+   "heritage",
+   "street",
+   "people"
+  ],
+  "focal": [
+   "standard",
+   "wide"
+  ],
+  "tripod": "no",
+  "minutes": 120,
+  "effort": 2,
+  "crowd": 1,
+  "drone": false
+ },
+ {
+  "id": "octloft",
+  "city": "sz",
+  "name": "OCT Loft",
+  "zh": "华侨城创意文化园",
+  "ll": [
+   113.988,
+   22.5404
+  ],
+  "light": "day",
+  "lights": [
+   "day"
+  ],
+  "when": "13:00–16:00",
+  "tip": "Converted 1980s factories with galleries, design shops and street art. Good for textures and people.",
+  "styles": [
+   "street",
+   "architecture",
+   "people"
+  ],
+  "focal": [
+   "wide",
+   "standard"
+  ],
+  "tripod": "no",
+  "minutes": 120,
+  "effort": 1,
+  "crowd": 2,
+  "drone": false
+ },
+ {
+  "id": "talentpark",
+  "city": "sz",
+  "name": "Talent Park & Spring Cocoon",
+  "zh": "人才公园 · 春茧",
+  "ll": [
+   113.948,
+   22.5145
+  ],
+  "light": "golden",
+  "lights": [
+   "golden",
+   "night"
+  ],
+  "when": "17:00–18:15",
+  "tip": "Sunset over Shenzhen Bay, with the Spring Cocoon stadium and the Houhai towers reflected in the lake. Stay for blue hour.",
+  "styles": [
+   "cityscape",
+   "long-exposure",
+   "architecture"
+  ],
+  "focal": [
+   "wide",
+   "ultrawide",
+   "standard"
+  ],
+  "tripod": "needed",
+  "minutes": 90,
+  "effort": 1,
+  "crowd": 2,
+  "drone": false
+ },
+ {
+  "id": "nantou",
+  "city": "sz",
+  "name": "Nantou Old Town",
+  "zh": "南头古城",
+  "ll": [
+   113.9212,
+   22.544
+  ],
+  "light": "dawn",
+  "lights": [
+   "dawn",
+   "day"
+  ],
+  "when": "08:00–10:30",
+  "tip": "A walled town older than Shenzhen and Hong Kong, now with cafes in restored houses. Morning light on the south gate.",
+  "styles": [
+   "heritage",
+   "street"
+  ],
+  "focal": [
+   "wide",
+   "standard"
+  ],
+  "tripod": "no",
+  "minutes": 120,
+  "effort": 1,
+  "crowd": 1,
+  "drone": false
+ },
+ {
+  "id": "hqb",
+  "city": "sz",
+  "name": "Huaqiangbei",
+  "zh": "华强北",
+  "ll": [
+   114.0858,
+   22.5455
+  ],
+  "light": "day",
+  "lights": [
+   "day",
+   "night"
+  ],
+  "when": "12:00–16:00",
+  "tip": "Floor after floor of electronics stalls. Busy and colourful; shoot handheld from the escalators.",
+  "styles": [
+   "street",
+   "people"
+  ],
+  "focal": [
+   "wide",
+   "standard"
+  ],
+  "tripod": "no",
+  "minutes": 90,
+  "effort": 1,
+  "crowd": 3,
+  "drone": false
+ },
+ {
+  "id": "lianhuashan",
+  "city": "sz",
+  "name": "Lianhuashan Park",
+  "zh": "莲花山公园",
+  "ll": [
+   114.057,
+   22.556
+  ],
+  "light": "golden",
+  "lights": [
+   "golden",
+   "day"
+  ],
+  "when": "16:30–17:45",
+  "tip": "Climb to the summit statue for the view down the Futian CBD axis to the Ping An tower.",
+  "styles": [
+   "cityscape",
+   "landscape"
+  ],
+  "focal": [
+   "tele",
+   "wide"
+  ],
+  "tripod": "helps",
+  "minutes": 75,
+  "effort": 2,
+  "crowd": 2,
+  "drone": false
+ },
+ {
+  "id": "pingan",
+  "city": "sz",
+  "name": "Ping An Finance Centre",
+  "zh": "平安金融中心",
+  "ll": [
+   114.0503,
+   22.5367
+  ],
+  "light": "night",
+  "lights": [
+   "night",
+   "golden"
+  ],
+  "when": "18:00–20:00",
+  "tip": "Shoot the 599 m tower from the Civic Center plaza, or straight up from its base. The CBD lights up together at dusk.",
+  "styles": [
+   "architecture",
+   "cityscape",
+   "night"
+  ],
+  "focal": [
+   "ultrawide",
+   "wide"
+  ],
+  "tripod": "helps",
+  "minutes": 60,
+  "effort": 1,
+  "crowd": 2,
+  "drone": false
+ },
+ {
+  "id": "wutong",
+  "city": "sz",
+  "name": "Wutong Mountain",
+  "zh": "梧桐山",
+  "ll": [
+   114.205,
+   22.581
+  ],
+  "light": "dawn",
+  "lights": [
+   "dawn"
+  ],
+  "when": "Summit by 06:40",
+  "tip": "The highest peak in Shenzhen at 944 m. A pre-dawn hike for sunrise over Dapeng Bay, with a sea of cloud on cool mornings. Allow 2.5 hours up from the Fenghuang trailhead.",
+  "styles": [
+   "landscape"
+  ],
+  "focal": [
+   "tele",
+   "wide"
+  ],
+  "tripod": "needed",
+  "minutes": 300,
+  "effort": 3,
+  "crowd": 1,
+  "drone": false,
+  "hike": true
+ },
+ {
+  "id": "dafen",
+  "city": "sz",
+  "name": "Dafen Oil Painting Village",
+  "zh": "大芬油画村",
+  "ll": [
+   114.134,
+   22.611
+  ],
+  "light": "day",
+  "lights": [
+   "day"
+  ],
+  "when": "10:00–16:00",
+  "tip": "Alleys of studios where painters turn out copies of masterpieces by the hundred. Colourful, candid and friendly if you ask first.",
+  "styles": [
+   "street",
+   "people"
+  ],
+  "focal": [
+   "standard",
+   "wide"
+  ],
+  "tripod": "no",
+  "minutes": 90,
+  "effort": 2,
+  "crowd": 2,
+  "drone": false
+ },
+ {
+  "id": "shenzhenbay",
+  "city": "sz",
+  "name": "Shenzhen Bay Park",
+  "zh": "深圳湾公园",
+  "ll": [
+   113.96,
+   22.505
+  ],
+  "light": "golden",
+  "lights": [
+   "golden",
+   "dawn"
+  ],
+  "when": "16:30–18:00",
+  "tip": "A 15 km waterfront path facing Hong Kong's Yuen Long across the bay. Egrets on the mudflats at low tide, and the bridge to Hong Kong catches the last light.",
+  "styles": [
+   "landscape",
+   "cityscape",
+   "long-exposure"
+  ],
+  "focal": [
+   "tele",
+   "wide"
+  ],
+  "tripod": "helps",
+  "minutes": 90,
+  "effort": 1,
+  "crowd": 2,
+  "drone": false
+ },
+ {
+  "id": "seaworld",
+  "city": "sz",
+  "name": "Sea World, Shekou",
+  "zh": "海上世界",
+  "ll": [
+   113.915,
+   22.483
+  ],
+  "light": "night",
+  "lights": [
+   "night",
+   "golden"
+  ],
+  "when": "18:30–21:00",
+  "tip": "A decommissioned cruise ship parked in a plaza, ringed by bars and fountains. Busy, bright and good for candid night street.",
+  "styles": [
+   "night",
+   "street",
+   "people"
+  ],
+  "focal": [
+   "wide",
+   "standard"
+  ],
+  "tripod": "no",
+  "minutes": 75,
+  "effort": 1,
+  "crowd": 3,
+  "drone": false
+ },
+ {
+  "id": "tst",
+  "city": "hk",
+  "name": "Tsim Sha Tsui Promenade",
+  "zh": "尖沙咀海濱長廊",
+  "ll": [
+   114.1734,
+   22.2934
+  ],
+  "light": "night",
+  "lights": [
+   "night",
+   "golden"
+  ],
+  "when": "19:30–20:30",
+  "tip": "The harbour skyline across to Central. The Symphony of Lights show runs at 20:00; check it is on that night.",
+  "styles": [
+   "cityscape",
+   "night",
+   "long-exposure"
+  ],
+  "focal": [
+   "wide",
+   "standard"
+  ],
+  "tripod": "helps",
+  "minutes": 60,
+  "effort": 1,
+  "crowd": 3,
+  "drone": false
+ },
+ {
+  "id": "mongkok",
+  "city": "hk",
+  "name": "Mong Kok",
+  "zh": "旺角",
+  "ll": [
+   114.1695,
+   22.3185
+  ],
+  "light": "night",
+  "lights": [
+   "night"
+  ],
+  "when": "19:00–22:00",
+  "tip": "Neon, crowds and traffic. The footbridges over Argyle Street and Nathan Road are the spots for light trails.",
+  "styles": [
+   "street",
+   "night",
+   "people",
+   "long-exposure"
+  ],
+  "focal": [
+   "wide",
+   "standard",
+   "tele"
+  ],
+  "tripod": "no",
+  "minutes": 120,
+  "effort": 1,
+  "crowd": 3,
+  "drone": false
+ },
+ {
+  "id": "monster",
+  "city": "hk",
+  "name": "Monster Building",
+  "zh": "益昌大廈",
+  "ll": [
+   114.2122,
+   22.2843
+  ],
+  "light": "dawn",
+  "lights": [
+   "dawn",
+   "day"
+  ],
+  "when": "07:00–08:00",
+  "tip": "Five linked residential blocks in Quarry Bay, shot looking up from the courtyard. People live here: keep quiet, small kit, no tripod, short visit.",
+  "styles": [
+   "architecture"
+  ],
+  "focal": [
+   "ultrawide"
+  ],
+  "tripod": "banned",
+  "minutes": 30,
+  "effort": 1,
+  "crowd": 1,
+  "drone": false
+ },
+ {
+  "id": "temple",
+  "city": "hk",
+  "name": "Temple Street",
+  "zh": "廟街",
+  "ll": [
+   114.17,
+   22.3075
+  ],
+  "light": "night",
+  "lights": [
+   "night"
+  ],
+  "when": "19:00–22:00",
+  "tip": "Night market stalls, fortune tellers and dai pai dong. Shoot from the Jordan end under the gate.",
+  "styles": [
+   "street",
+   "people",
+   "night"
+  ],
+  "focal": [
+   "standard",
+   "wide"
+  ],
+  "tripod": "no",
+  "minutes": 90,
+  "effort": 1,
+  "crowd": 3,
+  "drone": false
+ },
+ {
+  "id": "manmo",
+  "city": "hk",
+  "name": "Man Mo Temple",
+  "zh": "文武廟",
+  "ll": [
+   114.1502,
+   22.2841
+  ],
+  "light": "dawn",
+  "lights": [
+   "dawn",
+   "day"
+  ],
+  "when": "08:00 opening",
+  "tip": "Giant incense coils hang from the ceiling, with shafts of morning light through the smoke.",
+  "styles": [
+   "heritage",
+   "architecture"
+  ],
+  "focal": [
+   "standard",
+   "wide"
+  ],
+  "tripod": "banned",
+  "minutes": 45,
+  "effort": 1,
+  "crowd": 1,
+  "drone": false
+ },
+ {
+  "id": "escalator",
+  "city": "hk",
+  "name": "Mid-Levels Escalator & SoHo",
+  "zh": "中環至半山自動扶梯",
+  "ll": [
+   114.1538,
+   22.2826
+  ],
+  "light": "night",
+  "lights": [
+   "night"
+  ],
+  "when": "19:00–21:00",
+  "tip": "The covered escalator climbs through Central's lanes. The Graham Street and Peel Street junctions frame stacked signs and bars.",
+  "styles": [
+   "street",
+   "night",
+   "architecture"
+  ],
+  "focal": [
+   "standard",
+   "wide"
+  ],
+  "tripod": "no",
+  "minutes": 75,
+  "effort": 1,
+  "crowd": 2,
+  "drone": false
+ },
+ {
+  "id": "starferry",
+  "city": "hk",
+  "name": "Star Ferry",
+  "zh": "天星小輪",
+  "ll": [
+   114.1686,
+   22.2938
+  ],
+  "light": "golden",
+  "lights": [
+   "golden",
+   "night"
+  ],
+  "when": "17:40–18:30",
+  "tip": "Tsim Sha Tsui to Central across the harbour at blue hour, under ten minutes. Stand at the open rail on the lower deck.",
+  "styles": [
+   "cityscape",
+   "people"
+  ],
+  "focal": [
+   "wide",
+   "standard"
+  ],
+  "tripod": "no",
+  "minutes": 30,
+  "effort": 1,
+  "crowd": 2,
+  "drone": false
+ },
+ {
+  "id": "ssp",
+  "city": "hk",
+  "name": "Sham Shui Po",
+  "zh": "深水埗",
+  "ll": [
+   114.1622,
+   22.3305
+  ],
+  "light": "night",
+  "lights": [
+   "night",
+   "day"
+  ],
+  "when": "19:00–21:00",
+  "tip": "Apliu Street stalls, fabric shops and old tenement blocks. Local, gritty and very photogenic.",
+  "styles": [
+   "street",
+   "people"
+  ],
+  "focal": [
+   "standard",
+   "wide"
+  ],
+  "tripod": "no",
+  "minutes": 90,
+  "effort": 1,
+  "crowd": 2,
+  "drone": false
+ },
+ {
+  "id": "taio",
+  "city": "hk",
+  "name": "Tai O",
+  "zh": "大澳",
+  "ll": [
+   113.8619,
+   22.2526
+  ],
+  "light": "day",
+  "lights": [
+   "day",
+   "dawn"
+  ],
+  "when": "09:00–13:00",
+  "tip": "A fishing village of stilt houses over tidal creeks on Lantau. MTR to Tung Chung, then bus 11, about 50 min.",
+  "styles": [
+   "heritage",
+   "landscape",
+   "people"
+  ],
+  "focal": [
+   "standard",
+   "tele",
+   "wide"
+  ],
+  "tripod": "no",
+  "minutes": 240,
+  "effort": 3,
+  "crowd": 2,
+  "drone": false
+ },
+ {
+  "id": "lugard",
+  "city": "hk",
+  "name": "Lugard Road, The Peak",
+  "zh": "盧吉道",
+  "ll": [
+   114.1455,
+   22.2765
+  ],
+  "light": "golden",
+  "lights": [
+   "golden",
+   "night"
+  ],
+  "when": "16:45–18:30",
+  "tip": "The classic Victoria Harbour view, framed by trees. Walk 15 min from the Peak Tower, claim a spot before sunset and stay through blue hour.",
+  "styles": [
+   "cityscape",
+   "long-exposure",
+   "landscape"
+  ],
+  "focal": [
+   "wide",
+   "standard",
+   "tele"
+  ],
+  "tripod": "needed",
+  "minutes": 120,
+  "effort": 2,
+  "crowd": 3,
+  "drone": false
+ },
+ {
+  "id": "chunyeung",
+  "city": "hk",
+  "name": "Chun Yeung Street",
+  "zh": "春秧街",
+  "ll": [
+   114.199,
+   22.2915
+  ],
+  "light": "day",
+  "lights": [
+   "day",
+   "dawn"
+  ],
+  "when": "09:00–11:00",
+  "tip": "The tram rolls slowly through a wet market, inches from the stalls. Stand at a corner and wait for it.",
+  "styles": [
+   "street",
+   "people"
+  ],
+  "focal": [
+   "standard",
+   "tele"
+  ],
+  "tripod": "no",
+  "minutes": 75,
+  "effort": 1,
+  "crowd": 2,
+  "drone": false
+ },
+ {
+  "id": "lamma",
+  "city": "hk",
+  "name": "Lamma Island",
+  "zh": "南丫島",
+  "ll": [
+   114.1115,
+   22.2268
+  ],
+  "light": "day",
+  "lights": [
+   "day"
+  ],
+  "when": "11:00–15:30",
+  "tip": "Ferry from Central Pier 4 to Yung Shue Wan, then the Family Trail to Sok Kwu Wan (about 1.5 h) and a seafood lunch.",
+  "styles": [
+   "landscape",
+   "heritage"
+  ],
+  "focal": [
+   "wide",
+   "standard"
+  ],
+  "tripod": "no",
+  "minutes": 270,
+  "effort": 3,
+  "crowd": 1,
+  "drone": true,
+  "hike": true
+ },
+ {
+  "id": "saiwan",
+  "city": "hk",
+  "name": "Sai Wan Swimming Shed",
+  "zh": "西環泳棚",
+  "ll": [
+   114.1213,
+   22.2818
+  ],
+  "light": "golden",
+  "lights": [
+   "golden"
+  ],
+  "when": "17:00–17:45",
+  "tip": "A short jetty on the western tip of Hong Kong Island with a clean sunset line. Popular, so expect a queue for the end of the pier.",
+  "styles": [
+   "landscape",
+   "long-exposure",
+   "people"
+  ],
+  "focal": [
+   "wide",
+   "standard"
+  ],
+  "tripod": "helps",
+  "minutes": 60,
+  "effort": 1,
+  "crowd": 3,
+  "drone": false
+ },
+ {
+  "id": "lionrock",
+  "city": "hk",
+  "name": "Lion Rock",
+  "zh": "獅子山",
+  "ll": [
+   114.187,
+   22.3523
+  ],
+  "light": "golden",
+  "lights": [
+   "golden",
+   "dawn",
+   "night"
+  ],
+  "when": "16:30–18:30",
+  "tip": "The view down the full length of Kowloon from the lion's head. Hike up from Wong Tai Sin in about an hour and bring a headlamp for the way down after blue hour.",
+  "styles": [
+   "cityscape",
+   "landscape"
+  ],
+  "focal": [
+   "tele",
+   "wide"
+  ],
+  "tripod": "needed",
+  "minutes": 180,
+  "effort": 2,
+  "crowd": 1,
+  "drone": false,
+  "hike": true
+ },
+ {
+  "id": "choihung",
+  "city": "hk",
+  "name": "Choi Hung Estate",
+  "zh": "彩虹邨",
+  "ll": [
+   114.2087,
+   22.3346
+  ],
+  "light": "day",
+  "lights": [
+   "day",
+   "golden"
+  ],
+  "when": "09:00–16:00",
+  "tip": "Rainbow-painted 1960s public housing around a rooftop basketball court. Shoot the colour bands square-on and keep residents out of frame.",
+  "styles": [
+   "architecture",
+   "people"
+  ],
+  "focal": [
+   "wide",
+   "ultrawide"
+  ],
+  "tripod": "no",
+  "minutes": 45,
+  "effort": 1,
+  "crowd": 2,
+  "drone": false
+ },
+ {
+  "id": "highisland",
+  "city": "hk",
+  "name": "High Island Reservoir East Dam",
+  "zh": "萬宜水庫東壩",
+  "ll": [
+   114.372,
+   22.36
+  ],
+  "light": "dawn",
+  "lights": [
+   "dawn",
+   "day"
+  ],
+  "when": "Sunrise to 10:00",
+  "tip": "Hexagonal volcanic columns and tetrapods at the edge of the South China Sea, in the UNESCO Global Geopark. Taxi from Sai Kung, about 30 min; no public buses.",
+  "styles": [
+   "landscape",
+   "aerial"
+  ],
+  "focal": [
+   "ultrawide",
+   "wide"
+  ],
+  "tripod": "helps",
+  "minutes": 240,
+  "effort": 3,
+  "crowd": 1,
+  "drone": true
+ },
+ {
+  "id": "dragonsback",
+  "city": "hk",
+  "name": "Dragon's Back",
+  "zh": "龍脊",
+  "ll": [
+   114.244,
+   22.237
+  ],
+  "light": "day",
+  "lights": [
+   "day",
+   "golden"
+  ],
+  "when": "10:00–16:00",
+  "tip": "A ridge walk above Shek O and Big Wave Bay, with paragliders overhead on windy days. Bus 9 from Shau Kei Wan to To Tei Wan.",
+  "styles": [
+   "landscape",
+   "aerial"
+  ],
+  "focal": [
+   "wide",
+   "ultrawide"
+  ],
+  "tripod": "no",
+  "minutes": 180,
+  "effort": 2,
+  "crowd": 2,
+  "drone": true,
+  "hike": true
+ },
+ {
+  "id": "bluehouse",
+  "city": "hk",
+  "name": "Blue House, Wan Chai",
+  "zh": "藍屋",
+  "ll": [
+   114.173,
+   22.2752
+  ],
+  "light": "day",
+  "lights": [
+   "day"
+  ],
+  "when": "10:00–17:00",
+  "tip": "A 1920s tong lau painted bright blue, with wooden balconies and a living-history museum on the ground floor.",
+  "styles": [
+   "heritage",
+   "architecture",
+   "street"
+  ],
+  "focal": [
+   "standard",
+   "wide"
+  ],
+  "tripod": "no",
+  "minutes": 45,
+  "effort": 1,
+  "crowd": 2,
+  "drone": false
+ }
+]

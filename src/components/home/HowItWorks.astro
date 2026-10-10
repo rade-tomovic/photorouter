@@ -1,0 +1,171 @@
+---
+import SectionHead from './SectionHead.astro';
+import Chip from './Chip.astro';
+
+const weights = [
+  { label: 'Light', n: 5 },
+  { label: 'Style', n: 4 },
+  { label: 'Walking', n: 2 },
+  { label: 'Crowds', n: 3 },
+  { label: 'Variety', n: 3 },
+  { label: 'Icons', n: 1 },
+];
+const days = Array.from({ length: 15 }, (_, i) => (i < 5 ? 'gz' : i < 7 ? 'sz' : 'hk'));
+const mock = 'flex min-h-[236px] flex-col gap-3 rounded-2xl border border-line bg-surface-2 p-4';
+const label = 'm-0 font-mono text-[10.5px] tracking-[0.08em] text-muted uppercase';
+---
+
+<section id="how" aria-labelledby="how-title" class="scroll-mt-4 border-b border-line">
+  <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
+    <SectionHead id="how-title" kicker="How it works" title="Four steps from brief to route">
+      <p>
+        PhotoRouter has no built-in agent. It writes the prompt, your own AI writes the plan, and PhotoRouter checks the plan and
+        shows it on the map.
+      </p>
+    </SectionHead>
+
+    <ol class="mt-12 grid list-none gap-5 p-0 md:grid-cols-2">
+      <li class="flex flex-col rounded-[22px] border border-line bg-surface p-4 shadow-card sm:p-5">
+        <div class={mock} aria-hidden="true">
+          <p class={label}>Gear</p>
+          <div class="flex flex-wrap gap-1.5">
+            <Chip on>2 bodies</Chip><Chip on>16-35 mm</Chip><Chip on>70-200 mm</Chip><Chip on>Tripod</Chip><Chip on>ND 6 + 10</Chip><Chip>Drone</Chip>
+          </div>
+          <p class={label}>Photography</p>
+          <div class="flex flex-wrap gap-1.5">
+            <Chip on>Street</Chip><Chip on>Night</Chip><Chip on>Long exposure</Chip><Chip>Landscape</Chip><Chip on>Heritage</Chip>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <p class={label}>Pace</p>
+            <span class="inline-flex rounded-full border border-line bg-surface p-0.5 text-[11.5px] font-semibold">
+              <span class="rounded-full px-2.5 py-0.5 text-muted">Relaxed</span>
+              <span class="rounded-full bg-ink px-2.5 py-0.5 text-surface">Balanced</span>
+              <span class="rounded-full px-2.5 py-0.5 text-muted">Packed</span>
+            </span>
+          </div>
+          <p class="m-0 mt-auto rounded-xl border border-line bg-surface px-3 py-2 text-xs leading-relaxed text-muted">
+            Weekdays 09:00-18:00. Must see: Shamian Island. Skip: Huaqiangbei.<span class="blink text-ink">|</span>
+          </p>
+        </div>
+        <div class="mt-5 flex items-baseline gap-3">
+          <span class="t-accent font-display text-3xl leading-none font-extrabold">01</span>
+          <h3 class="m-0 text-lg font-bold">Describe the trip</h3>
+        </div>
+        <p class="mt-2 mb-0 leading-relaxed text-muted">
+          A form for your gear (bodies, lenses, tripod, ND filters, drone) and the photography you like: street, night,
+          cityscape, architecture, heritage, long exposure, landscape and more. Set the pace, how much walking you want, your
+          working hours on weekdays, whether to avoid crowds, must-see and skip spots, and add a free-text description.
+        </p>
+      </li>
+
+      <li class="flex flex-col rounded-[22px] border border-line bg-surface p-4 shadow-card sm:p-5">
+        <div class={mock} aria-hidden="true">
+          <div class="flex items-center justify-between gap-2">
+            <p class={label}>Priorities</p>
+            <span class="inline-flex rounded-full border border-line bg-surface p-0.5 text-[11.5px] font-semibold">
+              <span class="rounded-full bg-ink px-2.5 py-0.5 text-surface">Chat</span>
+              <span class="rounded-full px-2.5 py-0.5 text-muted">API</span>
+            </span>
+          </div>
+          <div class="grid grid-cols-[4.5rem_1fr] items-center gap-x-3 gap-y-2">
+            {
+              weights.map((w) => (
+                <>
+                  <span class="text-xs font-semibold text-ink">{w.label}</span>
+                  <span class="flex gap-1">
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <span class:list={['h-2 flex-1 rounded-full', i <= w.n ? 'bg-accent' : 'bg-line']} />
+                    ))}
+                  </span>
+                </>
+              ))
+            }
+          </div>
+          <p class="m-0 mt-auto border-t border-line pt-3 font-mono text-[11px] leading-relaxed text-muted">
+            brief · trip frame · 42 spots · schema
+          </p>
+        </div>
+        <div class="mt-5 flex items-baseline gap-3">
+          <span class="t-accent font-display text-3xl leading-none font-extrabold">02</span>
+          <h3 class="m-0 text-lg font-bold">Build the prompt</h3>
+        </div>
+        <p class="mt-2 mb-0 leading-relaxed text-muted">
+          Pick a preset, a voice and weighted priorities for light, style, walking, crowds, variety and icons. Add optional
+          rules, choose the cities to cover, the answer language and extra instructions. The prompt holds your brief, the trip
+          frame (dates, cities, train legs, the time slots each day allows) and a catalog of 42 spots with their light, focal
+          ranges, tripod needs, effort and crowd levels.
+        </p>
+        <p class="mt-3 mb-0 leading-relaxed text-muted">
+          <strong class="font-semibold text-ink">Chat</strong> puts the JSON Schema inside the prompt, ready to paste into any
+          assistant. <strong class="font-semibold text-ink">API</strong> leaves it out so the schema can go into your
+          provider's structured-output option.
+        </p>
+      </li>
+
+      <li class="flex flex-col rounded-[22px] border border-line bg-surface p-4 shadow-card sm:p-5">
+        <div class={mock} aria-hidden="true">
+          <pre class="code m-0 overflow-hidden text-ink">{'{'}
+  <span class="k">"date"</span>: <span class="s">"2026-11-17"</span>,
+  <span class="k">"slots"</span>: [{'{'}
+    <span class="k">"label"</span>: <span class="s">"Before work"</span>,
+    <span class="k">"spotId"</span>: <span class="s">"shamian"</span>,
+    <span class="k">"note"</span>: <span class="n">null</span>
+  {'}'}, …]
+{'}'}</pre>
+          <div class="mt-auto flex flex-wrap items-center gap-2 border-t border-line pt-3 text-xs font-semibold">
+            <span class="inline-flex h-6 items-center gap-1.5 rounded-full border border-line bg-surface px-2.5 text-ink">
+              <span class="size-2 rounded-full bg-sz"></span>Schema valid
+            </span>
+            <span class="inline-flex h-6 items-center gap-1.5 rounded-full border border-line bg-surface px-2.5 text-ink">0 errors</span>
+            <span class="lt-day inline-flex h-6 items-center gap-1.5 rounded-full border border-line bg-surface px-2.5 text-ink">
+              <span class="size-2 rounded-full bg-(--c)"></span>1 warning
+            </span>
+          </div>
+        </div>
+        <div class="mt-5 flex items-baseline gap-3">
+          <span class="t-accent font-display text-3xl leading-none font-extrabold">03</span>
+          <h3 class="m-0 text-lg font-bold">Run it in your own AI</h3>
+        </div>
+        <p class="mt-2 mb-0 leading-relaxed text-muted">
+          Copy the prompt into any AI assistant, or send it through an API. Paste the JSON it returns back into PhotoRouter, which
+          validates the answer against the schema and the trip rules. Errors block the import; warnings are shown with the plan.
+        </p>
+      </li>
+
+      <li class="flex flex-col rounded-[22px] border border-line bg-surface p-4 shadow-card sm:p-5">
+        <div class={mock} aria-hidden="true">
+          <svg viewBox="0 0 300 92" class="block h-auto w-full">
+            <path d="M14 70 C 70 66, 90 30, 150 34 S 240 18, 286 22" fill="none" stroke="var(--line)" stroke-width="10" stroke-linecap="round"></path>
+            <path d="M14 70 C 70 66, 90 30, 150 34 S 240 18, 286 22" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"></path>
+            <path d="M14 70 C 70 66, 90 30, 150 34 S 240 18, 286 22" pathLength="1000" class="train" fill="none" stroke="var(--accent)" stroke-width="8" stroke-linecap="round"></path>
+            <circle cx="14" cy="70" r="6" class="c-gz" fill="var(--surface)" stroke="var(--c)" stroke-width="3"></circle>
+            <circle cx="150" cy="34" r="6" class="c-sz" fill="var(--surface)" stroke="var(--c)" stroke-width="3"></circle>
+            <circle cx="286" cy="22" r="6" class="c-hk" fill="var(--surface)" stroke="var(--c)" stroke-width="3"></circle>
+          </svg>
+          <div class="flex items-center gap-3">
+            <span class="grid size-8 shrink-0 place-items-center rounded-full bg-accent text-accent-ink">
+              <svg viewBox="0 0 16 16" class="size-3.5"><path d="M5 3.5v9l7.5-4.5Z" fill="currentColor"></path></svg>
+            </span>
+            <span class="flex min-w-0 flex-1 gap-[3px]">
+              {
+                days.map((c, i) => (
+                  <span class:list={[`c-${c}`, 'h-5 flex-1 rounded-[4px] bg-(--c)', i === 1 ? 'outline-2 outline-offset-1 outline-ink' : 'opacity-60']} />
+                ))
+              }
+            </span>
+          </div>
+          <p class="m-0 font-mono text-[11px] tracking-[0.06em] text-muted uppercase">Tue 17 Nov · Guangzhou · 2 stops</p>
+        </div>
+        <div class="mt-5 flex items-baseline gap-3">
+          <span class="t-accent font-display text-3xl leading-none font-extrabold">04</span>
+          <h3 class="m-0 text-lg font-bold">Play the route</h3>
+        </div>
+        <p class="mt-2 mb-0 leading-relaxed text-muted">
+          The plan opens on a 3D map with a timeline that scrubs day by day. The camera follows the train legs, walks between
+          stops and orbits each one on arrival. Day sheets list every stop's light window, the kit to pack and the Chinese name
+          to copy for a taxi.
+        </p>
+      </li>
+    </ol>
+  </div>
+</section>
