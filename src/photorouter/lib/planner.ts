@@ -40,9 +40,10 @@ const isWeekday = (iso: string) => !['Sat', 'Sun'].includes(weekday(iso));
  * home; a day with travel moves between two cities; working weekdays come from
  * the brief.
  */
-export function dayKind(date: string, travels: boolean, first: boolean, brief: Brief): DayKind {
+export function dayKind(date: string, travels: boolean, first: boolean, brief: Brief, dayTrip = false): DayKind {
   const working = brief.work && isWeekday(date);
   if (first) return 'arrive';
+  if (dayTrip) return 'daytrip';
   if (travels) return working ? 'movework' : 'movefree';
   return working ? 'work' : 'free';
 }
@@ -58,6 +59,8 @@ export function labelsFor(kind: DayKind, date: string, brief: Brief): string[] {
     case 'arrive': return working ? EVENING : AFTERNOON_ON;
     case 'movework': return EVENING;
     case 'movefree': return FREE.filter((l) => l !== 'Midday');
+    // A day trip on a working day only has the evening, like a working travel day.
+    case 'daytrip': return working ? EVENING : FREE;
     default: return FREE;
   }
 }
@@ -65,7 +68,7 @@ export function labelsFor(kind: DayKind, date: string, brief: Brief): string[] {
 export const allowedLabels = (day: DayFrame, brief: Brief) => labelsFor(day.kind, day.date, brief);
 
 /** How many stops a kind of day takes at a balanced pace. */
-const SUGGESTED: Record<DayKind, number> = { free: 4, work: 2, arrive: 2, movefree: 3, movework: 1 };
+const SUGGESTED: Record<DayKind, number> = { free: 4, work: 2, arrive: 2, movefree: 3, movework: 1, daytrip: 3 };
 
 /** The stop limit per day for the brief's pace: relaxed is one on a work day and two otherwise, packed adds one. */
 export function stopCap(kind: DayKind, brief: Brief): number {
@@ -74,9 +77,10 @@ export function stopCap(kind: DayKind, brief: Brief): number {
   return SUGGESTED[kind] + (brief.pace === 'packed' ? 1 : 0);
 }
 
-/** Where a slot happens: a travel day's morning is shot before leaving. */
-export function slotCity(frame: DayFrame, label: string): CityId {
-  return frame.kind === 'movefree' && frame.from && label === 'Morning' ? frame.from : frame.city;
+/** Where a slot can happen: a travel day's morning is shot before leaving; a day trip's stops are there or back home. */
+export function slotCities(frame: DayFrame, label: string): CityId[] {
+  if (frame.dayTrip) return [frame.dayTrip, frame.city];
+  return [frame.kind === 'movefree' && frame.from && label === 'Morning' ? frame.from : frame.city];
 }
 
 function slotWindow(trip: Trip, label: string, date: string, city: CityId): string {
@@ -235,10 +239,21 @@ function finishDay(trip: Trip, frame: DayFrame, index: number, picks: Pick[], ct
     });
 
   const steps: DayStep[] = [];
-  const before = frame.kind === 'movefree' ? slots.filter((s) => s.city === frame.from) : [];
-  before.forEach((s) => steps.push({ type: 'stop', slot: slots.indexOf(s) }));
-  if (frame.leg) steps.push({ type: 'leg', leg: frame.leg });
-  slots.forEach((s, i) => { if (!before.includes(s)) steps.push({ type: 'stop', slot: i }); });
+  if (frame.dayTrip && frame.leg && frame.back) {
+    // Out to the day-trip city, its stops, back home for any stops left (in time order).
+    let away = false;
+    slots.forEach((s, i) => {
+      if (!away && s.city === frame.dayTrip) { steps.push({ type: 'leg', leg: frame.leg! }); away = true; }
+      else if (away && s.city !== frame.dayTrip) { steps.push({ type: 'leg', leg: frame.back! }); away = false; }
+      steps.push({ type: 'stop', slot: i });
+    });
+    if (away) steps.push({ type: 'leg', leg: frame.back });
+  } else {
+    const before = frame.kind === 'movefree' ? slots.filter((s) => s.city === frame.from) : [];
+    before.forEach((s) => steps.push({ type: 'stop', slot: slots.indexOf(s) }));
+    if (frame.leg) steps.push({ type: 'leg', leg: frame.leg });
+    slots.forEach((s, i) => { if (!before.includes(s)) steps.push({ type: 'stop', slot: i }); });
+  }
 
   let walkKm = 0;
   for (let i = 1; i < slots.length; i++) {

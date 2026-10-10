@@ -919,6 +919,7 @@
           "label": "Flight to Lisbon",
           "minutes": null
         },
+        "dayTrip": null,
         "slots": [
           {
             "label": "Sunset",
@@ -939,6 +940,7 @@
         "cityId": "lis",
         "title": "Belém: monastery, river and tower",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -965,6 +967,7 @@
         "cityId": "lis",
         "title": "Alfama from sunrise to the lanes",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -991,6 +994,7 @@
         "cityId": "lis",
         "title": "Sintra morning, Baixa by night",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -1017,6 +1021,7 @@
         "cityId": "lis",
         "title": "Flea market, Pantheon and castle lights",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -1043,6 +1048,7 @@
         "cityId": "lis",
         "title": "Chiado funiculars and a bridge sunset",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -1074,6 +1080,7 @@
           "label": "Alfa Pendular train",
           "minutes": 170
         },
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -1094,6 +1101,7 @@
         "cityId": "opo",
         "title": "Azulejos and the bridge at blue hour",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -1120,6 +1128,7 @@
         "cityId": "opo",
         "title": "Ribeira dawn and an Atlantic sunset",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -1146,6 +1155,7 @@
         "cityId": "opo",
         "title": "Cathedral, rooftops and Ribeira at night",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",

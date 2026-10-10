@@ -1068,6 +1068,7 @@
           "label": "Flight from home to Sydney",
           "minutes": null
         },
+        "dayTrip": null,
         "slots": [
           {
             "label": "Late afternoon",
@@ -1088,6 +1089,7 @@
         "cityId": "syd",
         "title": "Opera House from three sides",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -1114,6 +1116,7 @@
         "cityId": "syd",
         "title": "Bondi coast and Kirribilli lights",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -1140,6 +1143,7 @@
         "cityId": "syd",
         "title": "A day in the Blue Mountains",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -1166,6 +1170,7 @@
         "cityId": "syd",
         "title": "Sea Cliff Bridge and the bridge pylon",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -1197,6 +1202,7 @@
           "label": "Flight Sydney to Melbourne",
           "minutes": 95
         },
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -1217,6 +1223,7 @@
         "cityId": "mel",
         "title": "Shrine, street art and bathing boxes",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -1243,6 +1250,7 @@
         "cityId": "mel",
         "title": "Exhibition Building, laneways and the skyline",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -1274,6 +1282,7 @@
           "label": "Drive the Great Ocean Road via Torquay and Lorne",
           "minutes": 270
         },
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -1300,6 +1309,7 @@
         "cityId": "pcb",
         "title": "Twelve Apostles at sunrise",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -1326,6 +1336,7 @@
         "cityId": "pcb",
         "title": "Otways rainforest and western stacks",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -1357,6 +1368,7 @@
           "label": "Drive inland via Colac",
           "minutes": 190
         },
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",

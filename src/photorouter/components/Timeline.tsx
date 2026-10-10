@@ -99,7 +99,7 @@ export function Timeline() {
         {TRIP.days.map((d, i) => {
           const city = d.city;
           const kind = plan?.days[i]?.kind ?? d.kind;
-          const free = kind === 'free' || kind === 'movefree';
+          const free = kind === 'free' || kind === 'movefree' || kind === 'daytrip';
           const current = day === i;
           const fill = day == null ? 0 : i < day ? 1 : current ? progress : 0;
           const stops = plan?.days[i]?.slots.length ?? 0;

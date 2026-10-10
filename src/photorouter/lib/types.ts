@@ -18,9 +18,9 @@ export type TravelMode = 'train' | 'ferry' | 'flight' | 'bus' | 'car';
 /**
  * Derived per day from the date, the brief's working hours and the day's travel:
  * `arrive` is the first day of the trip (coming from home), `move*` days travel
- * between two cities, `work` and `free` stay put.
+ * between two cities, `daytrip` goes to another city and back, `work` and `free` stay put.
  */
-export type DayKind = 'arrive' | 'work' | 'free' | 'movefree' | 'movework';
+export type DayKind = 'arrive' | 'work' | 'free' | 'movefree' | 'movework' | 'daytrip';
 
 export interface Spot {
   id: string;
@@ -92,6 +92,9 @@ export interface DayFrame {
   title: string;
   /** Short description of the day's travel. */
   move?: string;
+  /** A day trip: the city visited and back the same day; `leg` rides out and `back` rides home. */
+  dayTrip?: CityId;
+  back?: string;
 }
 
 /** A whole trip as the user's AI described it, after validation. */

@@ -110,7 +110,10 @@ function DayView() {
       <LegIcon className="mt-0.5 size-[18px] text-accent" aria-hidden />
       <div>
         <p className="m-0 font-semibold">{leg.label}</p>
-        <p className="m-0 text-muted">{TRIP.cities[leg.from]?.name} to {TRIP.cities[leg.to]?.name}{leg.minutes ? `, about ${duration(leg.minutes)}` : ''}</p>
+        <p className="m-0 text-muted">
+          {d.dayTrip ? 'Day trip: ' : ''}{TRIP.cities[leg.from]?.name} to {TRIP.cities[leg.to]?.name}{d.dayTrip ? ' and back' : ''}
+          {leg.minutes ? `, about ${duration(leg.minutes)}${d.dayTrip ? ' each way' : ''}` : ''}
+        </p>
       </div>
     </div>
   );
@@ -171,6 +174,7 @@ function DayView() {
       <div className="flex flex-wrap items-center gap-1.5">
         {d.from && <><CityChip city={d.from} /><span className="text-muted">→</span></>}
         <CityChip city={d.city} />
+        {d.dayTrip && <><span className="text-muted">⇄</span><CityChip city={d.dayTrip} /></>}
         <Pill>{KIND_LABEL[d.kind]}</Pill>
       </div>
 
@@ -193,10 +197,13 @@ function DayView() {
 }
 
 function Overview({ plan }: { plan: Plan }) {
-  const stages = CITY_IDS.map((c) => {
+  // Cities slept in get a stage each; cities only visited on day trips are listed after them.
+  const stages = CITY_IDS.flatMap((c) => {
     const days = plan.days.filter((d) => d.city === c);
-    return { c, first: days[0]!, last: days[days.length - 1]!, stops: plan.days.reduce((n, d) => n + d.slots.filter((s) => s.city === c).length, 0) };
+    if (!days.length) return [];
+    return [{ c, first: days[0]!, last: days[days.length - 1]!, stops: plan.days.reduce((n, d) => n + d.slots.filter((s) => s.city === c).length, 0) }];
   });
+  const trips = plan.days.filter((d) => d.dayTrip);
   return (
     <div className="pr-enter grid gap-4 p-5">
       <div>
@@ -235,6 +242,22 @@ function Overview({ plan }: { plan: Plan }) {
         Press <b className="text-ink">Play trip</b> to fly through it day by day: the camera rides each travel leg, and a walker
         follows your route between stops. Or tap a date. Tap any dot for the spot, its light and its local name to show a driver.
       </p>
+      {trips.length > 0 && (
+        <div className="grid gap-1.5">
+          <Kicker>Day trips</Kicker>
+          <ul className="m-0 grid list-none gap-1 p-0">
+            {trips.map((d) => (
+              <li key={d.date} style={cityStyle(d.dayTrip!)}>
+                <button type="button" onClick={() => void selectDay(d.index)} className="flex w-full items-center gap-2 border-0 bg-transparent p-0 text-left text-[13.5px] hover:underline">
+                  <i className="size-2.5 rounded-full bg-(--c)" />
+                  <b>{TRIP.cities[d.dayTrip!]!.name}</b>
+                  <span className="font-mono text-xs text-muted">{dayLabel(d.date)} · {d.slots.filter((s) => s.city === d.dayTrip).length} stops</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       {plan.skipped.length > 0 && (
         <div className="grid gap-1.5">
           <Kicker>Considered, left out</Kicker>
@@ -248,7 +271,7 @@ function Overview({ plan }: { plan: Plan }) {
           </ul>
         </div>
       )}
-      <p className="m-0 flex items-center gap-1.5 font-mono text-[11.5px] text-muted"><BedDouble className="size-3.5" aria-hidden /> Bases: {CITY_IDS.map((c) => TRIP.cities[c]!.baseLabel).join(', ')}</p>
+      <p className="m-0 flex items-center gap-1.5 font-mono text-[11.5px] text-muted"><BedDouble className="size-3.5" aria-hidden /> Bases: {stages.map(({ c }) => TRIP.cities[c]!.baseLabel).join(', ')}</p>
     </div>
   );
 }

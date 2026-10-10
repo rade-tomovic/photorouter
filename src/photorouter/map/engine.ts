@@ -102,7 +102,7 @@ export class TripMap {
     this.hotels.forEach((h) => h.remove());
     this.hotels = [];
     this.legs = Object.fromEntries(Object.entries(TRIP.legs).map(([id, l]) => [id, measure(smooth(l.pts, 14))]));
-    this.legDay = Object.fromEntries(TRIP.days.flatMap((d, i) => (d.leg ? [[d.leg, i]] : [])));
+    this.legDay = Object.fromEntries(TRIP.days.flatMap((d, i) => [...(d.leg ? [[d.leg, i]] : []), ...(d.back ? [[d.back, i]] : [])]));
     this.legProgress = {};
     const colour = (city: string) => `var(--city-${(TRIP.cities[city]?.color ?? 0) % 6})`;
 
@@ -125,7 +125,9 @@ export class TripMap {
       const marker = new Marker({ element: el, anchor: 'center' }).setLngLat(s.ll).addTo(this.map);
       this.markers.set(s.id, { marker, el, num: el.querySelector('.pr-mk-num')! });
     }
-    for (const c of CITY_IDS) {
+    // Hotels only where the photographer sleeps, not in cities visited on a day trip.
+    const nights = new Set(TRIP.days.map((d) => d.city));
+    for (const c of CITY_IDS.filter((id) => nights.has(id))) {
       const el = document.createElement('div');
       el.className = 'pr-hotel';
       el.innerHTML = BED_SVG;
@@ -280,7 +282,7 @@ export class TripMap {
       if (step.type === 'leg') {
         const L = TRIP.legs[step.leg]!;
         prev = L.pts[L.pts.length - 1]!;
-        city = d.city;
+        city = L.to;
         continue;
       }
       const slot = d.slots[step.slot]!;

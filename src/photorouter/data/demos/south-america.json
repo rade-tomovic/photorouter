@@ -814,6 +814,7 @@
           "label": "Flight to Rio de Janeiro (GIG)",
           "minutes": null
         },
+        "dayTrip": null,
         "slots": [
           {
             "label": "Afternoon",
@@ -834,6 +835,7 @@
         "cityId": "rio",
         "title": "Corcovado, Selarón and Lapa",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -866,6 +868,7 @@
         "cityId": "rio",
         "title": "Fishermen at dawn, Sugarloaf at dusk",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -892,6 +895,7 @@
         "cityId": "rio",
         "title": "Pedra do Telégrafo and the Monday samba",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -918,6 +922,7 @@
         "cityId": "rio",
         "title": "Old Centro and Dois Irmãos at sunset",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -949,6 +954,7 @@
           "label": "Costa Verde coach from Novo Rio bus station",
           "minutes": 270
         },
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -969,6 +975,7 @@
         "cityId": "paraty",
         "title": "Paraty streets, the fort and the Matriz",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -995,6 +1002,7 @@
         "cityId": "paraty",
         "title": "Saco do Mamanguá from above",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -1015,6 +1023,7 @@
         "cityId": "paraty",
         "title": "Trindade, Tobogã and the schooners",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",

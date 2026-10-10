@@ -1048,6 +1048,7 @@
           "label": "Flight to Tokyo Haneda",
           "minutes": null
         },
+        "dayTrip": null,
         "slots": [
           {
             "label": "Night",
@@ -1068,6 +1069,7 @@
         "cityId": "tyo",
         "title": "Asakusa at dawn, Shibuya at night",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -1100,6 +1102,7 @@
         "cityId": "tyo",
         "title": "Ginkgo, glass and Tokyo Tower",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -1132,6 +1135,7 @@
         "cityId": "tyo",
         "title": "Torii before work, skyline after",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Before work",
@@ -1152,6 +1156,7 @@
         "cityId": "tyo",
         "title": "Shinjuku towers and Akihabara neon",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Before work",
@@ -1172,6 +1177,7 @@
         "cityId": "tyo",
         "title": "Sumida dawn, Ginza evening",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Before work",
@@ -1192,6 +1198,7 @@
         "cityId": "tyo",
         "title": "Nezu Shrine and Skytree reflections",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Before work",
@@ -1217,6 +1224,7 @@
           "label": "Tokaido Shinkansen",
           "minutes": 135
         },
+        "dayTrip": null,
         "slots": [
           {
             "label": "Late",
@@ -1231,6 +1239,7 @@
         "cityId": "kyo",
         "title": "Fushimi Inari and Higashiyama",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -1263,6 +1272,7 @@
         "cityId": "kyo",
         "title": "Arashiyama in autumn colour",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Morning",
@@ -1295,6 +1305,7 @@
         "cityId": "kyo",
         "title": "River dawn and Eikando maples",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Before work",
@@ -1315,6 +1326,7 @@
         "cityId": "kyo",
         "title": "Yasaka Shrine and Kyoto Station",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Before work",
@@ -1335,6 +1347,7 @@
         "cityId": "kyo",
         "title": "Last morning in Higashiyama",
         "travel": null,
+        "dayTrip": null,
         "slots": [
           {
             "label": "Before work",

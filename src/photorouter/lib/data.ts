@@ -37,6 +37,7 @@ export const KIND_LABEL: Record<string, string> = {
   free: 'Free day',
   movefree: 'Travel + free day',
   movework: 'Travel + work day',
+  daytrip: 'Day trip',
 };
 
 const WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];

@@ -1,7 +1,7 @@
 import { LIGHT_LABEL, STYLES, tripDates, weekday } from './data';
 import { FORMAT_LABEL, cropFactor, gearItem, lensFocals, lensFor } from './gear';
 import { arc, km } from './geo';
-import { SLOT, assemble, dayKind, gearProfile, labelsFor, slotCity, stopCap, type Pick } from './planner';
+import { SLOT, assemble, dayKind, gearProfile, labelsFor, slotCities, stopCap, type Pick } from './planner';
 import { validTimeZone } from './sun';
 import type { Brief, City, DayFrame, Focal, Leg, Light, LngLat, Plan, Spot, StyleId, TravelMode, Trip } from './types';
 
@@ -39,9 +39,9 @@ export function planSchema(dates?: string[]) {
     required: ['version', 'title', 'summary', 'timezone', 'cities', 'spots', 'days', 'skipped'],
     properties: {
       version: { type: 'string', const: PLAN_VERSION },
-      title: str('A short name for the trip, e.g. "Lisbon and Porto in spring".'),
+      title: str('A short name for the trip, e.g. "Two cities by train in spring".'),
       summary: str('Two or three sentences to the photographer about the route.'),
-      timezone: str('IANA time zone of the destination, e.g. "Europe/Lisbon".'),
+      timezone: str('IANA time zone of the destination, in Region/City form.'),
       cities: {
         type: 'array',
         description: 'Every city the trip stays in, in the order they are first visited.',
@@ -50,7 +50,7 @@ export function planSchema(dates?: string[]) {
           additionalProperties: false,
           required: ['id', 'name', 'localName', 'lat', 'lng', 'base'],
           properties: {
-            id: str('Short lowercase id, e.g. "lis".'),
+            id: str('Short lowercase id, e.g. "city1".'),
             name: str('City name in English.'),
             localName: nullable(str('Name in the local language or script, when it differs.')),
             lat: num('Latitude of the city centre.'),
@@ -60,7 +60,7 @@ export function planSchema(dates?: string[]) {
               additionalProperties: false,
               required: ['label', 'lat', 'lng'],
               properties: {
-                label: str('Where to stay, e.g. "near Rossio".'),
+                label: str('Where to stay, e.g. "near the old town".'),
                 lat: num('Latitude of the suggested base.'),
                 lng: num('Longitude of the suggested base.'),
               },
@@ -76,7 +76,7 @@ export function planSchema(dates?: string[]) {
           additionalProperties: false,
           required: ['id', 'cityId', 'name', 'localName', 'lat', 'lng', 'light', 'lights', 'when', 'tip', 'styles', 'focal', 'tripod', 'minutes', 'effort', 'crowd', 'drone', 'hike'],
           properties: {
-            id: str('Short lowercase id, unique in the trip, e.g. "belem-tower".'),
+            id: str('Short lowercase id, unique in the trip, e.g. "harbour-steps".'),
             cityId: str('Id of the city the spot belongs to.'),
             name: str('Name in English.'),
             localName: nullable(str('Name in the local language or script, for taxis and signs, when it differs.')),
@@ -103,7 +103,7 @@ export function planSchema(dates?: string[]) {
         items: {
           type: 'object',
           additionalProperties: false,
-          required: ['date', 'cityId', 'title', 'travel', 'slots'],
+          required: ['date', 'cityId', 'title', 'travel', 'dayTrip', 'slots'],
           properties: {
             date: dates ? { type: 'string', enum: dates } : str('YYYY-MM-DD'),
             cityId: str('The city slept in that night.'),
@@ -115,8 +115,20 @@ export function planSchema(dates?: string[]) {
               properties: {
                 fromCityId: nullable(str('City left that morning; null on the first day, arriving from home.')),
                 mode: { type: 'string', enum: MODES },
-                label: str('E.g. "Alfa Pendular train" or "Flight from home".'),
+                label: str('E.g. "High-speed train" or "Flight from home".'),
                 minutes: nullable({ type: 'integer', description: 'Door-to-door time, roughly.' }),
+              },
+            }),
+            dayTrip: nullable({
+              type: 'object',
+              description: 'A trip to another city and back on the same day, sleeping in "cityId". Not on the first day, and not together with "travel".',
+              additionalProperties: false,
+              required: ['cityId', 'mode', 'label', 'minutes'],
+              properties: {
+                cityId: str('The city visited for the day; list it in "cities".'),
+                mode: { type: 'string', enum: MODES },
+                label: str('E.g. "Regional train".'),
+                minutes: nullable({ type: 'integer', description: 'Time each way, roughly.' }),
               },
             }),
             slots: {
@@ -166,6 +178,7 @@ export interface PlanResponse {
   days: {
     date: string; cityId: string; title: string | null;
     travel: { fromCityId: string | null; mode: TravelMode; label: string; minutes: number | null } | null;
+    dayTrip: { cityId: string; mode: TravelMode; label: string; minutes: number | null } | null;
     slots: { label: string; spotId: string; why: string; note: string | null }[];
   }[];
   skipped: { name: string; reason: string }[];
@@ -192,8 +205,8 @@ function gearForRequest(id: string, crop: number) {
 /** Everything the AI needs, as one JSON document. */
 export function buildRequest(brief: Brief) {
   const dates = tripDates(brief.start, brief.days);
-  const kind = (date: string, travels: boolean, first: boolean) => {
-    const k = dayKind(date, travels, first, brief);
+  const kind = (date: string, travels: boolean, first: boolean, dayTrip = false) => {
+    const k = dayKind(date, travels, first, brief, dayTrip);
     return { kind: k, allowedSlots: labelsFor(k, date, brief), maxStops: stopCap(k, brief) };
   };
   return {
@@ -205,7 +218,7 @@ export function buildRequest(brief: Brief) {
       dates: dates.map((date, i) =>
         i === 0
           ? { date, weekday: weekday(date), arrival: kind(date, true, true) }
-          : { date, weekday: weekday(date), stayDay: kind(date, false, false), travelDay: kind(date, true, false) },
+          : { date, weekday: weekday(date), stayDay: kind(date, false, false), travelDay: kind(date, true, false), dayTripDay: kind(date, false, false, true) },
       ),
     },
     brief: {
@@ -246,9 +259,12 @@ export function toResponse(plan: Plan): PlanResponse {
       date: d.date,
       cityId: d.city,
       title: d.title || null,
-      travel: d.leg
+      travel: d.leg && !d.dayTrip
         ? { fromCityId: d.from ?? null, mode: trip.legs[d.leg]!.mode, label: trip.legs[d.leg]!.label, minutes: trip.legs[d.leg]!.minutes }
         : i === 0 && trip.arrival ? { fromCityId: null, ...trip.arrival } : null,
+      dayTrip: d.dayTrip && d.leg
+        ? { cityId: d.dayTrip, mode: trip.legs[d.leg]!.mode, label: trip.legs[d.leg]!.label, minutes: trip.legs[d.leg]!.minutes }
+        : null,
       slots: d.slots.map((s) => ({ label: s.label, spotId: s.spotId, why: s.why, note: s.note ?? null })),
     })),
     skipped: plan.skipped,
@@ -313,7 +329,7 @@ export function importResponse(raw: string, brief: Brief, rules: ImportRules = {
   if (!isObj(data)) return fail('The response must be a JSON object.');
   if (data.version !== PLAN_VERSION) warnings.push(`"version" should be "${PLAN_VERSION}".`);
   const tz = text(data.timezone) ?? '';
-  if (!validTimeZone(tz)) errors.push(`"timezone" must be an IANA time zone such as "Europe/Lisbon", not "${String(data.timezone)}".`);
+  if (!validTimeZone(tz)) errors.push(`"timezone" must be an IANA time zone in Region/City form, not "${String(data.timezone)}".`);
   if (!Array.isArray(data.cities) || !data.cities.length) return fail('"cities" must list at least one city.');
   if (!Array.isArray(data.spots)) return fail('"spots" must be an array.');
   if (!Array.isArray(data.days)) return fail('"days" must be an array.');
@@ -395,6 +411,7 @@ export function importResponse(raw: string, brief: Brief, rules: ImportRules = {
     const d = byDate.get(date)!;
     const city = text(d.cityId);
     if (!city || !cities[city]) { errors.push(`${date}: unknown "cityId" "${String(d.cityId)}".`); continue; }
+    // The night before. Missing only when an earlier day already failed, and then the chain checks are skipped.
     const prev = frames.at(-1)?.city;
     const t = isObj(d.travel) ? d.travel : null;
     const from = t ? text(t.fromCityId) : undefined;
@@ -409,22 +426,44 @@ export function importResponse(raw: string, brief: Brief, rules: ImportRules = {
       move = t ? `${label} to ${cities[city]!.name}` : `Arrive in ${cities[city]!.name}`;
     } else if (t && from) {
       if (!cities[from]) { errors.push(`${date}: unknown travel "fromCityId" "${from}".`); continue; }
-      if (from !== prev) { errors.push(`${date}: travel leaves ${cities[from]!.name}, but the night before was in ${cities[prev!]!.name}.`); continue; }
+      if (prev && from !== prev) { errors.push(`${date}: travel leaves ${cities[from]!.name}, but the night before was in ${cities[prev!]!.name}.`); continue; }
       if (from === city) { errors.push(`${date}: travel goes from ${cities[city]!.name} to itself.`); continue; }
       leg = `leg${i}`;
       const a = cities[from]!.base;
       const b = cities[city]!.base;
       legs[leg] = { mode, label, from, to: city, minutes, pts: arc(a, b, mode === 'flight' ? 0.18 : 0.06, 48) };
       move = `${label}: ${cities[from]!.name} to ${cities[city]!.name}${minutes ? `, about ${minutes < 90 ? `${minutes} min` : `${Math.round(minutes / 30) / 2} h`}` : ''}`;
-    } else if (city !== prev) {
+    } else if (prev && city !== prev) {
       errors.push(`${date}: the night is in ${cities[city]!.name} but the day before was in ${cities[prev!]!.name}, with no "travel" between them.`);
       continue;
+    }
+    // A day trip: out to another city and back, sleeping where the night before was.
+    const dt = isObj(d.dayTrip) ? d.dayTrip : null;
+    let dayTrip: string | undefined;
+    let back: string | undefined;
+    if (dt) {
+      const to = text(dt.cityId);
+      if (i === 0) { errors.push(`${date}: the first day is the arrival; a day trip can start the day after.`); continue; }
+      if (leg) { errors.push(`${date}: a day cannot both move city ("travel") and make a day trip ("dayTrip").`); continue; }
+      if (!to || !cities[to]) { errors.push(`${date}: unknown "dayTrip.cityId" "${String(dt.cityId)}".`); continue; }
+      if (to === city) { errors.push(`${date}: the day trip goes to ${cities[city]!.name}, where the photographer already is.`); continue; }
+      const dmode = MODES.includes(dt.mode as TravelMode) ? (dt.mode as TravelMode) : 'train';
+      const dlabel = text(dt.label) ?? dmode;
+      const dmin = isNum(dt.minutes) ? Math.round(dt.minutes) : null;
+      const pts = arc(cities[city]!.base, cities[to]!.base, dmode === 'flight' ? 0.18 : 0.06, 48);
+      dayTrip = to;
+      leg = `trip${i}`;
+      back = `trip${i}back`;
+      legs[leg] = { mode: dmode, label: dlabel, from: city, to, minutes: dmin, pts };
+      legs[back] = { mode: dmode, label: dlabel, from: to, to: city, minutes: dmin, pts: [...pts].reverse() };
+      move = `Day trip to ${cities[to]!.name}: ${dlabel}${dmin ? `, about ${dmin < 90 ? `${dmin} min` : `${Math.round(dmin / 30) / 2} h`} each way` : ''}`;
     }
     frames.push({
       date,
       city,
-      ...(leg ? { from: legs[leg]!.from, leg } : {}),
-      kind: dayKind(date, !!leg, i === 0, brief),
+      ...(leg && !dayTrip ? { from: legs[leg]!.from, leg } : {}),
+      ...(dayTrip ? { dayTrip, leg: leg!, back: back! } : {}),
+      kind: dayKind(date, !!leg && !dayTrip, i === 0, brief, !!dayTrip),
       title: text(d.title) ?? '',
       ...(move ? { move } : {}),
     });
@@ -442,7 +481,7 @@ export function importResponse(raw: string, brief: Brief, rules: ImportRules = {
     const labels = new Set<string>();
     const orders = new Map<number, string>();
     const allowed = labelsFor(frame.kind, frame.date, brief);
-    const workish = frame.kind === 'work' || frame.kind === 'movework' || (frame.kind === 'arrive' && allowed.includes('After work'));
+    const workish = frame.kind === 'work' || frame.kind === 'movework' || ((frame.kind === 'arrive' || frame.kind === 'daytrip') && allowed.includes('After work'));
     for (const [si, s] of slots.entries()) {
       const where = `${frame.date} slot ${si + 1}`;
       if (!isObj(s)) { errors.push(`${where} must be an object.`); continue; }
@@ -454,8 +493,12 @@ export function importResponse(raw: string, brief: Brief, rules: ImportRules = {
       if (labels.has(label)) { errors.push(`${where}: "${label}" is used twice on ${frame.date}.`); continue; }
       const same = orders.get(SLOT[label]!.order);
       if (same) { errors.push(`${where}: "${label}" and "${same}" are the same time of day; use one of them on ${frame.date}.`); continue; }
-      const city = slotCity(frame, label);
-      if (spot.city !== city) { errors.push(`${where}: ${spot.name} is in ${cities[spot.city]!.name}, but that slot is in ${cities[city]!.name}.`); continue; }
+      const places = slotCities(frame, label);
+      if (!places.includes(spot.city)) {
+        errors.push(`${where}: ${spot.name} is in ${cities[spot.city]!.name}, but that slot is in ${places.map((c) => cities[c]!.name).join(' or ')}.`);
+        continue;
+      }
+      const city = spot.city;
       if (!spot.lights.some((l) => SLOT[label]!.lights.includes(l))) {
         errors.push(`${where}: ${spot.name} is shot at ${LIGHT_LABEL[spot.light].toLowerCase()}, which a "${label}" slot doesn't have.`);
         continue;
