@@ -191,7 +191,7 @@ function AnswerStep() {
         </Button>
       </div>
       <p className="m-0 text-xs text-muted">
-        Code fences and text around the JSON are fine. The example is the ready-made answer for the selected demo trip; loading it resets the brief to match.
+        Code fences and text around the JSON are fine. The example is the ready-made answer for the selected demo trip. If you changed the destination or dates, your brief stays as it is.
       </p>
       {result && <ImportReport result={result} />}
     </Step>
@@ -200,6 +200,7 @@ function AnswerStep() {
 
 function ImportReport({ result }: { result: ImportResult }) {
   const playing = useStore((s) => s.playing);
+  const exampleOf = useStore((s) => s.exampleOf);
   const ok = !!result.plan;
   return (
     <div role="status" className={cx('grid gap-1.5 rounded-lg p-3 text-xs', ok ? 'bg-accent-soft' : 'bg-surface')}>
@@ -208,6 +209,9 @@ function ImportReport({ result }: { result: ImportResult }) {
           ? `Loaded ${result.plan!.stops} stops over ${result.plan!.days.length} days.`
           : `Not loaded: ${result.errors.length} problem${result.errors.length > 1 ? 's' : ''} to fix. Send them back to your AI and paste its corrected answer.`}
       </p>
+      {ok && exampleOf && (
+        <p className="m-0 font-semibold text-ink">This is the {exampleOf} example. Your brief is unchanged; paste your AI's answer above to load your own trip.</p>
+      )}
       {ok && result.summary && <p className="m-0 text-muted">{result.summary}</p>}
       {[...result.errors.map((e) => ['e', e] as const), ...result.warnings.map((w) => ['w', w] as const)].slice(0, 12).map(([k, m]) => (
         <p key={m} className={cx('m-0 flex items-start gap-1.5', k === 'e' ? 'text-danger' : 'text-golden')}>

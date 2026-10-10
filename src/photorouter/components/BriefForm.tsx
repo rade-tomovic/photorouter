@@ -10,16 +10,20 @@ const field = 'w-full rounded-xl border border-line bg-surface px-3 text-sm text
 /** Pick a demo trip: its brief fills the form and its spots go on the map. */
 export function DemoPicker() {
   const demo = useStore((s) => s.demo);
+  const custom = useStore((s) => s.custom);
   if (!DEMOS.length) return null;
   return (
     <label className="grid gap-1.5 text-[13px] font-semibold">
       Start from a demo trip
-      <select value={demo ?? ''} onChange={(e) => chooseDemo(e.target.value)} className={cx(field, 'h-10 font-normal')}>
+      <select value={custom ? '' : demo ?? ''} onChange={(e) => e.target.value && chooseDemo(e.target.value)} className={cx(field, 'h-10 font-normal')}>
+        {custom && <option value="">Your own trip</option>}
         {DEMOS.map((d) => (
           <option key={d.id} value={d.id}>{CONTINENT_LABEL[d.continent]}: {d.label}</option>
         ))}
       </select>
-      <span className="text-xs font-normal text-muted">{DEMOS.find((d) => d.id === demo)?.blurb ?? 'Fills the brief; change anything.'}</span>
+      <span className="text-xs font-normal text-muted">
+        {custom ? 'Picking a demo replaces your brief with its own.' : DEMOS.find((d) => d.id === demo)?.blurb ?? 'Fills the brief; change anything.'}
+      </span>
     </label>
   );
 }

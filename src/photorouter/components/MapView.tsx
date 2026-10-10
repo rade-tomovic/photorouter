@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Compass, Copy, ExternalLink, FileJson, Minus, Plus, Route, X } from 'lucide-react';
-import { SPOT, TRIP, dayLabel } from '../lib/data';
+import { SPOT, TRIP, dayLabel, tripDates } from '../lib/data';
 import { TripMap } from '../map/engine';
 import { getEngine, selectDay, selectSpot, setEngine, stop } from '../map/player';
 import { loadExample, useStore } from '../store';
@@ -115,12 +115,19 @@ function MapTools() {
 
 function EmptyHint() {
   const plan = useStore((s) => s.plan);
+  const custom = useStore((s) => s.custom);
+  const brief = useStore((s) => s.brief);
   useStore((s) => s.trip); // re-render when the demo changes
   if (plan) return null;
+  const dates = tripDates(brief.start, brief.days);
   return (
     <div className="pointer-events-none absolute inset-x-0 top-3 z-10 flex justify-center px-14">
       <div className="pointer-events-auto flex flex-wrap items-center justify-center gap-2 rounded-full border border-line bg-surface/95 py-1.5 pr-1.5 pl-4 text-[13px] shadow-card backdrop-blur">
-        <span className="text-muted">{TRIP.title ? `Demo: ${TRIP.title}` : 'No route yet'}</span>
+        <span className="text-muted">
+          {custom
+            ? `${brief.destination.trim() || 'Your trip'}${dates.length ? `, ${dayLabel(dates[0]!)} to ${dayLabel(dates.at(-1)!)}` : ''}. No route yet.`
+            : TRIP.title ? `Demo: ${TRIP.title}` : 'No route yet'}
+        </span>
         <Button size="sm" onClick={() => loadExample()}>
           <FileJson className="size-3.5" aria-hidden /> Load the example
         </Button>

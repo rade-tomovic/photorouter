@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { TRIP, setTrip } from './lib/data';
+import { TRIP, setTrip, tripDates } from './lib/data';
+import { dayKind } from './lib/planner';
 import { importResponse, type ImportResult } from './lib/byoai';
 import { DEMOS, defaultDemo, type Demo } from './lib/demos';
 import { DEFAULT_PROMPT, type PromptConfig } from './lib/prompt';
@@ -13,6 +14,13 @@ interface State {
   brief: Brief;
   /** The demo the brief started from; its trip is shown on the map until a plan loads. */
   demo: string | null;
+  /**
+   * The photographer changed the destination or dates, so the brief is their own trip:
+   * the timeline shows their dates, and loading an example leaves the brief alone.
+   */
+  custom: boolean;
+  /** Set while the loaded plan is a demo's example rather than an answer to this brief. */
+  exampleOf: string | null;
   /** The active trip, mirrored from `lib/data` so components and the map can subscribe to it. */
   trip: Trip;
   plan: Plan | null;
@@ -88,6 +96,12 @@ const EMPTY_BRIEF: Brief = {
 };
 
 /** A demo's trip without its plan: the cities and spots to show before anything is loaded. */
+/** The photographer's own trip before any answer: their dates, no cities or spots yet. */
+function draft(brief: Brief): Trip {
+  const days = tripDates(brief.start, brief.days).map((date, i) => ({ date, city: '', kind: dayKind(date, false, i === 0, brief), title: '' }));
+  return { title: brief.destination.trim() || 'Your trip', summary: '', tz: 'UTC', cities: {}, legs: {}, days, spots: [], arrival: null };
+}
+
 function preview(demo: Demo | undefined): Trip {
   const plan = demo ? importResponse(JSON.stringify(demo.answer), demo.brief).plan : null;
   return plan?.trip ?? { title: '', summary: '', tz: 'UTC', cities: {}, legs: {}, days: [], spots: [], arrival: null };
@@ -107,6 +121,8 @@ setTrip(preview(firstDemo));
 export const useStore = create<State>((set) => ({
   brief: structuredClone(firstDemo?.brief ?? EMPTY_BRIEF),
   demo: firstDemo?.id ?? null,
+  custom: false,
+  exampleOf: null,
   trip: TRIP,
   plan: null,
   day: null,
@@ -124,7 +140,18 @@ export const useStore = create<State>((set) => ({
   answer: '',
   result: null,
   set: (p) => set(p),
-  setBrief: (b) => set((s) => ({ brief: { ...s.brief, ...b } })),
+  setBrief: (b) =>
+    set((s) => {
+      const brief = { ...s.brief, ...b };
+      // Changing where or when makes it the photographer's own trip. Without a plan,
+      // the map and timeline switch to their dates (rebuilt only when the dates change).
+      const changesTrip = 'start' in b || 'days' in b || ('destination' in b && !s.custom);
+      if (!changesTrip) return { brief };
+      if (s.plan) return { brief, custom: true };
+      const trip = draft(brief);
+      setTrip(trip);
+      return { brief, custom: true, trip };
+    }),
   toggle: (key, id) =>
     set((s) => {
       if (key === 'lights') {
@@ -148,7 +175,7 @@ function show(trip: Trip, plan: Plan | null, extra: Partial<State> = {}) {
 export function importPlan(): ImportResult {
   const s = useStore.getState();
   const result = importResponse(s.answer, s.brief, s.prompt.rules);
-  if (result.plan) show(result.plan.trip, result.plan, { result });
+  if (result.plan) show(result.plan.trip, result.plan, { result, exampleOf: null });
   else useStore.setState({ result });
   return result;
 }
@@ -157,28 +184,32 @@ export function importPlan(): ImportResult {
 export function chooseDemo(id: string) {
   const demo = DEMOS.find((d) => d.id === id);
   if (!demo) return;
-  show(preview(demo), null, { demo: id, brief: structuredClone(demo.brief), answer: '', result: null });
+  show(preview(demo), null, { demo: id, custom: false, exampleOf: null, brief: structuredClone(demo.brief), answer: '', result: null });
 }
 
 /**
- * Load the current demo's ready-made answer with the brief it was written for,
- * so the map and playback can be tried before running a prompt anywhere.
+ * Load the current demo's ready-made answer so the map and playback can be
+ * tried before running a prompt anywhere. It is checked against the demo's own
+ * brief. A brief the photographer made their own stays as it is: the example
+ * is shown alongside it, not in place of it.
  */
 export function loadExample(): ImportResult | null {
   const s = useStore.getState();
   const demo = DEMOS.find((d) => d.id === s.demo) ?? defaultDemo();
   if (!demo) return null;
-  const brief = structuredClone(demo.brief);
   const answer = JSON.stringify(demo.answer, null, 2);
-  const result = importResponse(answer, brief);
-  if (result.plan) show(result.plan.trip, result.plan, { demo: demo.id, brief, answer, result, tab: 'plan' });
+  const result = importResponse(answer, structuredClone(demo.brief));
+  if (!result.plan) return result;
+  if (s.custom) show(result.plan.trip, result.plan, { demo: demo.id, result, exampleOf: demo.label, tab: 'plan' });
+  else show(result.plan.trip, result.plan, { demo: demo.id, brief: structuredClone(demo.brief), answer, result, exampleOf: null, tab: 'plan' });
   return result;
 }
 
-/** Drop the plan and the pasted answer and go back to the demo's map. The brief and prompt settings stay. */
+/** Drop the plan and the pasted answer. The brief and prompt settings stay; the map goes back to the brief's trip. */
 export function clearPlan() {
   const s = useStore.getState();
-  show(preview(DEMOS.find((d) => d.id === s.demo)), null, { answer: '', result: null });
+  const trip = s.custom ? draft(s.brief) : preview(DEMOS.find((d) => d.id === s.demo));
+  show(trip, null, { answer: s.exampleOf ? s.answer : '', result: null, exampleOf: null });
 }
 
 // Arriving from a demo link: open that demo with its route already loaded.

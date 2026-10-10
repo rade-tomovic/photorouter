@@ -16,7 +16,7 @@ function spans() {
   });
   for (const s of out) {
     const n = s.to - s.from;
-    s.label = `${TRIP.cities[s.city]?.name ?? s.city} · ${n} ${n === 1 ? 'night' : 'nights'}`;
+    s.label = TRIP.cities[s.city] ? `${TRIP.cities[s.city]!.name} · ${n} ${n === 1 ? 'night' : 'nights'}` : `${TRIP.title} · ${n} days`;
   }
   return out;
 }

@@ -271,6 +271,7 @@ function SpotIndex() {
           <Toggle key={l} dot className={`lt-${l}`} on={lights.includes(l)} onClick={() => toggle('lights', l)}>{LIGHT_LABEL[l]}</Toggle>
         ))}
       </div>
+      {!SPOTS.length && <p className="m-0 text-sm text-muted">No spots yet. They come from your AI's answer.</p>}
       {CITY_IDS.map((c) => {
         const list = SPOTS.filter((s) => s.city === c && s.lights.some((l) => lights.includes(l)))
           .sort((a, b) => (when.get(a.id) ?? 99) - (when.get(b.id) ?? 99));
@@ -355,14 +356,21 @@ function KitView() {
 
 function InfoView() {
   const plan = useStore((s) => s.plan);
+  const custom = useStore((s) => s.custom);
   const legs = Object.values(TRIP.legs);
   return (
     <div className="grid gap-3 p-4">
       <article className="rounded-xl border border-line bg-surface p-4">
-        <h3 className="m-0 mb-1.5 font-mono text-[12px] font-medium tracking-wide text-muted uppercase">{plan ? 'This trip' : 'Demo trip'}</h3>
+        <h3 className="m-0 mb-1.5 font-mono text-[12px] font-medium tracking-wide text-muted uppercase">{plan ? 'This trip' : custom ? 'Your trip' : 'Demo trip'}</h3>
         <p className="m-0 text-sm font-semibold">{TRIP.title || 'No trip loaded'}</p>
         {TRIP.summary && <p className="m-0 mt-1.5 text-sm">{TRIP.summary}</p>}
-        {!plan && <p className="m-0 mt-1.5 text-sm text-muted">Its spots are on the map. Load the example to see the full route, or plan your own trip in the Plan panel.</p>}
+        {!plan && (
+          <p className="m-0 mt-1.5 text-sm text-muted">
+            {custom
+              ? 'Build the prompt in the Plan panel, run it in your AI and paste its answer: the cities, spots and route appear here.'
+              : 'Its spots are on the map. Load the example to see the full route, or plan your own trip in the Plan panel.'}
+          </p>
+        )}
       </article>
       {legs.length > 0 && (
         <article className="rounded-xl border border-line bg-surface p-4">

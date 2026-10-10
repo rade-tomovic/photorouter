@@ -21,7 +21,8 @@ export function setTrip(trip: Trip) {
 }
 
 /** CSS custom properties that colour an element by city (`text-(--c)`, `bg-(--c)`). */
-export const cityStyle = (id: CityId) => ({ '--c': `var(--city-${(TRIP.cities[id]?.color ?? 0) % 6})` }) as React.CSSProperties;
+export const cityStyle = (id: CityId) =>
+  ({ '--c': TRIP.cities[id] ? `var(--city-${TRIP.cities[id]!.color % 6})` : 'var(--muted)' }) as React.CSSProperties;
 
 export const LIGHT_LABEL: Record<Light, string> = {
   dawn: 'Dawn',
