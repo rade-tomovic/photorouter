@@ -143,6 +143,15 @@ export const useStore = create<State>((set) => ({
   setBrief: (b) =>
     set((s) => {
       const brief = { ...s.brief, ...b };
+      // A new destination: the demo's place-specific fields (must-see, skip, description) no longer
+      // apply, so they are cleared unless the photographer already edited them. Gear and taste stay.
+      const from = !s.custom && 'destination' in b ? DEMOS.find((d) => d.id === s.demo)?.brief : undefined;
+      if (from) {
+        const same = (x: string[], y: string[]) => x.join('\n') === y.join('\n');
+        if (same(brief.must, from.must)) brief.must = [];
+        if (same(brief.avoid, from.avoid)) brief.avoid = [];
+        if (brief.text === from.text) brief.text = '';
+      }
       // Changing where or when makes it the photographer's own trip. Without a plan,
       // the map and timeline switch to their dates (rebuilt only when the dates change).
       const changesTrip = 'start' in b || 'days' in b || ('destination' in b && !s.custom);
