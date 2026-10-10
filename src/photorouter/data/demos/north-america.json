@@ -1,0 +1,1310 @@
+{
+  "id": "north-america-california-coast",
+  "continent": "north-america",
+  "label": "San Francisco to Los Angeles",
+  "blurb": "11 days in October: fog, cliffs and city lights by car.",
+  "brief": {
+    "destination": "California coast, San Francisco to Los Angeles",
+    "start": "2027-10-08",
+    "days": 11,
+    "text": "I want the Golden Gate Bridge in fog and San Francisco at night, then the Big Sur cliffs and McWay Falls at sunset. I am driving the whole way and happy to start early for dawn. In Los Angeles I am after the skyline, the beach at blue hour and street life after dark.",
+    "gear": [
+      "ff-body",
+      "uwz-14-24",
+      "std-24-70",
+      "tz-100-400",
+      "tripod",
+      "nd10",
+      "cpl",
+      "drone"
+    ],
+    "styles": [
+      "cityscape",
+      "landscape",
+      "long-exposure",
+      "street",
+      "night"
+    ],
+    "pace": "balanced",
+    "walking": "high",
+    "work": false,
+    "fridayEarly": false,
+    "avoidCrowds": false,
+    "must": [
+      "Golden Gate Bridge",
+      "McWay Falls"
+    ],
+    "avoid": []
+  },
+  "answer": {
+    "version": "photorouter.plan/v2",
+    "title": "California coast by car in October",
+    "summary": "Four nights in San Francisco for the Golden Gate, the hills and the bay at night, then Highway 1 south to Carmel for three days on the Big Sur coast. The drive to Los Angeles takes US-101 inland, which is faster and less exposed to slide closures than the southern Big Sur stretch of Highway 1, and rejoins the coast in Malibu for sunset. Los Angeles closes the trip with beaches, Hollywood and downtown at night.",
+    "timezone": "America/Los_Angeles",
+    "cities": [
+      {
+        "id": "sf",
+        "name": "San Francisco",
+        "localName": null,
+        "lat": 37.7749,
+        "lng": -122.4194,
+        "base": {
+          "label": "Marina District, near Chestnut Street",
+          "lat": 37.8007,
+          "lng": -122.4361
+        }
+      },
+      {
+        "id": "carmel",
+        "name": "Carmel-by-the-Sea",
+        "localName": null,
+        "lat": 36.5552,
+        "lng": -121.9233,
+        "base": {
+          "label": "Carmel village, off Ocean Avenue",
+          "lat": 36.555,
+          "lng": -121.9225
+        }
+      },
+      {
+        "id": "la",
+        "name": "Los Angeles",
+        "localName": null,
+        "lat": 34.0522,
+        "lng": -118.2437,
+        "base": {
+          "label": "Hollywood, near Hollywood and Vine",
+          "lat": 34.1016,
+          "lng": -118.3267
+        }
+      }
+    ],
+    "spots": [
+      {
+        "id": "painted-ladies",
+        "cityId": "sf",
+        "name": "Painted Ladies, Alamo Square",
+        "localName": null,
+        "lat": 37.7762,
+        "lng": -122.4328,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "day"
+        ],
+        "when": "Late afternoon, sun on the facades",
+        "tip": "Stand on the upper lawn of Alamo Square across Steiner Street and compress the row of houses against the downtown towers with the 100-400. Late sun from the west lights the fronts directly.",
+        "styles": [
+          "cityscape",
+          "architecture"
+        ],
+        "focal": [
+          "tele",
+          "standard"
+        ],
+        "tripod": "helps",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "twin-peaks",
+        "cityId": "sf",
+        "name": "Twin Peaks, Christmas Tree Point",
+        "localName": null,
+        "lat": 37.7549,
+        "lng": -122.4466,
+        "light": "night",
+        "lights": [
+          "night",
+          "golden"
+        ],
+        "when": "After dusk, city lights on",
+        "tip": "Set up at the low wall of the Christmas Tree Point lot and frame Market Street running straight into downtown, with the Bay Bridge behind. Bring a jacket, the wind up here is strong and cold.",
+        "styles": [
+          "cityscape",
+          "night",
+          "long-exposure"
+        ],
+        "focal": [
+          "standard",
+          "tele",
+          "wide"
+        ],
+        "tripod": "needed",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "battery-spencer",
+        "cityId": "sf",
+        "name": "Golden Gate Bridge from Battery Spencer",
+        "localName": null,
+        "lat": 37.828,
+        "lng": -122.4821,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "golden",
+          "night"
+        ],
+        "when": "Sunrise, fog around the towers",
+        "tip": "Walk the short path from the Conzelman Road pullouts to the concrete battery and frame the north tower close with the city behind. Low fog often sits under the deck at dawn in October, so give it time to move.",
+        "styles": [
+          "landscape",
+          "cityscape",
+          "long-exposure"
+        ],
+        "focal": [
+          "wide",
+          "ultrawide",
+          "standard"
+        ],
+        "tripod": "needed",
+        "minutes": 90,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "fort-point",
+        "cityId": "sf",
+        "name": "Fort Point",
+        "localName": null,
+        "lat": 37.8105,
+        "lng": -122.4771,
+        "light": "day",
+        "lights": [
+          "day",
+          "golden"
+        ],
+        "when": "Daytime, waves on the seawall",
+        "tip": "Stand on the seawall west of the fort and shoot up into the steel arch of the bridge's south end. Use the ND10 for several seconds to smooth the waves breaking against the wall.",
+        "styles": [
+          "landscape",
+          "long-exposure"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "baker-beach",
+        "cityId": "sf",
+        "name": "Baker Beach",
+        "localName": null,
+        "lat": 37.7932,
+        "lng": -122.4847,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "night"
+        ],
+        "when": "Sunset into blue hour",
+        "tip": "Walk to the north end of the beach and use the rocks at the waterline as foreground for the bridge and the Marin Headlands. Keep shooting into blue hour when the bridge lights come on.",
+        "styles": [
+          "landscape",
+          "long-exposure"
+        ],
+        "focal": [
+          "wide",
+          "standard",
+          "ultrawide"
+        ],
+        "tripod": "needed",
+        "minutes": 75,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "dragon-gate",
+        "cityId": "sf",
+        "name": "Dragon Gate and Grant Avenue",
+        "localName": null,
+        "lat": 37.7907,
+        "lng": -122.4056,
+        "light": "day",
+        "lights": [
+          "day",
+          "night"
+        ],
+        "when": "Morning, shops opening",
+        "tip": "Start at the gate on Bush Street and walk north up Grant Avenue under the lanterns, shooting the shopfronts and deliveries. Detour a block west to Stockton Street for the produce markets.",
+        "styles": [
+          "street"
+        ],
+        "focal": [
+          "standard",
+          "wide"
+        ],
+        "tripod": "no",
+        "minutes": 90,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "hyde-lombard",
+        "cityId": "sf",
+        "name": "Hyde Street cable car at Lombard Street",
+        "localName": null,
+        "lat": 37.802,
+        "lng": -122.4196,
+        "light": "day",
+        "lights": [
+          "day",
+          "golden"
+        ],
+        "when": "Afternoon, Alcatraz behind",
+        "tip": "Stand on the Hyde Street sidewalk just above Lombard and wait for a car to crest the hill with Alcatraz and the bay behind it. The afternoon sun comes from behind you and lights the cars.",
+        "styles": [
+          "street",
+          "cityscape"
+        ],
+        "focal": [
+          "tele",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "pier-14",
+        "cityId": "sf",
+        "name": "Bay Bridge from Pier 14",
+        "localName": null,
+        "lat": 37.794,
+        "lng": -122.3907,
+        "light": "night",
+        "lights": [
+          "night",
+          "golden",
+          "dawn"
+        ],
+        "when": "Night, bridge lit",
+        "tip": "Walk to the end of the pier and use the line of lamp posts as a lead-in towards the western span of the Bay Bridge. Exposures of 20 to 30 seconds smooth the water.",
+        "styles": [
+          "night",
+          "long-exposure",
+          "cityscape"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "needed",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "ina-coolbrith",
+        "cityId": "sf",
+        "name": "Ina Coolbrith Park",
+        "localName": null,
+        "lat": 37.7982,
+        "lng": -122.4133,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "night"
+        ],
+        "when": "Sunrise over the East Bay",
+        "tip": "Climb the steps from Taylor Street to the upper terrace and frame Coit Tower and the Bay Bridge against the sunrise. The 100-400 isolates the bridge towers above the North Beach rooftops.",
+        "styles": [
+          "cityscape"
+        ],
+        "focal": [
+          "standard",
+          "tele"
+        ],
+        "tripod": "helps",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "sutro-baths",
+        "cityId": "sf",
+        "name": "Sutro Baths",
+        "localName": null,
+        "lat": 37.7801,
+        "lng": -122.5138,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "day"
+        ],
+        "when": "Sunset, low tide",
+        "tip": "Walk down to the ruined pool walls and use them as foreground lines towards the ocean and Point Lobos rocks. Long exposures with the ND10 turn the surf into mist at sunset.",
+        "styles": [
+          "long-exposure",
+          "landscape"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide"
+        ],
+        "tripod": "needed",
+        "minutes": 75,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "treasure-island",
+        "cityId": "sf",
+        "name": "San Francisco skyline from Treasure Island",
+        "localName": null,
+        "lat": 37.82,
+        "lng": -122.3734,
+        "light": "night",
+        "lights": [
+          "night",
+          "golden"
+        ],
+        "when": "Blue hour into night",
+        "tip": "Park along Avenue of the Palms and shoot across the water to the full skyline with the Bay Bridge on the left. The 24-70 at 50 to 70mm fills the frame without the shoreline.",
+        "styles": [
+          "cityscape",
+          "night",
+          "long-exposure"
+        ],
+        "focal": [
+          "standard",
+          "tele",
+          "wide"
+        ],
+        "tripod": "needed",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "palace-fine-arts",
+        "cityId": "sf",
+        "name": "Palace of Fine Arts",
+        "localName": null,
+        "lat": 37.8029,
+        "lng": -122.4484,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "day",
+          "night"
+        ],
+        "when": "Sunrise, still lagoon",
+        "tip": "Stand on the east shore of the lagoon and catch the rotunda and colonnade reflected in still water. Dawn is quiet and the light comes from behind you.",
+        "styles": [
+          "architecture",
+          "long-exposure"
+        ],
+        "focal": [
+          "wide",
+          "ultrawide"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "pigeon-point",
+        "cityId": "carmel",
+        "name": "Pigeon Point Lighthouse",
+        "localName": null,
+        "lat": 37.1817,
+        "lng": -122.3939,
+        "light": "day",
+        "lights": [
+          "day",
+          "golden"
+        ],
+        "when": "Afternoon on the drive south",
+        "tip": "Walk the bluff north of the light station and frame the tower above the rocky cove. The 100-400 compresses the tower against the surf from the Highway 1 turnout.",
+        "styles": [
+          "landscape"
+        ],
+        "focal": [
+          "wide",
+          "standard",
+          "tele"
+        ],
+        "tripod": "helps",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "carmel-beach",
+        "cityId": "carmel",
+        "name": "Carmel Beach",
+        "localName": null,
+        "lat": 36.5512,
+        "lng": -121.9294,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "day"
+        ],
+        "when": "Sunset over Carmel Bay",
+        "tip": "Walk down from the foot of Ocean Avenue and use the white sand and the cypress-lined bluff as foreground for the sunset. Shoot the waves at a quarter second for texture.",
+        "styles": [
+          "landscape",
+          "long-exposure"
+        ],
+        "focal": [
+          "wide",
+          "ultrawide"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "point-lobos",
+        "cityId": "carmel",
+        "name": "Point Lobos, Sea Lion Point",
+        "localName": null,
+        "lat": 36.518,
+        "lng": -121.952,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "Morning, from the 08:00 opening",
+        "tip": "Take the Sea Lion Point Trail to the viewing area above the rocks and shoot the coves and surge channels below. Use the CPL to cut glare on the water and show the colour in the coves.",
+        "styles": [
+          "landscape",
+          "long-exposure"
+        ],
+        "focal": [
+          "wide",
+          "standard",
+          "tele"
+        ],
+        "tripod": "helps",
+        "minutes": 180,
+        "effort": 2,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "soberanes-point",
+        "cityId": "carmel",
+        "name": "Soberanes Point, Garrapata State Park",
+        "localName": null,
+        "lat": 36.4492,
+        "lng": -121.9292,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "day"
+        ],
+        "when": "Late afternoon, side light on the headland",
+        "tip": "Park at the Highway 1 turnout and walk the short loop around the point, framing the rocks and surf with Whale Peak behind. Quieter than the famous stops and good for long exposures.",
+        "styles": [
+          "landscape",
+          "long-exposure"
+        ],
+        "focal": [
+          "wide",
+          "ultrawide",
+          "tele"
+        ],
+        "tripod": "helps",
+        "minutes": 75,
+        "effort": 2,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "bixby-bridge",
+        "cityId": "carmel",
+        "name": "Bixby Creek Bridge",
+        "localName": null,
+        "lat": 36.3724,
+        "lng": -121.9027,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "night",
+          "day"
+        ],
+        "when": "Sunset from the north side",
+        "tip": "Shoot from the turnout on the north side of the bridge, looking south along the arch and the coast. Arrive early, the turnout fills well before sunset.",
+        "styles": [
+          "landscape",
+          "long-exposure",
+          "night"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "point-sur",
+        "cityId": "carmel",
+        "name": "Point Sur Lighthouse",
+        "localName": null,
+        "lat": 36.3064,
+        "lng": -121.9017,
+        "light": "day",
+        "lights": [
+          "day",
+          "golden"
+        ],
+        "when": "Morning, as the marine layer lifts",
+        "tip": "Stop at the Highway 1 turnouts north of the rock and isolate the lighthouse on its volcanic peak with the 100-400. Low fog around the base makes the strongest frame.",
+        "styles": [
+          "landscape"
+        ],
+        "focal": [
+          "tele",
+          "standard"
+        ],
+        "tripod": "helps",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "pfeiffer-beach",
+        "cityId": "carmel",
+        "name": "Pfeiffer Beach, Keyhole Arch",
+        "localName": null,
+        "lat": 36.2394,
+        "lng": -121.8176,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "day"
+        ],
+        "when": "Late afternoon, waves through the arch",
+        "tip": "Walk south along the beach to face Keyhole Arch and time long exposures for waves rushing through the opening. In October the sun sets north of the arch line, so shoot the rock and backlit surf rather than waiting for a sunburst.",
+        "styles": [
+          "landscape",
+          "long-exposure"
+        ],
+        "focal": [
+          "wide",
+          "standard",
+          "tele"
+        ],
+        "tripod": "helps",
+        "minutes": 120,
+        "effort": 2,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "mcway-falls",
+        "cityId": "carmel",
+        "name": "McWay Falls",
+        "localName": null,
+        "lat": 36.1578,
+        "lng": -121.6724,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "day"
+        ],
+        "when": "Sunset from the overlook trail",
+        "tip": "Take the Overlook Trail from Julia Pfeiffer Burns State Park to the railing and frame the waterfall dropping onto the beach of the cove. October flow is low, so a slow shutter makes the most of the water.",
+        "styles": [
+          "landscape",
+          "long-exposure"
+        ],
+        "focal": [
+          "wide",
+          "standard",
+          "tele"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "lone-cypress",
+        "cityId": "carmel",
+        "name": "The Lone Cypress, 17-Mile Drive",
+        "localName": null,
+        "lat": 36.5688,
+        "lng": -121.9652,
+        "light": "day",
+        "lights": [
+          "day",
+          "golden"
+        ],
+        "when": "Morning, before tour buses",
+        "tip": "Shoot from the viewing platform on 17-Mile Drive and use the 100-400 to isolate the tree on its rock above the surf. The drive charges a per-car entry fee at the gates.",
+        "styles": [
+          "landscape"
+        ],
+        "focal": [
+          "standard",
+          "tele"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "el-matador",
+        "cityId": "la",
+        "name": "El Matador State Beach",
+        "localName": null,
+        "lat": 34.038,
+        "lng": -118.8745,
+        "light": "golden",
+        "lights": [
+          "golden"
+        ],
+        "when": "Sunset, low tide",
+        "tip": "Take the steep path and stairs down from the bluff lot and frame the sea stacks and arch from the waterline. Check the tide table, at high tide the arch is cut off.",
+        "styles": [
+          "landscape",
+          "long-exposure"
+        ],
+        "focal": [
+          "wide",
+          "ultrawide",
+          "standard"
+        ],
+        "tripod": "helps",
+        "minutes": 90,
+        "effort": 2,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "venice-canals",
+        "cityId": "la",
+        "name": "Venice Canals",
+        "localName": null,
+        "lat": 33.9848,
+        "lng": -118.4666,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "day"
+        ],
+        "when": "Early morning, still water",
+        "tip": "Walk the canal paths around Linnie Canal Park and shoot the arched footbridges and houses reflected in still water. Mornings are calm and empty.",
+        "styles": [
+          "street",
+          "cityscape"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "venice-skatepark",
+        "cityId": "la",
+        "name": "Venice Skate Park",
+        "localName": null,
+        "lat": 33.9871,
+        "lng": -118.4753,
+        "light": "day",
+        "lights": [
+          "day",
+          "golden"
+        ],
+        "when": "Afternoon, peak skating",
+        "tip": "Stand at the rail above the bowls and use the 100-400 for tight action against the beach and palms. Ask before photographing anyone up close.",
+        "styles": [
+          "street"
+        ],
+        "focal": [
+          "tele",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 75,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "santa-monica-pier",
+        "cityId": "la",
+        "name": "Santa Monica Pier",
+        "localName": null,
+        "lat": 34.0089,
+        "lng": -118.4974,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "night"
+        ],
+        "when": "Sunset into blue hour",
+        "tip": "Walk onto the sand north of the pier and shoot the Ferris wheel and pier pilings as the lights come on. A 15 to 30 second exposure smooths the surf under the deck.",
+        "styles": [
+          "long-exposure",
+          "night",
+          "street"
+        ],
+        "focal": [
+          "wide",
+          "ultrawide",
+          "standard"
+        ],
+        "tripod": "needed",
+        "minutes": 90,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "lake-hollywood",
+        "cityId": "la",
+        "name": "Hollywood Sign from Lake Hollywood Park",
+        "localName": null,
+        "lat": 34.1269,
+        "lng": -118.3259,
+        "light": "day",
+        "lights": [
+          "day",
+          "golden"
+        ],
+        "when": "Morning, sign lit from the east",
+        "tip": "Stand on the lawn of Lake Hollywood Park and frame the sign on the ridge above the hillside houses. Street parking is limited on residential roads, so follow the posted signs.",
+        "styles": [
+          "cityscape",
+          "landscape"
+        ],
+        "focal": [
+          "standard",
+          "tele"
+        ],
+        "tripod": "no",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "griffith",
+        "cityId": "la",
+        "name": "Griffith Observatory",
+        "localName": null,
+        "lat": 34.1182,
+        "lng": -118.3003,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "night"
+        ],
+        "when": "Sunset into night",
+        "tip": "Shoot from the west terrace for the observatory dome against the sunset, then move to the south side for the downtown towers and the grid of lights. Parking fills early on weekends, so arrive well before sunset.",
+        "styles": [
+          "cityscape",
+          "night",
+          "long-exposure"
+        ],
+        "focal": [
+          "tele",
+          "standard",
+          "wide"
+        ],
+        "tripod": "helps",
+        "minutes": 120,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "hollywood-blvd",
+        "cityId": "la",
+        "name": "Hollywood Boulevard at the TCL Chinese Theatre",
+        "localName": null,
+        "lat": 34.1021,
+        "lng": -118.341,
+        "light": "night",
+        "lights": [
+          "night",
+          "day"
+        ],
+        "when": "Evening, neon and crowds",
+        "tip": "Work the stretch between the TCL Chinese Theatre and Highland Avenue handheld, framing marquees, neon and the Walk of Fame stars. The sidewalks are too crowded for a tripod.",
+        "styles": [
+          "street",
+          "night"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "bradbury",
+        "cityId": "la",
+        "name": "Bradbury Building",
+        "localName": null,
+        "lat": 34.0505,
+        "lng": -118.2478,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "Midday, light through the skylight",
+        "tip": "From the ground-floor lobby, point the 14-24 up at the iron staircases and the glass roof. Visitors stay on the ground floor and first landing.",
+        "styles": [
+          "architecture"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide"
+        ],
+        "tripod": "banned",
+        "minutes": 30,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "disney-hall",
+        "cityId": "la",
+        "name": "Walt Disney Concert Hall",
+        "localName": null,
+        "lat": 34.0554,
+        "lng": -118.2499,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "day",
+          "night"
+        ],
+        "when": "Late afternoon, low sun on the steel",
+        "tip": "Walk the stairs from Grand Avenue up to the rooftop garden and frame the curved steel panels catching the low sun. Look for reflections of neighbouring towers in the panels.",
+        "styles": [
+          "architecture",
+          "cityscape"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "sixth-street-viaduct",
+        "cityId": "la",
+        "name": "Sixth Street Viaduct",
+        "localName": null,
+        "lat": 34.0377,
+        "lng": -118.2278,
+        "light": "night",
+        "lights": [
+          "night",
+          "golden"
+        ],
+        "when": "Night, traffic trails",
+        "tip": "Walk the bridge's pedestrian path and frame the lit arches leading west to the downtown skyline. Exposures of 10 to 20 seconds turn traffic into light trails.",
+        "styles": [
+          "night",
+          "long-exposure",
+          "cityscape"
+        ],
+        "focal": [
+          "wide",
+          "ultrawide",
+          "standard"
+        ],
+        "tripod": "needed",
+        "minutes": 75,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      }
+    ],
+    "days": [
+      {
+        "date": "2027-10-08",
+        "cityId": "sf",
+        "title": "Arrival, Painted Ladies and Twin Peaks",
+        "travel": {
+          "fromCityId": null,
+          "mode": "flight",
+          "label": "Flight to San Francisco (SFO), then pick up the car",
+          "minutes": null
+        },
+        "slots": [
+          {
+            "label": "Late afternoon",
+            "spotId": "painted-ladies",
+            "why": "The classic row of houses takes the late sun on its facades, an easy first stop after landing.",
+            "note": null
+          },
+          {
+            "label": "Night",
+            "spotId": "twin-peaks",
+            "why": "The highest viewpoint in the city shows the whole lit grid on the first night.",
+            "note": "Drive up; the summit road is a short loop from the parking lot."
+          }
+        ]
+      },
+      {
+        "date": "2027-10-09",
+        "cityId": "sf",
+        "title": "Golden Gate from both sides",
+        "travel": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "battery-spencer",
+            "why": "Your must-see Golden Gate Bridge at dawn, with fog rolling under the deck from the Marin side.",
+            "note": "Leave the city by 06:15; the Conzelman Road pullouts fill even at dawn on weekends."
+          },
+          {
+            "label": "Afternoon",
+            "spotId": "fort-point",
+            "why": "The bridge arch from below makes a strong daylight long exposure with the ND10.",
+            "note": null
+          },
+          {
+            "label": "Sunset",
+            "spotId": "baker-beach",
+            "why": "Sunset and blue hour on the bridge with rocks and surf in the foreground.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-10-10",
+        "cityId": "sf",
+        "title": "Chinatown, cable cars and the Bay Bridge",
+        "travel": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "dragon-gate",
+            "why": "Sunday morning on Grant Avenue is busy with shoppers and deliveries, good street material.",
+            "note": null
+          },
+          {
+            "label": "Afternoon",
+            "spotId": "hyde-lombard",
+            "why": "Cable cars cresting Russian Hill with Alcatraz behind is San Francisco street life in one frame.",
+            "note": null
+          },
+          {
+            "label": "Night",
+            "spotId": "pier-14",
+            "why": "A calm pier and the lit Bay Bridge for a clean night long exposure.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-10-11",
+        "cityId": "sf",
+        "title": "Russian Hill dawn, Sutro Baths and the skyline",
+        "travel": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "ina-coolbrith",
+            "why": "Sunrise behind the Bay Bridge from a quiet terrace on Russian Hill.",
+            "note": null
+          },
+          {
+            "label": "Sunset",
+            "spotId": "sutro-baths",
+            "why": "Ruins and Pacific surf at sunset for long exposures on the western edge of the city.",
+            "note": null
+          },
+          {
+            "label": "Night",
+            "spotId": "treasure-island",
+            "why": "The full skyline across the bay at night, the widest city view of the trip.",
+            "note": "Treasure Island is reached from the Bay Bridge; take the Treasure Island exit in the middle of the bridge."
+          }
+        ]
+      },
+      {
+        "date": "2027-10-12",
+        "cityId": "carmel",
+        "title": "Highway 1 south to Carmel",
+        "travel": {
+          "fromCityId": "sf",
+          "mode": "car",
+          "label": "Highway 1 via Half Moon Bay and Santa Cruz",
+          "minutes": 200
+        },
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "palace-fine-arts",
+            "why": "A still lagoon and the rotunda at dawn before the drive south.",
+            "note": null
+          },
+          {
+            "label": "Afternoon",
+            "spotId": "pigeon-point",
+            "why": "The tall lighthouse on the San Mateo coast breaks up the drive south.",
+            "note": null
+          },
+          {
+            "label": "Sunset",
+            "spotId": "carmel-beach",
+            "why": "Sunset over Carmel Bay, a short walk from the base.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-10-13",
+        "cityId": "carmel",
+        "title": "Point Lobos to Bixby Bridge",
+        "travel": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "point-lobos",
+            "why": "Coves, cypress and surge channels in clear morning light from the reserve's opening.",
+            "note": null
+          },
+          {
+            "label": "Late afternoon",
+            "spotId": "soberanes-point",
+            "why": "A quieter headland with side light on the rocks before the sunset stop.",
+            "note": null
+          },
+          {
+            "label": "Sunset",
+            "spotId": "bixby-bridge",
+            "why": "The arch and the coast at sunset is the defining Big Sur frame.",
+            "note": "About 30 minutes south of Carmel; turnouts on both sides are small."
+          }
+        ]
+      },
+      {
+        "date": "2027-10-14",
+        "cityId": "carmel",
+        "title": "Deep Big Sur and McWay Falls",
+        "travel": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "point-sur",
+            "why": "The lighthouse on its rock is strongest in morning fog, shot long from the road.",
+            "note": null
+          },
+          {
+            "label": "Late afternoon",
+            "spotId": "pfeiffer-beach",
+            "why": "Keyhole Arch and backlit surf in low sun for long exposures.",
+            "note": "Sycamore Canyon Road is narrow and unsigned at the highway; there is a day-use fee at the gate."
+          },
+          {
+            "label": "Sunset",
+            "spotId": "mcway-falls",
+            "why": "Your must-see McWay Falls in the last light, about 30 minutes south of Pfeiffer Beach.",
+            "note": "Allow 75 minutes for the drive back to Carmel in the dark."
+          }
+        ]
+      },
+      {
+        "date": "2027-10-15",
+        "cityId": "la",
+        "title": "17-Mile Drive, then south to Malibu",
+        "travel": {
+          "fromCityId": "carmel",
+          "mode": "car",
+          "label": "US-101 via Santa Barbara, then Highway 1 through Malibu",
+          "minutes": 360
+        },
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "lone-cypress",
+            "why": "The Lone Cypress in soft morning light before the long drive south.",
+            "note": null
+          },
+          {
+            "label": "Sunset",
+            "spotId": "el-matador",
+            "why": "Sea stacks and an arch at sunset where the drive rejoins the coast.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-10-16",
+        "cityId": "la",
+        "title": "Venice and Santa Monica",
+        "travel": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "venice-canals",
+            "why": "Reflections and footbridges on still canals before the neighbourhood wakes.",
+            "note": null
+          },
+          {
+            "label": "Afternoon",
+            "spotId": "venice-skatepark",
+            "why": "Saturday afternoon brings the most skaters and the best action.",
+            "note": null
+          },
+          {
+            "label": "Blue hour",
+            "spotId": "santa-monica-pier",
+            "why": "The lit Ferris wheel and pier at blue hour for long exposures from the sand.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-10-17",
+        "cityId": "la",
+        "title": "Hollywood from the hills to the boulevard",
+        "travel": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "lake-hollywood",
+            "why": "The Hollywood Sign is front-lit in the morning from this lawn.",
+            "note": null
+          },
+          {
+            "label": "Sunset",
+            "spotId": "griffith",
+            "why": "Sunset and the city lights coming on from the best viewpoint in Los Angeles.",
+            "note": null
+          },
+          {
+            "label": "Night",
+            "spotId": "hollywood-blvd",
+            "why": "Neon, marquees and crowds for street photography after dark.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-10-18",
+        "cityId": "la",
+        "title": "Downtown architecture and the Sixth Street Viaduct",
+        "travel": null,
+        "slots": [
+          {
+            "label": "Midday",
+            "spotId": "bradbury",
+            "why": "Overhead light through the skylight fills the iron atrium at midday.",
+            "note": null
+          },
+          {
+            "label": "Late afternoon",
+            "spotId": "disney-hall",
+            "why": "Low sun turns the steel curves gold.",
+            "note": null
+          },
+          {
+            "label": "Night",
+            "spotId": "sixth-street-viaduct",
+            "why": "Lit arches and traffic trails with the skyline behind close the trip.",
+            "note": null
+          }
+        ]
+      }
+    ],
+    "skipped": [
+      {
+        "name": "Alcatraz Island",
+        "reason": "Day tours sell out weeks ahead, and the island frames better from Hyde Street with the 100-400."
+      },
+      {
+        "name": "Muir Woods",
+        "reason": "Needs a parking or shuttle reservation and half a day, which the Golden Gate and city plan uses better."
+      },
+      {
+        "name": "Point Bonita Lighthouse",
+        "reason": "Opening hours are short and change often; Battery Spencer covers the Marin Headlands."
+      },
+      {
+        "name": "Elephant Seal Vista, Piedras Blancas",
+        "reason": "South of the Big Sur stretch reachable from Carmel, and the drive to Los Angeles takes US-101."
+      }
+    ]
+  }
+}
