@@ -1,17 +1,25 @@
 import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
-import { TRIP, dayLabel, dayNum, weekday } from '../lib/data';
+import { TRIP, cityStyle, dayLabel, dayNum, weekday } from '../lib/data';
 import { useStore } from '../store';
 import { overview, selectDay, step, togglePlay } from '../map/player';
 import { IconButton, cx, radioKeys } from './ui';
 
 const SPEEDS = [1, 2] as const;
 
-const SPANS = [
-  { city: 'gz', label: 'Guangzhou · 5 nights', from: 1, to: 6 },
-  { city: 'sz', label: 'Shenzhen · 2', from: 6, to: 8 },
-  { city: 'hk', label: 'Hong Kong · 7 nights', from: 8, to: 15 },
-  { city: 'out', label: 'Fly', from: 15, to: 16 },
-] as const;
+/** Runs of consecutive nights in one city, as grid column spans. */
+function spans() {
+  const out: { city: string; label: string; from: number; to: number }[] = [];
+  TRIP.days.forEach((d, i) => {
+    const last = out.at(-1);
+    if (last && last.city === d.city) last.to = i + 2;
+    else out.push({ city: d.city, label: '', from: i + 1, to: i + 2 });
+  });
+  for (const s of out) {
+    const n = s.to - s.from;
+    s.label = TRIP.cities[s.city] ? `${TRIP.cities[s.city]!.name} · ${n} ${n === 1 ? 'night' : 'nights'}` : `${TRIP.title} · ${n} days`;
+  }
+  return out;
+}
 
 export function Timeline() {
   const plan = useStore((s) => s.plan);
@@ -20,7 +28,9 @@ export function Timeline() {
   const progress = useStore((s) => s.progress);
   const speed = useStore((s) => s.speed);
   const set = useStore((s) => s.set);
+  useStore((s) => s.trip); // re-render when the trip changes
   const disabled = !plan;
+  const cols = { gridTemplateColumns: `repeat(${Math.max(1, TRIP.days.length)}, minmax(0, 1fr))` };
 
   const status = !plan
     ? 'No route yet: load your AI\'s answer or the example'
@@ -73,28 +83,23 @@ export function Timeline() {
         <span className="ml-auto basis-full font-mono text-xs text-muted sm:basis-auto" aria-live="polite">{status}</span>
       </div>
 
-      <div className="grid grid-cols-15 gap-0.5 sm:gap-1" aria-hidden>
-        {SPANS.map((s) => (
+      <div className="grid gap-0.5 sm:gap-1" style={cols} aria-hidden>
+        {spans().map((s) => (
           <span
-            key={s.city}
-            style={{ gridColumn: `${s.from} / ${s.to}` }}
-            className={cx(
-              s.city !== 'out' && `c-${s.city}`,
-              'truncate border-b-2 border-current px-0.5 pb-1 font-mono text-[9.5px] tracking-wide whitespace-nowrap uppercase sm:text-[11px]',
-              s.city === 'out' ? 'text-muted max-sm:invisible' : 'text-(--c)',
-            )}
+            key={`${s.city}-${s.from}`}
+            style={{ gridColumn: `${s.from} / ${s.to}`, ...cityStyle(s.city) }}
+            className="truncate border-b-2 border-current px-0.5 pb-1 font-mono text-[9.5px] tracking-wide whitespace-nowrap text-(--c) uppercase sm:text-[11px]"
           >
             {s.label}
           </span>
         ))}
       </div>
 
-      <div className="grid grid-cols-15 gap-0.5 sm:gap-1">
+      <div className="grid gap-0.5 sm:gap-1" style={cols}>
         {TRIP.days.map((d, i) => {
-          const city = d.kind === 'depart' ? null : d.city;
-          // The plan's kind, not the frame's: a "no work" brief turns work days free.
+          const city = d.city;
           const kind = plan?.days[i]?.kind ?? d.kind;
-          const free = kind === 'free' || kind === 'movefree';
+          const free = kind === 'free' || kind === 'movefree' || kind === 'daytrip';
           const current = day === i;
           const fill = day == null ? 0 : i < day ? 1 : current ? progress : 0;
           const stops = plan?.days[i]?.slots.length ?? 0;
@@ -106,8 +111,8 @@ export function Timeline() {
               aria-current={current ? 'date' : undefined}
               aria-label={`${dayLabel(d.date)}: ${plan?.days[i]?.title ?? d.title}`}
               onClick={() => void selectDay(i)}
+              style={cityStyle(city)}
               className={cx(
-                city && `c-${city}`,
                 'relative grid min-w-0 justify-items-center gap-px rounded-lg border px-0 pt-1.5 pb-2 transition-colors disabled:cursor-default',
                 current ? 'border-ink bg-surface-2' : 'border-transparent hover:bg-surface-2',
               )}
@@ -116,7 +121,7 @@ export function Timeline() {
               <span className={cx('font-display text-[17px] leading-none font-extrabold sm:text-2xl', day != null && i < day && 'text-muted')}>
                 {dayNum(d.date)}
               </span>
-              <span className={cx('relative mt-0.5 h-1.5 w-[72%] overflow-hidden rounded-full', city ? 'bg-(--c)' : 'bg-muted', free ? 'opacity-100' : 'opacity-35')}>
+              <span className={cx('relative mt-0.5 h-1.5 w-[72%] overflow-hidden rounded-full', 'bg-(--c)', free ? 'opacity-100' : 'opacity-35')}>
                 <span className="absolute inset-y-0 left-0 bg-ink/55 transition-[width] duration-300" style={{ width: `${fill * 100}%` }} />
               </span>
               {plan && (

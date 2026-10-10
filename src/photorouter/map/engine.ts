@@ -1,6 +1,7 @@
 import { Map as MLMap, Marker, setWorkerUrl, type LngLatBoundsLike, type PaddingOptions, type GeoJSONSource } from 'maplibre-gl';
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url';
 import { SPOT, SPOTS, TRIP, CITY_IDS } from '../lib/data';
+import type { TravelMode } from '../lib/types';
 import { along, arc, bearing, bounds, km, measure, smooth, type Measured } from '../lib/geo';
 import type { Light, LngLat, Plan } from '../lib/types';
 import { WALKABLE_KM } from '../lib/planner';
@@ -18,7 +19,10 @@ const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 const lerpAngle = (a: number, b: number, t: number) => a + ((((b - a) % 360) + 540) % 360 - 180) * t;
 
 const TRAIN_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8a4 4 0 0 1 4 4v8a3 3 0 0 1-2.2 2.9L19.5 21h-2.3l-1.4-2.6H8.2L6.8 21H4.5l1.7-3.1A3 3 0 0 1 4 15V7a4 4 0 0 1 4-4Zm-1.5 5v3.5h11V8Zm1.8 6.2a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6Zm7.4 0a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6Z"/></svg>';
-const METRO_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c4.4 0 8 .9 8 4v10a3 3 0 0 1-2 2.8l1.6 2.2h-2.4l-1.4-2H8.2l-1.4 2H4.4L6 18.8A3 3 0 0 1 4 16V6c0-3.1 3.6-4 8-4Zm-6 6v4h12V8Zm2 6.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Zm8 0a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Z"/></svg>';
+const PLANE_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15.5v-2l-8-5V3.8a1.6 1.6 0 0 0-3.2 0v4.7l-8 5v2l8-2.4v4.6l-2.3 1.7V21l3.9-1.1 3.9 1.1v-1.6L13 17.7v-4.6Z"/></svg>';
+const BOAT_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 2h2v3h4v6.2l2.6 1-2.2 6.3c-1.5-.2-2.9-.9-4-1.9-1.4 1.3-3 1.9-4.4 1.9S5.7 17.9 4.4 16.6l-1.8-4.4 2.4-1V5h6Zm-4 5v3.4l5-1.9 5 1.9V7ZM2 20.5c1.4 0 2.8-.5 4-1.4a6.6 6.6 0 0 0 8 0c1.2.9 2.6 1.4 4 1.4h4V22h-4c-1.4 0-2.8-.4-4-1-2.5 1.3-5.5 1.3-8 0-1.2.6-2.6 1-4 1H0v-1.5Z"/></svg>';
+const CAR_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.6 5.3A2 2 0 0 1 7.5 4h9a2 2 0 0 1 1.9 1.3L20 10a2 2 0 0 1 1 1.7V18a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1H6v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-6.3A2 2 0 0 1 4 10Zm2 .7L6.3 10h11.4L16.4 6ZM6.5 12a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Zm11 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z"/></svg>';
+const MODE_SVG: Record<TravelMode, string> = { train: TRAIN_SVG, flight: PLANE_SVG, ferry: BOAT_SVG, car: CAR_SVG, bus: CAR_SVG };
 const BED_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h2v7h6V8h7a3 3 0 0 1 3 3v8h-2v-3H5v3H3Zm5 1.5a2.25 2.25 0 1 1 0 4.5 2.25 2.25 0 0 1 0-4.5Z"/></svg>';
 
 interface Mk {
@@ -33,10 +37,6 @@ export interface EngineHandlers {
   onError: (message: string) => void;
 }
 
-const LEG_DAY: Record<string, number> = Object.fromEntries(
-  TRIP.days.flatMap((d, i) => (d.leg ? [[d.leg, i]] : [])),
-);
-
 export class TripMap {
   readonly map: MLMap;
   private theme: Theme;
@@ -46,7 +46,6 @@ export class TripMap {
   private selected: string | null = null;
   private current: string | null = null;
   private visited = new Set<string>();
-  private fresh = new Set<string>();
   private lights = new Set<Light>(['dawn', 'day', 'golden', 'night']);
   private legProgress: Record<string, number> = {};
   private walkDrawn = 1;
@@ -59,13 +58,14 @@ export class TripMap {
   private train: Marker;
   private trainEl: HTMLElement;
   private walker: Marker;
-  private legs: Record<string, Measured>;
+  private legs: Record<string, Measured> = {};
+  /** Which day rides each leg, for drawing legs before the selected day as done. */
+  private legDay: Record<string, number> = {};
   private styleSeq = 0;
 
   constructor(container: HTMLElement, theme: Theme, basemap: Basemap, private readonly on: EngineHandlers) {
     this.theme = theme;
     this.basemap = basemap;
-    this.legs = Object.fromEntries(Object.entries(TRIP.legs).map(([id, l]) => [id, measure(smooth(l.pts, 14))]));
     const [sw, ne] = this.allBounds();
     this.map = new MLMap({
       container,
@@ -83,10 +83,34 @@ export class TripMap {
       if (/style|Failed to fetch|NetworkError/i.test(msg)) this.on.onError('Map tiles could not load. Check your connection.');
     });
 
+    this.trainEl = document.createElement('div');
+    this.trainEl.className = 'pr-train';
+    this.train = new Marker({ element: this.trainEl, anchor: 'center' }).setLngLat([0, 0]);
+    const w = document.createElement('div');
+    w.className = 'pr-walker';
+    this.walker = new Marker({ element: w, anchor: 'center' }).setLngLat([0, 0]);
+
+    this.buildTrip();
+    void this.applyStyle();
+    this.refresh();
+  }
+
+  /** Markers, hotels and legs for the active trip. Called again whenever the trip changes. */
+  private buildTrip() {
+    for (const m of this.markers.values()) m.marker.remove();
+    this.markers.clear();
+    this.hotels.forEach((h) => h.remove());
+    this.hotels = [];
+    this.legs = Object.fromEntries(Object.entries(TRIP.legs).map(([id, l]) => [id, measure(smooth(l.pts, 14))]));
+    this.legDay = Object.fromEntries(TRIP.days.flatMap((d, i) => [...(d.leg ? [[d.leg, i]] : []), ...(d.back ? [[d.back, i]] : [])]));
+    this.legProgress = {};
+    const colour = (city: string) => `var(--city-${(TRIP.cities[city]?.color ?? 0) % 6})`;
+
     for (const s of SPOTS) {
       const el = document.createElement('button');
       el.type = 'button';
-      el.className = `pr-mk c-${s.city}`;
+      el.className = 'pr-mk';
+      el.style.setProperty('--c', colour(s.city));
       el.setAttribute('aria-label', s.name);
       el.innerHTML = '<span class="pr-mk-ring"></span><span class="pr-mk-dot"><span class="pr-mk-num"></span></span><span class="pr-mk-tag"></span>';
       el.querySelector('.pr-mk-tag')!.textContent = s.name;
@@ -101,22 +125,28 @@ export class TripMap {
       const marker = new Marker({ element: el, anchor: 'center' }).setLngLat(s.ll).addTo(this.map);
       this.markers.set(s.id, { marker, el, num: el.querySelector('.pr-mk-num')! });
     }
-    for (const c of CITY_IDS) {
+    // Hotels only where the photographer sleeps, not in cities visited on a day trip.
+    const nights = new Set(TRIP.days.map((d) => d.city));
+    for (const c of CITY_IDS.filter((id) => nights.has(id))) {
       const el = document.createElement('div');
       el.className = 'pr-hotel';
       el.innerHTML = BED_SVG;
-      el.title = `Base ${TRIP.cities[c].baseLabel}`;
-      this.hotels.push(new Marker({ element: el, anchor: 'center' }).setLngLat(TRIP.cities[c].base));
+      el.title = `${TRIP.cities[c]!.name}: base ${TRIP.cities[c]!.baseLabel}`;
+      this.hotels.push(new Marker({ element: el, anchor: 'center' }).setLngLat(TRIP.cities[c]!.base));
     }
 
-    this.trainEl = document.createElement('div');
-    this.trainEl.className = 'pr-train';
-    this.train = new Marker({ element: this.trainEl, anchor: 'center' }).setLngLat(TRIP.cities.gz.base);
-    const w = document.createElement('div');
-    w.className = 'pr-walker';
-    this.walker = new Marker({ element: w, anchor: 'center' }).setLngLat(TRIP.cities.gz.base);
+  }
 
-    void this.applyStyle();
+  /** Swap to another trip: rebuild markers and routes, keep the style. */
+  setTrip() {
+    this.token++;
+    this.hideMovers();
+    this.plan = null;
+    this.day = null;
+    this.selected = null;
+    this.current = null;
+    this.visited.clear();
+    this.buildTrip();
     this.refresh();
   }
 
@@ -168,12 +198,6 @@ export class TripMap {
     this.refresh();
   }
 
-  setFresh(ids: string[]) {
-    this.fresh = new Set(ids);
-    this.refreshMarkers();
-    if (ids.length) setTimeout(() => { this.fresh.clear(); this.refreshMarkers(); }, 4000);
-  }
-
   setLights(lights: Light[]) {
     this.lights = new Set(lights);
     this.refreshMarkers();
@@ -189,7 +213,7 @@ export class TripMap {
     this.day = day;
     this.current = null;
     this.visited.clear();
-    for (const [id, d] of Object.entries(LEG_DAY)) {
+    for (const [id, d] of Object.entries(this.legDay)) {
       this.legProgress[id] = day == null ? 0 : d < day ? 1 : d === day ? (opts.legsDrawn ? 1 : 0) : 0;
     }
     this.walkDrawn = opts.walkDrawn === false ? 0 : 1;
@@ -232,7 +256,6 @@ export class TripMap {
       el.classList.toggle('is-sel', this.selected === id);
       el.classList.toggle('is-current', this.current === id);
       el.classList.toggle('is-visited', this.visited.has(id));
-      el.classList.toggle('is-fresh', this.fresh.has(id));
       el.classList.toggle('is-off', !keep && !s.lights.some((l) => this.lights.has(l)));
       el.classList.toggle('is-past', this.day != null && isPlanned && planned.get(id)! < this.day && !keep);
       num.textContent = inDay ? String(order.get(id)) : '';
@@ -259,12 +282,12 @@ export class TripMap {
       if (step.type === 'leg') {
         const L = TRIP.legs[step.leg]!;
         prev = L.pts[L.pts.length - 1]!;
-        city = d.city;
+        city = L.to;
         continue;
       }
       const slot = d.slots[step.slot]!;
       const at = SPOT[slot.spotId]!.ll;
-      const from: LngLat = prev && city === slot.city ? prev : TRIP.cities[slot.city].base;
+      const from: LngLat = prev && city === slot.city ? prev : TRIP.cities[slot.city]!.base;
       runs.push(arc(from, at, 0.16, km(from, at) > 4 ? 48 : 28));
       prev = at;
       city = slot.city;
@@ -291,7 +314,6 @@ export class TripMap {
       'pr-legs': fc(this.plan ? legs.filter((f) => f.properties!.state !== 'active') : []),
       'pr-trail': fc(trail),
       'pr-walk': fc(walk),
-      'pr-stations': fc(TRIP.stations.map((s) => ({ type: 'Feature', properties: { name: s.name }, geometry: { type: 'Point', coordinates: s.ll } }))),
     };
   }
 
@@ -316,7 +338,8 @@ export class TripMap {
   }
 
   private allBounds(): [LngLat, LngLat] {
-    return bounds([...SPOTS.map((s) => s.ll), TRIP.stations[0]!.ll]);
+    const pts = [...SPOTS.map((s) => s.ll), ...Object.values(TRIP.cities).map((c) => c.base)];
+    return pts.length ? bounds(pts) : [[-150, -50], [160, 65]];
   }
 
   private camera(kind: 'fly' | 'ease', opts: Parameters<MLMap['flyTo']>[0]): Promise<boolean> {
@@ -356,8 +379,8 @@ export class TripMap {
       else if (d.kind !== 'movefree' || !d.slots.some((s) => s.city === d.city)) pts.push(L.pts[L.pts.length - 1]!);
     }
     // An empty day (nothing fitted, or left out of an imported plan) frames the city base.
-    if (!pts.length) pts.push(TRIP.cities[d.city].base);
-    if (pts.length === 1) pts.push(TRIP.cities[d.slots[0]?.city ?? d.city].base);
+    if (!pts.length) pts.push(TRIP.cities[d.city]!.base);
+    if (pts.length === 1) pts.push(TRIP.cities[d.slots[0]?.city ?? d.city]!.base);
     return this.fit(bounds(pts), { duration, pitch: 38, bearing: -12, maxZoom: 14.6 });
   }
 
@@ -438,7 +461,7 @@ export class TripMap {
     const leg = TRIP.legs[id]!;
     this.legProgress[id] = 0.001;
     this.pushData();
-    this.trainEl.innerHTML = `<span class="pr-train-pulse"></span><span class="pr-train-body">${leg.mode === 'metro' ? METRO_SVG : TRAIN_SVG}</span>`;
+    this.trainEl.innerHTML = `<span class="pr-train-pulse"></span><span class="pr-train-body">${MODE_SVG[leg.mode]}</span>`;
     this.train.setLngLat(L.pts[0]!).addTo(this.map);
     requestAnimationFrame(() => this.trainEl.classList.add('on'));
 
@@ -446,7 +469,8 @@ export class TripMap {
     const z0 = this.map.getZoom();
     const p0 = this.map.getPitch();
     const b0 = this.map.getBearing();
-    const ride = Math.max(9.6, Math.min(11.6, 13.4 - Math.log2(L.total / 6)));
+    // Closer in for a short hop, further out for a long flight or drive.
+    const ride = Math.max(6.5, Math.min(11.6, 13.4 - Math.log2(L.total / 6)));
     let heading = bearing(L.pts[0]!, L.pts[Math.min(8, L.pts.length - 1)]!);
 
     const ok = await this.tween(ms, (u) => {

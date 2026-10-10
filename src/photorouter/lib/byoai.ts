@@ -1,149 +1,270 @@
-import { CITY_IDS, GEAR_BY_ID, LIGHT_LABEL, SPOT, SPOTS, TRIP, weekday } from './data';
-import { SLOT, allowedLabels, assemble, effectiveKind, gearProfile, slotCity, slotLabels, type Pick } from './planner';
-import type { Brief, CityId, Plan } from './types';
+import { LIGHT_LABEL, STYLES, tripDates, weekday } from './data';
+import { FORMAT_LABEL, cropFactor, gearItem, lensFocals, lensFor } from './gear';
+import { arc, km } from './geo';
+import { SLOT, assemble, dayKind, gearProfile, labelsFor, slotCities, stopCap, type Pick } from './planner';
+import { validTimeZone } from './sun';
+import type { Brief, City, DayFrame, Focal, Leg, Light, LngLat, Plan, Spot, StyleId, TravelMode, Trip } from './types';
 
 // PhotoRouter writes a prompt with the whole request in it and a JSON Schema
-// for the answer. The user's own AI plans the trip; the app validates the JSON
-// it returns and turns it into the route.
-// The schema keeps to the subset that the structured-output modes of the major
-// AI APIs accept: closed objects, every key required, nullable fields as anyOf
-// with null, enums instead of numeric or length limits.
+// for the answer. The user's own AI plans the trip: it picks the cities, the
+// photo spots with their coordinates and light, the travel days and the slot
+// for each spot. The app validates the JSON it returns and turns it into the
+// route. The schema keeps to the subset that the structured-output modes of
+// the major AI APIs accept: closed objects, every key required, nullable
+// fields as anyOf with null, enums instead of numeric or length limits.
 
-export const PLAN_VERSION = 'photorouter.plan/v1';
+export const PLAN_VERSION = 'photorouter.plan/v2';
 export const SCHEMA_PATH = '/plan.schema.json';
 export const SCHEMA_URL = `https://photorouter.pages.dev${SCHEMA_PATH}`;
 
-const nullable = (schema: object) => ({ anyOf: [schema, { type: 'null' }] });
+const LIGHTS: Light[] = ['dawn', 'day', 'golden', 'night'];
+const FOCALS: Focal[] = ['ultrawide', 'wide', 'standard', 'tele'];
+const MODES: TravelMode[] = ['train', 'ferry', 'flight', 'bus', 'car'];
+const STYLE_IDS = STYLES.map((s) => s.id);
 
-export const PLAN_SCHEMA = {
-  title: 'PhotoRouter plan',
-  description: 'A day-by-day photo route: which spot to shoot in each time slot.',
-  type: 'object',
-  additionalProperties: false,
-  required: ['version', 'summary', 'days', 'skipped'],
-  properties: {
-    version: { type: 'string', const: PLAN_VERSION },
-    summary: { type: 'string', description: 'Two or three sentences to the photographer about the route.' },
-    days: {
-      type: 'array',
-      description: 'One entry per trip day, in date order.',
-      items: {
-        type: 'object',
-        additionalProperties: false,
-        required: ['date', 'title', 'slots'],
-        properties: {
-          date: { type: 'string', enum: TRIP.days.map((d) => d.date) },
-          title: nullable({ type: 'string', description: 'A short headline for the day.' }),
-          slots: {
-            type: 'array',
-            items: {
+/** How far a spot may sit from its city's centre before the coordinates are taken to be wrong. */
+const MAX_SPOT_KM = 150;
+
+const nullable = (schema: object) => ({ anyOf: [schema, { type: 'null' }] });
+const str = (description: string) => ({ type: 'string', description });
+const num = (description: string) => ({ type: 'number', description });
+
+/** The response schema. With dates it pins the answer to one trip; without, it is the published generic form. */
+export function planSchema(dates?: string[]) {
+  return {
+    title: 'PhotoRouter plan',
+    description: 'A photo trip: cities, photo spots with coordinates and light, and which spot to shoot in each time slot of each day.',
+    type: 'object',
+    additionalProperties: false,
+    required: ['version', 'title', 'summary', 'timezone', 'cities', 'spots', 'days', 'skipped'],
+    properties: {
+      version: { type: 'string', const: PLAN_VERSION },
+      title: str('A short name for the trip, e.g. "Two cities by train in spring".'),
+      summary: str('Two or three sentences to the photographer about the route.'),
+      timezone: str('IANA time zone of the destination, in Region/City form.'),
+      cities: {
+        type: 'array',
+        description: 'Every city the trip stays in, in the order they are first visited.',
+        items: {
+          type: 'object',
+          additionalProperties: false,
+          required: ['id', 'name', 'localName', 'lat', 'lng', 'base'],
+          properties: {
+            id: str('Short lowercase id, e.g. "city1".'),
+            name: str('City name in English.'),
+            localName: nullable(str('Name in the local language or script, when it differs.')),
+            lat: num('Latitude of the city centre.'),
+            lng: num('Longitude of the city centre.'),
+            base: {
               type: 'object',
               additionalProperties: false,
-              required: ['label', 'spotId', 'why', 'note'],
+              required: ['label', 'lat', 'lng'],
               properties: {
-                label: { type: 'string', enum: Object.keys(SLOT) },
-                spotId: { type: 'string', enum: SPOTS.map((s) => s.id) },
-                why: { type: 'string', description: 'One sentence: why this spot, in this slot, for this photographer.' },
-                note: nullable({ type: 'string', description: 'An optional practical tip.' }),
+                label: str('Where to stay, e.g. "near the old town".'),
+                lat: num('Latitude of the suggested base.'),
+                lng: num('Longitude of the suggested base.'),
               },
             },
           },
         },
       },
-    },
-    skipped: {
-      type: 'array',
-      description: 'Notable spots left out, with the reason.',
-      items: {
-        type: 'object',
-        additionalProperties: false,
-        required: ['spotId', 'reason'],
-        properties: {
-          spotId: { type: 'string', enum: SPOTS.map((s) => s.id) },
-          reason: { type: 'string' },
+      spots: {
+        type: 'array',
+        description: 'Every photo spot used in "days". Real places with accurate coordinates.',
+        items: {
+          type: 'object',
+          additionalProperties: false,
+          required: ['id', 'cityId', 'name', 'localName', 'lat', 'lng', 'light', 'lights', 'when', 'tip', 'styles', 'focal', 'tripod', 'minutes', 'effort', 'crowd', 'drone', 'hike'],
+          properties: {
+            id: str('Short lowercase id, unique in the trip, e.g. "harbour-steps".'),
+            cityId: str('Id of the city the spot belongs to.'),
+            name: str('Name in English.'),
+            localName: nullable(str('Name in the local language or script, for taxis and signs, when it differs.')),
+            lat: num('Latitude of the viewpoint.'),
+            lng: num('Longitude of the viewpoint.'),
+            light: { type: 'string', enum: LIGHTS, description: 'The best light for this spot.' },
+            lights: { type: 'array', items: { type: 'string', enum: LIGHTS }, description: 'Every light that works here, including "light".' },
+            when: str('Best time in a few words, e.g. "Sunrise, from the river side".'),
+            tip: str('One or two sentences: where to stand and what to shoot.'),
+            styles: { type: 'array', items: { type: 'string', enum: STYLE_IDS } },
+            focal: { type: 'array', items: { type: 'string', enum: FOCALS }, description: 'Focal ranges that work, best first.' },
+            tripod: { type: 'string', enum: ['needed', 'helps', 'no', 'banned'] },
+            minutes: { type: 'integer', description: 'Time to give the spot, travel to it excluded.' },
+            effort: { type: 'integer', enum: [1, 2, 3], description: '1 walk-up, 2 a climb or a ride out, 3 a half-day trip.' },
+            crowd: { type: 'integer', enum: [1, 2, 3], description: '1 quiet, 3 one of the busiest places in the city.' },
+            drone: { type: 'boolean', description: 'Drones are allowed and it is worth flying.' },
+            hike: { type: 'boolean', description: 'Getting there is a real hike, not a short climb.' },
+          },
+        },
+      },
+      days: {
+        type: 'array',
+        description: 'One entry per trip date, in date order, including days with no slots.',
+        items: {
+          type: 'object',
+          additionalProperties: false,
+          required: ['date', 'cityId', 'title', 'travel', 'dayTrip', 'slots'],
+          properties: {
+            date: dates ? { type: 'string', enum: dates } : str('YYYY-MM-DD'),
+            cityId: str('The city slept in that night.'),
+            title: nullable(str('A short headline for the day.')),
+            travel: nullable({
+              type: 'object',
+              additionalProperties: false,
+              required: ['fromCityId', 'mode', 'label', 'minutes'],
+              properties: {
+                fromCityId: nullable(str('City left that morning; null on the first day, arriving from home.')),
+                mode: { type: 'string', enum: MODES },
+                label: str('E.g. "High-speed train" or "Flight from home".'),
+                minutes: nullable({ type: 'integer', description: 'Door-to-door time, roughly.' }),
+              },
+            }),
+            dayTrip: nullable({
+              type: 'object',
+              description: 'A trip to another city and back on the same day, sleeping in "cityId". Not on the first day, and not together with "travel".',
+              additionalProperties: false,
+              required: ['cityId', 'mode', 'label', 'minutes'],
+              properties: {
+                cityId: str('The city visited for the day; list it in "cities".'),
+                mode: { type: 'string', enum: MODES },
+                label: str('E.g. "Regional train".'),
+                minutes: nullable({ type: 'integer', description: 'Time each way, roughly.' }),
+              },
+            }),
+            slots: {
+              type: 'array',
+              items: {
+                type: 'object',
+                additionalProperties: false,
+                required: ['label', 'spotId', 'why', 'note'],
+                properties: {
+                  label: { type: 'string', enum: Object.keys(SLOT) },
+                  spotId: str('Id of a spot in "spots".'),
+                  why: str('Why this spot, in this slot, for this photographer.'),
+                  note: nullable(str('An optional practical tip.')),
+                },
+              },
+            },
+          },
+        },
+      },
+      skipped: {
+        type: 'array',
+        description: 'Notable places left out, with the reason.',
+        items: {
+          type: 'object',
+          additionalProperties: false,
+          required: ['name', 'reason'],
+          properties: { name: { type: 'string' }, reason: { type: 'string' } },
         },
       },
     },
-  },
-} as const;
+  } as const;
+}
+
+export const PLAN_SCHEMA = planSchema();
 
 export interface PlanResponse {
   version: string;
+  title: string;
   summary: string;
-  days: { date: string; title: string | null; slots: { label: string; spotId: string; why: string; note: string | null }[] }[];
-  skipped: { spotId: string; reason: string }[];
+  timezone: string;
+  cities: { id: string; name: string; localName: string | null; lat: number; lng: number; base: { label: string; lat: number; lng: number } }[];
+  spots: {
+    id: string; cityId: string; name: string; localName: string | null; lat: number; lng: number; light: Light; lights: Light[];
+    when: string; tip: string; styles: StyleId[]; focal: Focal[]; tripod: Spot['tripod']; minutes: number; effort: 1 | 2 | 3;
+    crowd: 1 | 2 | 3; drone: boolean; hike: boolean;
+  }[];
+  days: {
+    date: string; cityId: string; title: string | null;
+    travel: { fromCityId: string | null; mode: TravelMode; label: string; minutes: number | null } | null;
+    dayTrip: { cityId: string; mode: TravelMode; label: string; minutes: number | null } | null;
+    slots: { label: string; spotId: string; why: string; note: string | null }[];
+  }[];
+  skipped: { name: string; reason: string }[];
+}
+
+/** One piece of gear as the AI sees it: lenses with their focal range, aperture and focal classes on this body. */
+function gearForRequest(id: string, crop: number) {
+  const item = gearItem(id);
+  const lens = lensFor(id);
+  if (!lens) return { id, kind: item?.kind ?? 'other', label: item?.label ?? id, ...(item?.focal ? { focal: item.focal } : {}) };
+  return {
+    id,
+    kind: 'lens',
+    label: item!.label,
+    type: lens.type,
+    focalMm: lens.type === 'prime' ? lens.min : [lens.min, lens.max],
+    maxAperture: lens.fTele && lens.fTele !== lens.f ? [lens.f, lens.fTele] : lens.f,
+    ...(lens.special ? { special: lens.special } : {}),
+    ...(lens.format ? { madeFor: FORMAT_LABEL[lens.format] } : {}),
+    focal: lensFocals(lens, crop),
+  };
 }
 
 /** Everything the AI needs, as one JSON document. */
-export function buildRequest(brief: Brief, opts: { cities?: CityId[]; tips?: boolean } = {}) {
-  const cities = opts.cities ?? CITY_IDS;
-  const tips = opts.tips ?? true;
+export function buildRequest(brief: Brief) {
+  const dates = tripDates(brief.start, brief.days);
+  const kind = (date: string, travels: boolean, first: boolean, dayTrip = false) => {
+    const k = dayKind(date, travels, first, brief, dayTrip);
+    return { kind: k, allowedSlots: labelsFor(k, date, brief), maxStops: stopCap(k, brief) };
+  };
   return {
-    version: 'photorouter.request/v1',
+    version: 'photorouter.request/v2',
     trip: {
-      region: TRIP.region,
-      dates: TRIP.dates,
-      timezone: `UTC+${TRIP.tz}`,
-      cities: Object.fromEntries(
-        Object.entries(TRIP.cities).map(([id, c]) => [id, { name: c.name, base: `${c.baseLabel}`, lngLat: c.base }]),
+      destination: brief.destination,
+      startDate: brief.start,
+      days: dates.length,
+      dates: dates.map((date, i) =>
+        i === 0
+          ? { date, weekday: weekday(date), arrival: kind(date, true, true) }
+          : { date, weekday: weekday(date), stayDay: kind(date, false, false), travelDay: kind(date, true, false), dayTripDay: kind(date, false, false, true) },
       ),
     },
     brief: {
       text: brief.text,
-      gear: brief.gear.map((id) => ({ id, label: GEAR_BY_ID[id]?.label ?? id, focal: GEAR_BY_ID[id]?.focal ?? null })),
+      gear: brief.gear.map((id) => gearForRequest(id, cropFactor(brief.gear))),
+      sensorCrop: cropFactor(brief.gear),
       styles: brief.styles,
       pace: brief.pace,
       walking: brief.walking,
-      worksWeekdays: brief.work ? '09:00–18:00' : null,
+      worksWeekdays: brief.work ? '09:00-18:00' : null,
       fridayFinishesEarly: brief.work && brief.fridayEarly,
       avoidCrowds: brief.avoidCrowds,
       mustSee: brief.must,
       skip: brief.avoid,
     },
     slotTypes: Object.fromEntries(Object.entries(SLOT).map(([label, d]) => [label, { lights: d.lights, order: d.order }])),
-    days: TRIP.days.flatMap((d, i) => {
-      if (![d.city, ...(d.from ? [d.from] : [])].some((c) => cities.includes(c))) return [];
-      const kind = effectiveKind(d, brief);
-      const leg = d.leg ? TRIP.legs[d.leg]! : null;
-      return [{
-        date: d.date,
-        weekday: weekday(d.date),
-        kind,
-        city: d.city,
-        from: d.from ?? null,
-        train: leg ? `${leg.from} → ${leg.to}, ${leg.minutes} min` : null,
-        allowedSlots: allowedLabels(d, brief),
-        suggestedSlots: slotLabels(d, i, brief),
-      }];
-    }),
-    spots: SPOTS.filter((s) => cities.includes(s.city)).map((s) => ({
-      id: s.id,
-      city: s.city,
-      name: s.name,
-      lights: s.lights,
-      bestTime: s.when,
-      styles: s.styles,
-      focal: s.focal,
-      tripod: s.tripod,
-      minutes: s.minutes,
-      effort: s.effort,
-      crowd: s.crowd,
-      droneFriendly: s.drone,
-      hike: !!s.hike,
-      lngLat: s.ll,
-      ...(tips ? { tip: s.tip } : {}),
-    })),
+    lights: LIGHT_LABEL,
   };
 }
 
-/** The current plan in the response format: an example answer, and a way to take a plan elsewhere. */
-export function toResponse(plan: Plan, summary: string): PlanResponse {
+/** A loaded plan back in the response format: to share, edit, or hand back to an AI for changes. */
+export function toResponse(plan: Plan): PlanResponse {
+  const { trip } = plan;
   return {
     version: PLAN_VERSION,
-    summary,
-    days: plan.days.map((d) => ({
+    title: trip.title,
+    summary: trip.summary,
+    timezone: trip.tz,
+    cities: Object.values(trip.cities)
+      .sort((a, b) => a.color - b.color)
+      .map((c) => ({ id: c.id, name: c.name, localName: c.local, lat: c.ll[1], lng: c.ll[0], base: { label: c.baseLabel, lat: c.base[1], lng: c.base[0] } })),
+    spots: trip.spots.map((s) => ({
+      id: s.id, cityId: s.city, name: s.name, localName: s.local, lat: s.ll[1], lng: s.ll[0], light: s.light, lights: s.lights,
+      when: s.when, tip: s.tip, styles: s.styles, focal: s.focal, tripod: s.tripod, minutes: s.minutes, effort: s.effort,
+      crowd: s.crowd, drone: s.drone, hike: s.hike,
+    })),
+    days: plan.days.map((d, i) => ({
       date: d.date,
-      title: d.title,
+      cityId: d.city,
+      title: d.title || null,
+      travel: d.leg && !d.dayTrip
+        ? { fromCityId: d.from ?? null, mode: trip.legs[d.leg]!.mode, label: trip.legs[d.leg]!.label, minutes: trip.legs[d.leg]!.minutes }
+        : i === 0 && trip.arrival ? { fromCityId: null, ...trip.arrival } : null,
+      dayTrip: d.dayTrip && d.leg
+        ? { cityId: d.dayTrip, mode: trip.legs[d.leg]!.mode, label: trip.legs[d.leg]!.label, minutes: trip.legs[d.leg]!.minutes }
+        : null,
       slots: d.slots.map((s) => ({ label: s.label, spotId: s.spotId, why: s.why, note: s.note ?? null })),
     })),
     skipped: plan.skipped,
@@ -155,6 +276,11 @@ export interface ImportResult {
   summary: string;
   errors: string[];
   warnings: string[];
+  /**
+   * Set when the answer covers other dates than the brief: it was made for another prompt
+   * and loaded as its own trip, with the brief's rules as warnings. These are its dates.
+   */
+  adopted?: { start: string; days: number };
 }
 
 /** Pull a JSON object out of whatever was pasted: fences, chatter around it, a trailing note. */
@@ -167,22 +293,36 @@ function extractJson(raw: string): unknown {
   return JSON.parse(text.slice(start, end + 1));
 }
 
-const isObj = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v);
-const str = (v: unknown) => (typeof v === 'string' && v.trim() ? v.trim() : undefined);
+type Obj = Record<string, unknown>;
+const isObj = (v: unknown): v is Obj => !!v && typeof v === 'object' && !Array.isArray(v);
+const text = (v: unknown) => (typeof v === 'string' && v.trim() ? v.trim() : undefined);
+const isNum = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v);
+const lngLat = (o: Obj): LngLat | null =>
+  isNum(o.lat) && isNum(o.lng) && Math.abs(o.lat) <= 90 && Math.abs(o.lng) <= 180 ? [o.lng, o.lat] : null;
 
-/**
- * Validate a pasted response against the schema and the trip's own rules.
- * Errors block the import; warnings are shown but the plan still loads.
- */
-/** What the prompt asked for: days that touch these cities, and only slots in them. */
-export interface ImportScope {
-  dates: Set<string>;
-  cities: CityId[];
-  /** Scheduling rules the prompt switched on; both default to on, as in the built-in planner. */
-  rules?: Partial<Record<'workHours' | 'halfDay', boolean>>;
+/** Loose name match for must-see and skip lists: case, accents and punctuation ignored, either name inside the other. */
+const norm = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+const sameName = (a: string, b: string) => {
+  const x = norm(a);
+  const y = norm(b);
+  return !!x && !!y && (x.includes(y) || y.includes(x));
+};
+
+export interface ImportRules {
+  /** Treat the brief's rules as warnings even when the dates match, e.g. when restoring a saved plan. */
+  lenient?: boolean;
+  /** Work days take only walk-up spots, and a "Before work" stop gets 90 minutes. */
+  workHours?: boolean;
+  /** Half-day trips only on free mornings. */
+  halfDay?: boolean;
 }
 
-export function importResponse(raw: string, brief: Brief, scope?: ImportScope): ImportResult {
+/**
+ * Validate a pasted answer against the schema and the trip rules, and build the
+ * trip and plan from it. Errors block the import; warnings are shown but the
+ * plan still loads.
+ */
+export function importResponse(raw: string, brief: Brief, rules: ImportRules = {}): ImportResult {
   const errors: string[] = [];
   const warnings: string[] = [];
   const fail = (e: string): ImportResult => ({ plan: null, summary: '', errors: [e], warnings });
@@ -195,128 +335,251 @@ export function importResponse(raw: string, brief: Brief, scope?: ImportScope): 
   }
   if (!isObj(data)) return fail('The response must be a JSON object.');
   if (data.version !== PLAN_VERSION) warnings.push(`"version" should be "${PLAN_VERSION}".`);
+  const tz = text(data.timezone) ?? '';
+  if (!validTimeZone(tz)) errors.push(`"timezone" must be an IANA time zone in Region/City form, not "${String(data.timezone)}".`);
+  if (!Array.isArray(data.cities) || !data.cities.length) return fail('"cities" must list at least one city.');
+  if (!Array.isArray(data.spots)) return fail('"spots" must be an array.');
   if (!Array.isArray(data.days)) return fail('"days" must be an array.');
 
-  const index = new Map(TRIP.days.map((d, i) => [d.date, i]));
-  const days: { picks: Pick[]; title?: string }[] = TRIP.days.map(() => ({ picks: [] }));
-  const seenDates = new Set<string>();
-  const used = new Map<string, string>();
-  const gear = gearProfile(brief);
+  // Cities
+  const cities: Record<string, City> = {};
+  for (const [i, c] of data.cities.entries()) {
+    const at = `cities[${i}]`;
+    if (!isObj(c)) { errors.push(`${at} must be an object.`); continue; }
+    const id = text(c.id);
+    const name = text(c.name);
+    const ll = lngLat(c);
+    const base = isObj(c.base) ? lngLat(c.base) : null;
+    if (!id || !name) { errors.push(`${at} needs an "id" and a "name".`); continue; }
+    if (cities[id]) { errors.push(`${at}: city id "${id}" is used twice.`); continue; }
+    if (!ll) { errors.push(`${at} (${name}): "lat" and "lng" must be valid coordinates.`); continue; }
+    if (!base) { errors.push(`${at} (${name}): "base" needs valid "lat" and "lng".`); continue; }
+    if (km(ll, base) > 40) warnings.push(`${name}: the suggested base is ${Math.round(km(ll, base))} km from the city centre.`);
+    cities[id] = { id, name, local: text(c.localName) ?? null, ll, base, baseLabel: text((c.base as Obj).label) ?? name, color: Object.keys(cities).length };
+  }
 
-  for (const [di, d] of data.days.entries()) {
-    const at = `days[${di}]`;
-    if (!isObj(d)) { errors.push(`${at} must be an object.`); continue; }
-    const date = str(d.date);
-    const i = date ? index.get(date) : undefined;
-    if (i == null) { errors.push(`${at}.date "${String(d.date)}" is not a trip date (${TRIP.days[0]!.date} to ${TRIP.days.at(-1)!.date}).`); continue; }
-    if (seenDates.has(date!)) { errors.push(`${at}: ${date} appears twice.`); continue; }
-    seenDates.add(date!);
-    if (scope && !scope.dates.has(date!)) { warnings.push(`${date} is outside the cities the prompt covered, so it was ignored.`); continue; }
-    const frame = TRIP.days[i]!;
-    const kind = effectiveKind(frame, brief);
-    const title = str(d.title);
-    if (title) days[i]!.title = title;
-    if (!Array.isArray(d.slots)) { errors.push(`${at}.slots must be an array.`); continue; }
+  // Spots
+  const spots: Spot[] = [];
+  const spotById = new Map<string, Spot>();
+  for (const [i, s] of data.spots.entries()) {
+    const at = `spots[${i}]`;
+    if (!isObj(s)) { errors.push(`${at} must be an object.`); continue; }
+    const id = text(s.id);
+    const name = text(s.name) ?? id;
+    const where = `${at} (${name ?? '?'})`;
+    if (!id) { errors.push(`${where} needs an "id".`); continue; }
+    if (spotById.has(id)) { errors.push(`${where}: spot id "${id}" is used twice.`); continue; }
+    const city = text(s.cityId);
+    if (!city || !cities[city]) { errors.push(`${where}: unknown "cityId" "${String(s.cityId)}".`); continue; }
+    const ll = lngLat(s);
+    if (!ll) { errors.push(`${where}: "lat" and "lng" must be valid coordinates.`); continue; }
+    const far = km(ll, cities[city]!.ll);
+    if (far > MAX_SPOT_KM) { errors.push(`${where} is ${Math.round(far)} km from ${cities[city]!.name}; check its coordinates or its city.`); continue; }
+    const light = s.light as Light;
+    const lights = Array.isArray(s.lights) ? (s.lights.filter((l) => LIGHTS.includes(l as Light)) as Light[]) : [];
+    if (!LIGHTS.includes(light)) { errors.push(`${where}: "light" must be one of ${LIGHTS.join(', ')}.`); continue; }
+    if (!lights.includes(light)) lights.unshift(light);
+    const styles = Array.isArray(s.styles) ? (s.styles.filter((x) => STYLE_IDS.includes(x as StyleId)) as StyleId[]) : [];
+    const focal = Array.isArray(s.focal) ? (s.focal.filter((x) => FOCALS.includes(x as Focal)) as Focal[]) : [];
+    if (!focal.length) { errors.push(`${where}: "focal" needs at least one of ${FOCALS.join(', ')}.`); continue; }
+    const tripod = ['needed', 'helps', 'no', 'banned'].includes(s.tripod as string) ? (s.tripod as Spot['tripod']) : null;
+    if (!tripod) { errors.push(`${where}: "tripod" must be needed, helps, no or banned.`); continue; }
+    const effort = [1, 2, 3].includes(s.effort as number) ? (s.effort as 1 | 2 | 3) : null;
+    const crowd = [1, 2, 3].includes(s.crowd as number) ? (s.crowd as 1 | 2 | 3) : null;
+    if (!effort || !crowd) { errors.push(`${where}: "effort" and "crowd" must be 1, 2 or 3.`); continue; }
+    const minutes = isNum(s.minutes) ? Math.round(s.minutes) : 0;
+    if (minutes < 10 || minutes > 720) { errors.push(`${where}: "minutes" must be between 10 and 720.`); continue; }
+    const spot: Spot = {
+      id, city, name: name!, local: text(s.localName) ?? null, ll, light, lights, when: text(s.when) ?? '', tip: text(s.tip) ?? '',
+      styles, focal, tripod, minutes, effort, crowd, drone: s.drone === true, hike: s.hike === true,
+    };
+    spots.push(spot);
+    spotById.set(id, spot);
+  }
+
+  // Days: the answer's own dates define the trip. They must run day by day with no gaps.
+  const byDate = new Map<string, Obj>();
+  for (const [i, d] of data.days.entries()) {
+    if (!isObj(d)) { errors.push(`days[${i}] must be an object.`); continue; }
+    const date = text(d.date);
+    if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(Date.parse(`${date}T12:00:00Z`))) { errors.push(`days[${i}]: "${String(d.date)}" is not a date in YYYY-MM-DD form.`); continue; }
+    if (byDate.has(date)) { errors.push(`${date} appears twice in "days".`); continue; }
+    byDate.set(date, d);
+  }
+  if (errors.length) return { plan: null, summary: '', errors, warnings };
+  const sorted = [...byDate.keys()].sort();
+  if (!sorted.length) return fail('"days" must list at least one day.');
+  if (sorted.length > 31) return fail('A trip can be at most 31 days.');
+  const dates = tripDates(sorted[0]!, sorted.length);
+  const gaps = dates.filter((d) => !byDate.has(d));
+  if (gaps.length) return fail(`Every date between the first and last day needs an entry in "days", even with no slots. Missing: ${gaps.join(', ')}.`);
+
+  // An answer for the brief's own dates is held to the brief. One for other dates came from
+  // another prompt: it loads as its own trip, and where it differs from this brief it is a warning.
+  const briefDates = tripDates(brief.start, brief.days);
+  const matches = !rules.lenient && dates.join() === briefDates.join();
+  if (!rules.lenient && !matches) {
+    warnings.push(`This answer covers ${dates[0]} to ${dates.at(-1)}, not the dates in your brief (${briefDates[0]} to ${briefDates.at(-1)}). It loads as its own trip, and anything that differs from your brief is a warning rather than an error.`);
+  }
+  /** A brief rule broken: an error for an answer to this brief, a warning otherwise. Returns true when it blocks the pick. */
+  const breach = (message: string) => {
+    if (matches) { errors.push(message); return true; }
+    warnings.push(message);
+    return false;
+  };
+
+  const frames: DayFrame[] = [];
+  const legs: Record<string, Leg> = {};
+  let arrival: Trip['arrival'] = null;
+  for (const [i, date] of dates.entries()) {
+    const d = byDate.get(date)!;
+    const city = text(d.cityId);
+    if (!city || !cities[city]) { errors.push(`${date}: unknown "cityId" "${String(d.cityId)}".`); continue; }
+    // The night before. Missing only when an earlier day already failed, and then the chain checks are skipped.
+    const prev = frames.at(-1)?.city;
+    const t = isObj(d.travel) ? d.travel : null;
+    const from = t ? text(t.fromCityId) : undefined;
+    const mode = t && MODES.includes(t.mode as TravelMode) ? (t.mode as TravelMode) : 'train';
+    const label = (t && text(t.label)) ?? mode;
+    const minutes = t && isNum(t.minutes) ? Math.round(t.minutes) : null;
+    let leg: string | undefined;
+    let move: string | undefined;
+    if (i === 0) {
+      if (from) warnings.push(`${date}: the first day arrives from home, so "fromCityId" should be null.`);
+      if (t) arrival = { mode, label, minutes };
+      move = t ? `${label} to ${cities[city]!.name}` : `Arrive in ${cities[city]!.name}`;
+    } else if (t && from) {
+      if (!cities[from]) { errors.push(`${date}: unknown travel "fromCityId" "${from}".`); continue; }
+      if (prev && from !== prev) { errors.push(`${date}: travel leaves ${cities[from]!.name}, but the night before was in ${cities[prev!]!.name}.`); continue; }
+      if (from === city) { errors.push(`${date}: travel goes from ${cities[city]!.name} to itself.`); continue; }
+      leg = `leg${i}`;
+      const a = cities[from]!.base;
+      const b = cities[city]!.base;
+      legs[leg] = { mode, label, from, to: city, minutes, pts: arc(a, b, mode === 'flight' ? 0.18 : 0.06, 48) };
+      move = `${label}: ${cities[from]!.name} to ${cities[city]!.name}${minutes ? `, about ${minutes < 90 ? `${minutes} min` : `${Math.round(minutes / 30) / 2} h`}` : ''}`;
+    } else if (prev && city !== prev) {
+      errors.push(`${date}: the night is in ${cities[city]!.name} but the day before was in ${cities[prev!]!.name}, with no "travel" between them.`);
+      continue;
+    }
+    // A day trip: out to another city and back, sleeping where the night before was.
+    const dt = isObj(d.dayTrip) ? d.dayTrip : null;
+    let dayTrip: string | undefined;
+    let back: string | undefined;
+    if (dt) {
+      const to = text(dt.cityId);
+      if (i === 0) { errors.push(`${date}: the first day is the arrival; a day trip can start the day after.`); continue; }
+      if (leg) { errors.push(`${date}: a day cannot both move city ("travel") and make a day trip ("dayTrip").`); continue; }
+      if (!to || !cities[to]) { errors.push(`${date}: unknown "dayTrip.cityId" "${String(dt.cityId)}".`); continue; }
+      if (to === city) { errors.push(`${date}: the day trip goes to ${cities[city]!.name}, where the photographer already is.`); continue; }
+      const dmode = MODES.includes(dt.mode as TravelMode) ? (dt.mode as TravelMode) : 'train';
+      const dlabel = text(dt.label) ?? dmode;
+      const dmin = isNum(dt.minutes) ? Math.round(dt.minutes) : null;
+      const pts = arc(cities[city]!.base, cities[to]!.base, dmode === 'flight' ? 0.18 : 0.06, 48);
+      dayTrip = to;
+      leg = `trip${i}`;
+      back = `trip${i}back`;
+      legs[leg] = { mode: dmode, label: dlabel, from: city, to, minutes: dmin, pts };
+      legs[back] = { mode: dmode, label: dlabel, from: to, to: city, minutes: dmin, pts: [...pts].reverse() };
+      move = `Day trip to ${cities[to]!.name}: ${dlabel}${dmin ? `, about ${dmin < 90 ? `${dmin} min` : `${Math.round(dmin / 30) / 2} h`} each way` : ''}`;
+    }
+    frames.push({
+      date,
+      city,
+      ...(leg && !dayTrip ? { from: legs[leg]!.from, leg } : {}),
+      ...(dayTrip ? { dayTrip, leg: leg!, back: back! } : {}),
+      kind: dayKind(date, !!leg && !dayTrip, i === 0, brief, !!dayTrip),
+      title: text(d.title) ?? '',
+      ...(move ? { move } : {}),
+    });
+  }
+  if (errors.length) return { plan: null, summary: '', errors, warnings };
+
+  // Slots
+  const gear = gearProfile(brief);
+  const used = new Map<string, string>();
+  const isMust = (s: Spot) => brief.must.some((m) => sameName(m, s.name) || (!!s.local && sameName(m, s.local)));
+  const picks: Pick[][] = frames.map(() => []);
+  for (const [i, frame] of frames.entries()) {
+    const d = byDate.get(frame.date)!;
+    const slots = Array.isArray(d.slots) ? d.slots : [];
     const labels = new Set<string>();
     const orders = new Map<number, string>();
-
-    for (const [si, s] of d.slots.entries()) {
-      const where = `${date} slot ${si + 1}`;
+    const allowed = labelsFor(frame.kind, frame.date, brief);
+    const workish = frame.kind === 'work' || frame.kind === 'movework' || ((frame.kind === 'arrive' || frame.kind === 'daytrip') && allowed.includes('After work'));
+    for (const [si, s] of slots.entries()) {
+      const where = `${frame.date} slot ${si + 1}`;
       if (!isObj(s)) { errors.push(`${where} must be an object.`); continue; }
-      const label = str(s.label);
-      const spotId = str(s.spotId);
+      const label = text(s.label);
+      const spot = spotById.get(text(s.spotId) ?? '');
       if (!label || !SLOT[label]) { errors.push(`${where}: unknown slot label "${String(s.label)}".`); continue; }
-      if (!spotId || !SPOT[spotId]) { errors.push(`${where}: unknown spotId "${String(s.spotId)}".`); continue; }
-      if (kind === 'depart') { errors.push(`${where}: ${date} is a travel day with no slots.`); continue; }
-      if (labels.has(label)) { errors.push(`${where}: "${label}" is used twice on ${date}.`); continue; }
+      if (!spot) { errors.push(`${where}: "${String(s.spotId)}" is not in "spots".`); continue; }
+      if (!allowed.includes(label) && breach(`${where}: "${label}" doesn't fit ${frame.date}, a ${frame.kind} day. Allowed: ${allowed.join(', ')}.`)) continue;
+      if (labels.has(label)) { errors.push(`${where}: "${label}" is used twice on ${frame.date}.`); continue; }
       const same = orders.get(SLOT[label]!.order);
-      if (same) { errors.push(`${where}: "${label}" and "${same}" are the same time of day; use one of them on ${date}.`); continue; }
-      if (!allowedLabels(frame, brief).includes(label)) {
-        errors.push(`${where}: "${label}" doesn't fit ${date} (${kind === 'work' ? 'a 09:00–18:00 work day' : `a ${kind} day`}). Allowed: ${allowedLabels(frame, brief).join(', ')}.`);
+      if (same) { errors.push(`${where}: "${label}" and "${same}" are the same time of day; use one of them on ${frame.date}.`); continue; }
+      const places = slotCities(frame, label);
+      if (!places.includes(spot.city)) {
+        errors.push(`${where}: ${spot.name} is in ${cities[spot.city]!.name}, but that slot is in ${places.map((c) => cities[c]!.name).join(' or ')}.`);
         continue;
       }
-      labels.add(label);
-      orders.set(SLOT[label]!.order, label);
-      const spot = SPOT[spotId]!;
-      const city = slotCity(frame, kind, label);
-      if (spot.city !== city) {
-        errors.push(`${where}: ${spot.name} is in ${TRIP.cities[spot.city].name}, but that slot is in ${TRIP.cities[city].name}.`);
-        continue;
-      }
-      if (scope && !scope.cities.includes(city)) {
-        warnings.push(`${where}: ${TRIP.cities[city].name} is outside the cities the prompt covered, so ${spot.name} was ignored.`);
-        continue;
-      }
+      const city = spot.city;
       if (!spot.lights.some((l) => SLOT[label]!.lights.includes(l))) {
         errors.push(`${where}: ${spot.name} is shot at ${LIGHT_LABEL[spot.light].toLowerCase()}, which a "${label}" slot doesn't have.`);
         continue;
       }
-      if (brief.avoid.includes(spotId)) { errors.push(`${where}: ${spot.name} is on your skip list.`); continue; }
-      // The same hard limits the built-in planner applies; a must-see overrides them.
-      const must = brief.must.includes(spotId);
-      if (!must && spot.tripod === 'needed' && !gear.tripod && !gear.clamp) {
-        errors.push(`${where}: ${spot.name} needs a tripod, and the kit has neither a tripod nor a clamp.`);
-        continue;
-      }
-      if (!must && spot.hike && brief.walking === 'low') {
-        errors.push(`${where}: ${spot.name} is a real hike, and the brief asks for easy walking.`);
-        continue;
-      }
-      if (!must && spot.crowd === 3 && brief.avoidCrowds) {
-        errors.push(`${where}: ${spot.name} is one of the busiest spots, and the brief avoids crowds.`);
-        continue;
-      }
-      const workish = kind === 'work' || kind === 'arrive' || kind === 'movework';
-      if (scope?.rules?.workHours !== false && workish && spot.effort > 1) {
-        errors.push(`${where}: ${spot.name} is a ${Math.round(spot.minutes / 60)}-hour outing, too long for a work day.`);
-        continue;
-      }
-      if (scope?.rules?.workHours !== false && label === 'Before work' && spot.minutes > 90) {
-        errors.push(`${where}: ${spot.name} takes ${spot.minutes} minutes; a "Before work" stop gets 90.`);
-        continue;
-      }
-      if (!must && kind === 'movefree' && label === 'Morning' && spot.minutes > 120) {
-        errors.push(`${where}: ${spot.name} takes ${spot.minutes} minutes; the morning before the train gets 120.`);
-        continue;
-      }
-      if (scope?.rules?.halfDay !== false && spot.effort === 3 && !(kind === 'free' && (label === 'Morning' || label === 'Midday'))) {
-        errors.push(`${where}: ${spot.name} is a half-day trip; it only fits a "Morning" or "Midday" slot on a free day.`);
-        continue;
-      }
-      if (used.has(spotId)) { errors.push(`${where}: ${spot.name} is already planned on ${used.get(spotId)}; each spot can appear once.`); continue; }
-      used.set(spotId, date!);
-      const note = str(s.note);
-      days[i]!.picks.push({ label, city, spotId, score: 0, why: str(s.why) ?? '', ...(note ? { note } : {}) });
+      if (brief.avoid.some((a) => sameName(a, spot.name)) && breach(`${where}: ${spot.name} is on the skip list.`)) continue;
+      if (used.has(spot.id)) { errors.push(`${where}: ${spot.name} is already planned on ${used.get(spot.id)}; each spot appears once.`); continue; }
+      // Hard limits; a must-see overrides them.
+      const must = isMust(spot);
+      if (!must && spot.tripod === 'needed' && !gear.tripod && !gear.clamp && breach(`${where}: ${spot.name} needs a tripod, and the kit has neither a tripod nor a clamp.`)) continue;
+      if (!must && spot.hike && brief.walking === 'low' && breach(`${where}: ${spot.name} is a real hike, and the brief asks for easy walking.`)) continue;
+      if (!must && spot.crowd === 3 && brief.avoidCrowds && breach(`${where}: ${spot.name} is one of the busiest spots, and the brief avoids crowds.`)) continue;
+      if (rules.workHours !== false && workish && spot.effort > 1 && breach(`${where}: ${spot.name} is a ${Math.round(spot.minutes / 60)}-hour outing, too long for a work day.`)) continue;
+      if (rules.workHours !== false && label === 'Before work' && spot.minutes > 90 && breach(`${where}: ${spot.name} takes ${spot.minutes} minutes; a "Before work" stop gets 90.`)) continue;
+      if (!must && frame.kind === 'movefree' && label === 'Morning' && spot.minutes > 120 && breach(`${where}: ${spot.name} takes ${spot.minutes} minutes; the morning before travelling gets 120.`)) continue;
+      if (rules.halfDay !== false && spot.effort === 3 && !((frame.kind === 'free' || frame.kind === 'daytrip') && (label === 'Morning' || label === 'Midday'))
+        && breach(`${where}: ${spot.name} is a half-day trip; it only fits a "Morning" or "Midday" slot on a free day.`)) continue;
+      labels.add(label);
+      orders.set(SLOT[label]!.order, label);
+      used.set(spot.id, frame.date);
+      const note = text(s.note);
+      picks[i]!.push({ label, city, spotId: spot.id, why: text(s.why) ?? '', ...(note ? { note } : {}) });
     }
-    // Pace, as the prompt defines it: relaxed is one stop on a work day and two on a free one,
-    // balanced uses the suggested slots, packed may add one more.
-    const workDay = kind === 'work' || kind === 'arrive' || kind === 'movework';
-    const suggested = slotLabels(frame, i, brief).length;
-    const cap = brief.pace === 'relaxed' ? (workDay ? 1 : 2) : brief.pace === 'packed' ? suggested + 1 : suggested;
-    if (days[i]!.picks.length > cap) {
-      errors.push(`${date}: ${days[i]!.picks.length} stops, but a ${brief.pace} pace allows ${cap} that day.`);
-    }
+    const cap = stopCap(frame.kind, brief);
+    if (picks[i]!.length > cap) breach(`${frame.date}: ${picks[i]!.length} stops, but a ${brief.pace} pace allows ${cap} on a ${frame.kind} day.`);
   }
 
+  const plannedNames = [...used.keys()].map((id) => spotById.get(id)!);
   const skipped = Array.isArray(data.skipped)
     ? data.skipped.flatMap((x) => {
-        const id = isObj(x) ? str(x.spotId) : undefined;
-        // A planned spot can't also be "left out", and spots outside the prompt's cities were never offered.
-        return id && SPOT[id] && !used.has(id) && (!scope || scope.cities.includes(SPOT[id]!.city)) ? [{ spotId: id, reason: str((x as Record<string, unknown>).reason) ?? '' }] : [];
+        const name = isObj(x) ? text(x.name) : undefined;
+        return name && !plannedNames.some((s) => sameName(name, s.name)) ? [{ name, reason: text((x as Obj).reason) ?? '' }] : [];
       })
     : [];
-
-  // Every must-see in scope is planned, or explained in "skipped".
-  for (const id of brief.must) {
-    const spot = SPOT[id];
-    if (!spot || used.has(id) || (scope && !scope.cities.includes(spot.city))) continue;
-    const left = skipped.find((x) => x.spotId === id);
-    if (left) warnings.push(`Must-see ${spot.name} was left out${left.reason ? `: ${left.reason}` : '.'}`);
-    else errors.push(`Must-see ${spot.name} is missing. Plan it, or list it in "skipped" with the reason it can't fit.`);
+  for (const m of brief.must) {
+    if (plannedNames.some((s) => sameName(m, s.name) || (!!s.local && sameName(m, s.local)))) continue;
+    const left = skipped.find((x) => sameName(m, x.name));
+    warnings.push(left ? `Must-see "${m}" was left out${left.reason ? `: ${left.reason}` : '.'}` : `Must-see "${m}" is not in the plan.`);
   }
-
-  const missing = TRIP.days.filter((d) => !seenDates.has(d.date) && d.kind !== 'depart' && (!scope || scope.dates.has(d.date))).length;
-  if (missing) warnings.push(`${missing} trip day${missing > 1 ? 's are' : ' is'} missing and will be left empty.`);
+  const unused = spots.filter((s) => !used.has(s.id)).length;
+  if (unused) warnings.push(`${unused} spot${unused > 1 ? 's are' : ' is'} listed but not planned on any day.`);
   if (errors.length) return { plan: null, summary: '', errors, warnings };
-  return { plan: assemble(brief, days, skipped), summary: str(data.summary) ?? '', errors, warnings };
+
+  const trip: Trip = {
+    title: text(data.title) ?? brief.destination,
+    summary: text(data.summary) ?? '',
+    tz,
+    cities,
+    legs,
+    days: frames,
+    spots: spots.filter((s) => used.has(s.id)),
+    arrival,
+  };
+  return {
+    plan: assemble(trip, brief, picks, skipped),
+    summary: trip.summary,
+    errors,
+    warnings,
+    ...(!matches && !rules.lenient ? { adopted: { start: dates[0]!, days: dates.length } } : {}),
+  };
 }

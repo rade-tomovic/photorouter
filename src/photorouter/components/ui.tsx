@@ -1,5 +1,5 @@
 import type { ButtonHTMLAttributes, KeyboardEvent, ReactNode } from 'react';
-import { LIGHT_LABEL, TRIP } from '../lib/data';
+import { LIGHT_LABEL, TRIP, cityStyle } from '../lib/data';
 import type { CityId, Light } from '../lib/types';
 
 export const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(' ');
@@ -104,8 +104,8 @@ export function Seg<T extends string>({ value, options, onChange, label, disable
 
 export function CityChip({ city }: { city: CityId }) {
   return (
-    <span className={cx(`c-${city}`, 'inline-flex h-6 items-center rounded-full border border-current px-2.5 text-xs font-semibold text-(--c)')}>
-      {TRIP.cities[city].name}
+    <span style={cityStyle(city)} className="inline-flex h-6 items-center rounded-full border border-current px-2.5 text-xs font-semibold text-(--c)">
+      {TRIP.cities[city]?.name ?? city}
     </span>
   );
 }

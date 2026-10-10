@@ -1,0 +1,835 @@
+{
+  "id": "africa-morocco-imperial",
+  "continent": "africa",
+  "label": "Marrakesh, Fes and Chefchaouen",
+  "blurb": "10 days in March: medinas, souks and the blue town.",
+  "brief": {
+    "destination": "Morocco: Marrakesh, Fes and Chefchaouen",
+    "start": "2027-03-12",
+    "days": 10,
+    "text": "I want the medinas at street level: souks, craftsmen at work and the tiled courtyards of the old madrasas. I shoot close with a 35mm and a 50mm and would rather skip the busiest sights, apart from Jemaa el-Fnaa at night and the Chouara tannery. Evenings should end somewhere with lights and life.",
+    "gear": [
+      "ff-body",
+      "p35",
+      "p50",
+      "std-24-70",
+      "flash"
+    ],
+    "styles": [
+      "street",
+      "heritage",
+      "architecture",
+      "people",
+      "night"
+    ],
+    "pace": "relaxed",
+    "walking": "medium",
+    "work": false,
+    "fridayEarly": false,
+    "avoidCrowds": true,
+    "must": [
+      "Jemaa el-Fnaa",
+      "Chouara Tannery"
+    ],
+    "avoid": []
+  },
+  "answer": {
+    "version": "photorouter.plan/v2",
+    "title": "Morocco's medinas in March",
+    "summary": "Four nights in the Marrakesh medina, the ONCF train north to Fes for three nights, then a CTM bus into the Rif for two nights in Chefchaouen. The busiest monuments are left out, except Jemaa el-Fnaa and the Chouara tannery, and the days favour craft squares, madrasa courtyards and quiet blue lanes. Ask before photographing people everywhere on this route, and expect performers and some shopkeepers to ask for a tip.",
+    "timezone": "Africa/Casablanca",
+    "cities": [
+      {
+        "id": "rak",
+        "name": "Marrakesh",
+        "localName": "مراكش",
+        "lat": 31.6258,
+        "lng": -7.9892,
+        "base": {
+          "label": "Riad in Mouassine",
+          "lat": 31.6302,
+          "lng": -7.99
+        }
+      },
+      {
+        "id": "fez",
+        "name": "Fes",
+        "localName": "فاس",
+        "lat": 34.0347,
+        "lng": -5.0162,
+        "base": {
+          "label": "Riad near Bab Bou Jeloud and Talaa Kebira",
+          "lat": 34.0624,
+          "lng": -4.9845
+        }
+      },
+      {
+        "id": "chf",
+        "name": "Chefchaouen",
+        "localName": "شفشاون",
+        "lat": 35.1688,
+        "lng": -5.2684,
+        "base": {
+          "label": "Medina guesthouse near Outa el-Hammam",
+          "lat": 35.1689,
+          "lng": -5.2621
+        }
+      }
+    ],
+    "spots": [
+      {
+        "id": "jemaa-el-fnaa",
+        "cityId": "rak",
+        "name": "Jemaa el-Fnaa",
+        "localName": "ساحة جامع الفنا",
+        "lat": 31.6258,
+        "lng": -7.9892,
+        "light": "night",
+        "lights": [
+          "golden",
+          "night"
+        ],
+        "when": "After sunset, as the food stalls fire up",
+        "tip": "Work the edges of the food stall rows at 35mm for smoke and lamplight, then climb to one of the cafe terraces around the square for the whole scene. Performers and snake charmers expect a tip if you photograph them, so agree it first or keep them out of frame.",
+        "styles": [
+          "street",
+          "people",
+          "night"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 120,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "koutoubia",
+        "cityId": "rak",
+        "name": "Koutoubia Mosque",
+        "localName": "جامع الكتبية",
+        "lat": 31.6238,
+        "lng": -7.9934,
+        "light": "golden",
+        "lights": [
+          "day",
+          "golden"
+        ],
+        "when": "Late afternoon, from the gardens",
+        "tip": "Stand in the Koutoubia Gardens south of the mosque and frame the minaret between the palms as the stone turns orange. The mosque is closed to non-Muslims, so all pictures are from outside.",
+        "styles": [
+          "architecture",
+          "heritage"
+        ],
+        "focal": [
+          "standard",
+          "wide"
+        ],
+        "tripod": "no",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "ben-youssef",
+        "cityId": "rak",
+        "name": "Ben Youssef Madrasa",
+        "localName": "مدرسة ابن يوسف",
+        "lat": 31.632,
+        "lng": -7.986,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "At opening, before the tour groups",
+        "tip": "Shoot the courtyard and its long pool symmetrically from the entrance end at 24mm, then go up to the student cells and frame the courtyard through the small windows.",
+        "styles": [
+          "architecture",
+          "heritage"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 75,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "rahba-kedima",
+        "cityId": "rak",
+        "name": "Rahba Kedima",
+        "localName": "الرحبة القديمة",
+        "lat": 31.6289,
+        "lng": -7.9871,
+        "light": "golden",
+        "lights": [
+          "day",
+          "golden"
+        ],
+        "when": "Late afternoon, low sun across the square",
+        "tip": "Shoot the basket and hat sellers and the spice stalls with the 50mm from the square's edge, or from a cafe terrace above it for a top-down view. Ask stallholders before close portraits.",
+        "styles": [
+          "street",
+          "people"
+        ],
+        "focal": [
+          "standard",
+          "wide"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "el-badi",
+        "cityId": "rak",
+        "name": "El Badi Palace",
+        "localName": "قصر البديع",
+        "lat": 31.6182,
+        "lng": -7.9865,
+        "light": "day",
+        "lights": [
+          "day",
+          "golden"
+        ],
+        "when": "Morning, before the heat",
+        "tip": "Walk the ruined courtyard with its sunken gardens, then climb the corner terrace for the walls, the stork nests and the Atlas behind on a clear day.",
+        "styles": [
+          "heritage",
+          "architecture"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 90,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "place-ferblantiers",
+        "cityId": "rak",
+        "name": "Place des Ferblantiers",
+        "localName": null,
+        "lat": 31.6198,
+        "lng": -7.9848,
+        "light": "golden",
+        "lights": [
+          "day",
+          "golden"
+        ],
+        "when": "Late afternoon, as the lanterns are lit",
+        "tip": "Frame the metal lantern stacks in the workshop fronts around the square with the 35mm, and the tinsmiths at work with the 50mm once they agree to it.",
+        "styles": [
+          "street",
+          "people"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "jardin-secret",
+        "cityId": "rak",
+        "name": "Le Jardin Secret",
+        "localName": null,
+        "lat": 31.6309,
+        "lng": -7.9901,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "Morning, soon after opening",
+        "tip": "Shoot the carved pavilions across the Islamic garden from its corners, then climb the tower for the Mouassine rooftops and minarets.",
+        "styles": [
+          "architecture",
+          "heritage"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 75,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "bab-agnaou",
+        "cityId": "rak",
+        "name": "Bab Agnaou",
+        "localName": "باب أكناو",
+        "lat": 31.6174,
+        "lng": -7.9906,
+        "light": "golden",
+        "lights": [
+          "day",
+          "golden"
+        ],
+        "when": "Late afternoon, warm light on the carving",
+        "tip": "Stand back across the road to fit the whole carved arch at 35mm, then wait for a cyclist or a woman in a djellaba to pass through the opening.",
+        "styles": [
+          "architecture",
+          "heritage",
+          "street"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 30,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "bab-bou-jeloud",
+        "cityId": "fez",
+        "name": "Bab Bou Jeloud",
+        "localName": "باب بوجلود",
+        "lat": 34.0617,
+        "lng": -4.984,
+        "light": "night",
+        "lights": [
+          "golden",
+          "night"
+        ],
+        "when": "Blue hour into night, gate lit",
+        "tip": "Shoot the blue-tiled outer face from the square to the west, with the minarets of Bou Inania and Sidi Lazzaz framed in the arch. Brace on a wall and raise the ISO for the lit tiles.",
+        "styles": [
+          "architecture",
+          "night",
+          "street"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "al-attarine",
+        "cityId": "fez",
+        "name": "Al-Attarine Madrasa",
+        "localName": "مدرسة العطارين",
+        "lat": 34.0651,
+        "lng": -4.9736,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "Morning, when the courtyard is quiet",
+        "tip": "Use 24mm from the entrance for the zellige, carved stucco and cedar in one frame, then the 50mm for details of the bronze door fittings.",
+        "styles": [
+          "architecture",
+          "heritage"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "chouara-tannery",
+        "cityId": "fez",
+        "name": "Chouara Tannery",
+        "localName": "دار الدباغة شوارة",
+        "lat": 34.0659,
+        "lng": -4.971,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "Late morning, sun in the dye pits",
+        "tip": "Access to the viewing terraces is usually through one of the leather shops around the tannery, which expect you to browse or leave a small tip. Shoot the honeycomb of dye pits from the highest terrace at 24 to 35mm and the workers with the 70mm end.",
+        "styles": [
+          "heritage",
+          "people",
+          "street"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "bou-inania",
+        "cityId": "fez",
+        "name": "Bou Inania Madrasa",
+        "localName": "المدرسة البوعنانية",
+        "lat": 34.0622,
+        "lng": -4.9827,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "Morning, soft light in the courtyard",
+        "tip": "Frame the courtyard and the carved cedar facade from the entrance passage, and the minaret from the courtyard floor. Visitors use the courtyard only, not the prayer hall.",
+        "styles": [
+          "architecture",
+          "heritage"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "marinid-tombs",
+        "cityId": "fez",
+        "name": "Marinid Tombs",
+        "localName": "قبور المرينيين",
+        "lat": 34.0698,
+        "lng": -4.9794,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "day"
+        ],
+        "when": "Sunset over the medina",
+        "tip": "Sit on the slope below the ruined tombs and shoot across Fes el-Bali at 50 to 70mm as the call to prayer starts. Arrange a petit taxi back before dark, as the hill empties after sunset.",
+        "styles": [
+          "heritage",
+          "cityscape"
+        ],
+        "focal": [
+          "standard",
+          "wide"
+        ],
+        "tripod": "helps",
+        "minutes": 75,
+        "effort": 2,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "royal-palace-gates",
+        "cityId": "fez",
+        "name": "Royal Palace Gates, Fes el-Jdid",
+        "localName": "دار المخزن",
+        "lat": 34.0527,
+        "lng": -4.994,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "Morning, front-lit from the square",
+        "tip": "Shoot the seven brass doors and their zellige surround from Place des Alaouites, square on at 24mm. The palace is closed to visitors and guards keep people back from the doors.",
+        "styles": [
+          "architecture",
+          "heritage"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 30,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "spanish-mosque",
+        "cityId": "chf",
+        "name": "Spanish Mosque",
+        "localName": "الجامع الإسباني",
+        "lat": 35.1655,
+        "lng": -5.2556,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "day"
+        ],
+        "when": "Sunset over the blue town",
+        "tip": "Take the path up from Ras El Maa, about 20 to 30 minutes, and shoot the whole medina from beside the mosque as the walls turn from blue to pink. Use 50 to 70mm to compress the houses against the hills.",
+        "styles": [
+          "cityscape",
+          "heritage"
+        ],
+        "focal": [
+          "standard",
+          "wide"
+        ],
+        "tripod": "helps",
+        "minutes": 90,
+        "effort": 2,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "onsar-lanes",
+        "cityId": "chf",
+        "name": "Onsar quarter blue lanes",
+        "localName": "حي العنصر",
+        "lat": 35.1706,
+        "lng": -5.2581,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "Early morning, before the shops open",
+        "tip": "Wander the stepped lanes below Bab Onsar while they are still in shade and the blue is even, framing doors, pots and stairs at 35mm. These are homes, so keep residents and children out of frame unless they agree.",
+        "styles": [
+          "street",
+          "architecture",
+          "people"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 90,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "ras-el-maa",
+        "cityId": "chf",
+        "name": "Ras El Maa",
+        "localName": "رأس الماء",
+        "lat": 35.1715,
+        "lng": -5.2561,
+        "light": "day",
+        "lights": [
+          "day",
+          "golden"
+        ],
+        "when": "Late afternoon, at the spring",
+        "tip": "Shoot the cascade and the footbridge from the lane above, and the stream with the medina walls behind. Women still wash laundry at the stone basins; many prefer not to be photographed, so ask first.",
+        "styles": [
+          "people",
+          "street",
+          "heritage"
+        ],
+        "focal": [
+          "standard",
+          "wide"
+        ],
+        "tripod": "no",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "chefchaouen-kasbah",
+        "cityId": "chf",
+        "name": "Kasbah of Chefchaouen",
+        "localName": "قصبة شفشاون",
+        "lat": 35.1686,
+        "lng": -5.2618,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "Morning, at opening",
+        "tip": "Climb the kasbah tower for the Grand Mosque's octagonal minaret over Outa el-Hammam, then shoot the garden courtyard and the red walls from inside.",
+        "styles": [
+          "heritage",
+          "architecture"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      }
+    ],
+    "days": [
+      {
+        "date": "2027-03-12",
+        "cityId": "rak",
+        "title": "Into the medina",
+        "travel": {
+          "fromCityId": null,
+          "mode": "flight",
+          "label": "Flight from home to Marrakesh Menara",
+          "minutes": null
+        },
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Late afternoon",
+            "spotId": "koutoubia",
+            "why": "The minaret is a short walk from the riad and gives an easy first frame in warm light.",
+            "note": null
+          },
+          {
+            "label": "Night",
+            "spotId": "jemaa-el-fnaa",
+            "why": "Your must-see is at its best once the food stalls are lit and smoking, a few minutes on from the Koutoubia.",
+            "note": "Keep the camera on a short strap and carry small change for performers who agree to be photographed."
+          }
+        ]
+      },
+      {
+        "date": "2027-03-13",
+        "cityId": "rak",
+        "title": "Madrasa and spice square",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "ben-youssef",
+            "why": "The courtyard is one of the finest Saadian interiors in the city and quietest at opening.",
+            "note": null
+          },
+          {
+            "label": "Late afternoon",
+            "spotId": "rahba-kedima",
+            "why": "The square sits ten minutes south of the madrasa and suits close street work with the 50mm.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-03-14",
+        "cityId": "rak",
+        "title": "Kasbah ruins and lantern makers",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "el-badi",
+            "why": "A large ruined palace with few crowds, best walked before the midday heat.",
+            "note": null
+          },
+          {
+            "label": "Late afternoon",
+            "spotId": "place-ferblantiers",
+            "why": "The tinsmiths' square is next to El Badi and the lantern workshops glow as the light drops.",
+            "note": "Ask before photographing the craftsmen; a purchase or a few dirhams is usual."
+          }
+        ]
+      },
+      {
+        "date": "2027-03-15",
+        "cityId": "rak",
+        "title": "Garden courtyard and the kasbah gate",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "jardin-secret",
+            "why": "A restored riad garden in your Mouassine base, with a tower view over the rooftops.",
+            "note": null
+          },
+          {
+            "label": "Late afternoon",
+            "spotId": "bab-agnaou",
+            "why": "The carved sandstone gate catches the late sun and keeps the last Marrakesh day light and short.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-03-16",
+        "cityId": "fez",
+        "title": "North by train to Fes",
+        "travel": {
+          "fromCityId": "rak",
+          "mode": "train",
+          "label": "ONCF train",
+          "minutes": 420
+        },
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Night",
+            "spotId": "bab-bou-jeloud",
+            "why": "The lit gate is a few steps from the Fes riad and an easy first evening after the long train.",
+            "note": "Book a morning departure from Marrakesh so you reach Fes by late afternoon."
+          }
+        ]
+      },
+      {
+        "date": "2027-03-17",
+        "cityId": "fez",
+        "title": "Madrasa tiles and the tannery",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "al-attarine",
+            "why": "The most detailed madrasa in Fes, quiet in the first hour.",
+            "note": null
+          },
+          {
+            "label": "Midday",
+            "spotId": "chouara-tannery",
+            "why": "Your must-see is a short walk from Al-Attarine, and the high sun lights the dye pits.",
+            "note": "Shops hand out mint sprigs for the smell; agree any terrace fee before going up."
+          }
+        ]
+      },
+      {
+        "date": "2027-03-18",
+        "cityId": "fez",
+        "title": "Bou Inania and sunset over Fes el-Bali",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "bou-inania",
+            "why": "The madrasa is next to your base and its courtyard is calm in the morning.",
+            "note": null
+          },
+          {
+            "label": "Sunset",
+            "spotId": "marinid-tombs",
+            "why": "The classic view over the whole medina at its best light, with the evening call to prayer.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-03-19",
+        "cityId": "chf",
+        "title": "Palace gates, then the Rif",
+        "travel": {
+          "fromCityId": "fez",
+          "mode": "bus",
+          "label": "CTM bus",
+          "minutes": 240
+        },
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "royal-palace-gates",
+            "why": "A short stop on the way to the bus station for the most photographed doors in Morocco.",
+            "note": "Take a petit taxi from the gates to the CTM station; book the bus a day ahead."
+          },
+          {
+            "label": "Sunset",
+            "spotId": "spanish-mosque",
+            "why": "The best overview of the blue town, timed for the first evening after the bus.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-03-20",
+        "cityId": "chf",
+        "title": "Blue lanes and the spring",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "onsar-lanes",
+            "why": "The upper lanes are empty and evenly lit early, ideal for the 35mm.",
+            "note": null
+          },
+          {
+            "label": "Late afternoon",
+            "spotId": "ras-el-maa",
+            "why": "Village life at the spring at the top of the medina, a short walk from the morning lanes.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-03-21",
+        "cityId": "chf",
+        "title": "Kasbah before leaving",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "chefchaouen-kasbah",
+            "why": "The tower gives a last view over Outa el-Hammam before the onward journey.",
+            "note": "Buses and grand taxis to Tangier take about three hours if you fly home from there."
+          }
+        ]
+      }
+    ],
+    "skipped": [
+      {
+        "name": "Jardin Majorelle",
+        "reason": "One of the busiest sites in Marrakesh, with timed tickets and long queues."
+      },
+      {
+        "name": "Bahia Palace",
+        "reason": "Crowded with tour groups all day, and the brief avoids crowds."
+      },
+      {
+        "name": "Saadian Tombs",
+        "reason": "A short queue-and-peek visit to one small chamber, among the busiest stops in the city."
+      },
+      {
+        "name": "Volubilis and Meknes",
+        "reason": "A full day trip from Fes that does not fit a relaxed three nights."
+      }
+    ]
+  }
+}

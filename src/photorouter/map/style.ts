@@ -121,7 +121,7 @@ export function decorate(style: StyleSpecification, theme: Theme, basemap: Basem
 
   style.sources['pr-hill'] = { type: 'raster-dem', tiles: DEM_TILES, tileSize: 512, encoding: 'terrarium', maxzoom: 12, attribution: DEM_ATTR };
   style.sources['pr-terrain'] = { type: 'raster-dem', tiles: DEM_TILES, tileSize: 512, encoding: 'terrarium', maxzoom: 13 };
-  for (const id of ['pr-legs', 'pr-trail', 'pr-walk', 'pr-walk-active', 'pr-leg-active', 'pr-stations']) {
+  for (const id of ['pr-legs', 'pr-trail', 'pr-walk', 'pr-walk-active', 'pr-leg-active']) {
     style.sources[id] = { type: 'geojson', data: data[id] ?? empty, lineMetrics: id === 'pr-leg-active' };
   }
 
@@ -198,27 +198,11 @@ export function decorate(style: StyleSpecification, theme: Theme, basemap: Basem
     },
   ];
 
-  const stations: LayerSpecification[] = [
-    {
-      id: 'pr-stations-dot', type: 'circle', source: 'pr-stations', minzoom: 7.5,
-      paint: { 'circle-radius': 4, 'circle-color': p.surface, 'circle-stroke-color': p.ink, 'circle-stroke-width': 1.5 },
-    },
-    {
-      id: 'pr-stations-label', type: 'symbol', source: 'pr-stations', minzoom: 8.5,
-      layout: {
-        'text-field': ['get', 'name'], 'text-font': ['Noto Sans Regular'], 'text-size': 11,
-        'text-offset': [0.8, 0], 'text-anchor': 'left', 'text-optional': true,
-      },
-      paint: { 'text-color': p.muted, 'text-halo-color': p.land, 'text-halo-width': 1.5 },
-    },
-  ];
-
   layers.splice(firstLine >= 0 ? firstLine : 1, 0, hill);
   // Routes go above every road, bridge and building but under the labels.
   let top = layers.length;
   while (top > 0 && layers[top - 1]!.type === 'symbol') top--;
   const hasBuildings = layers.some((l) => l.type === 'fill-extrusion');
   layers.splice(top, 0, ...(hasBuildings ? [] : [buildings]), ...overlay);
-  layers.push(...stations);
   return style;
 }

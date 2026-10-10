@@ -1,0 +1,1386 @@
+{
+  "id": "asia-tokyo-kyoto",
+  "continent": "asia",
+  "label": "Tokyo and Kyoto",
+  "blurb": "13 days in November: neon after work, temples and maples on weekends.",
+  "brief": {
+    "destination": "Tokyo and Kyoto",
+    "start": "2027-11-12",
+    "days": 13,
+    "text": "I work remotely during the week, so I shoot before and after work: neon streets, skylines and long exposures in Tokyo. The weekends are for the big outings, Kyoto's temples and the autumn maples.",
+    "gear": [
+      "ff-body",
+      "wz-16-35",
+      "p35",
+      "tz-70-200",
+      "tripod",
+      "nd10"
+    ],
+    "styles": [
+      "night",
+      "street",
+      "cityscape",
+      "architecture",
+      "heritage",
+      "long-exposure"
+    ],
+    "pace": "balanced",
+    "walking": "medium",
+    "work": true,
+    "fridayEarly": true,
+    "avoidCrowds": false,
+    "must": [
+      "Shibuya Crossing",
+      "Fushimi Inari Taisha"
+    ],
+    "avoid": []
+  },
+  "answer": {
+    "version": "photorouter.plan/v2",
+    "title": "Tokyo and Kyoto in November",
+    "summary": "Seven nights in Shinjuku for neon, skylines and Tokyo's temples, then the Tokaido Shinkansen to Kyoto on Friday evening for six nights in Gion. Weekdays keep to short walk-up stops before 08:15 and after 18:00, and both weekends carry the big outings: Asakusa and Shibuya in Tokyo, Fushimi Inari, Higashiyama and Arashiyama in the Kyoto autumn colour.",
+    "timezone": "Asia/Tokyo",
+    "cities": [
+      {
+        "id": "tyo",
+        "name": "Tokyo",
+        "localName": "東京",
+        "lat": 35.6812,
+        "lng": 139.7671,
+        "base": {
+          "label": "Shinjuku, by the east exit",
+          "lat": 35.691,
+          "lng": 139.7015
+        }
+      },
+      {
+        "id": "kyo",
+        "name": "Kyoto",
+        "localName": "京都",
+        "lat": 35.0116,
+        "lng": 135.7681,
+        "base": {
+          "label": "Gion, near Shijo Ohashi",
+          "lat": 35.0039,
+          "lng": 135.773
+        }
+      }
+    ],
+    "spots": [
+      {
+        "id": "omoide-yokocho",
+        "cityId": "tyo",
+        "name": "Omoide Yokocho",
+        "localName": "思い出横丁",
+        "lat": 35.693,
+        "lng": 139.6996,
+        "light": "night",
+        "lights": [
+          "night"
+        ],
+        "when": "After dark, when the grills are going",
+        "tip": "Work the main lane from the north end so lanterns and smoke stack up toward the tracks. Ask before photographing anyone at the counters and keep to the 35mm wide open.",
+        "styles": [
+          "street",
+          "night"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "kabukicho-gate",
+        "cityId": "tyo",
+        "name": "Kabukicho Ichibangai Gate",
+        "localName": "歌舞伎町一番街",
+        "lat": 35.6939,
+        "lng": 139.701,
+        "light": "night",
+        "lights": [
+          "night"
+        ],
+        "when": "Late evening",
+        "tip": "Frame the red neon arch from across Yasukuni-dori with traffic in the foreground, then walk under it for signage shots up the street. Keep the camera visible and avoid photographing touts and hosts.",
+        "styles": [
+          "street",
+          "night"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "sensoji",
+        "cityId": "tyo",
+        "name": "Senso-ji",
+        "localName": "浅草寺",
+        "lat": 35.7139,
+        "lng": 139.7967,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "night",
+          "day"
+        ],
+        "when": "First light, before the stalls open",
+        "tip": "Stand at the top of Nakamise-dori facing north to frame the Hozomon gate with the five-storey pagoda to its left. The grounds are open around the clock, so you can work the blue light before the first visitors.",
+        "styles": [
+          "heritage",
+          "architecture",
+          "long-exposure"
+        ],
+        "focal": [
+          "wide",
+          "ultrawide"
+        ],
+        "tripod": "helps",
+        "minutes": 90,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "yanaka-ginza",
+        "cityId": "tyo",
+        "name": "Yanaka Ginza",
+        "localName": "谷中銀座",
+        "lat": 35.7276,
+        "lng": 139.766,
+        "light": "day",
+        "lights": [
+          "day",
+          "golden"
+        ],
+        "when": "Afternoon on a weekend",
+        "tip": "Start at the Yuyake Dandan steps at the east end and shoot down into the shopping street, then work the side lanes of Yanaka for old wooden houses and temple walls.",
+        "styles": [
+          "street",
+          "heritage"
+        ],
+        "focal": [
+          "wide",
+          "tele"
+        ],
+        "tripod": "no",
+        "minutes": 90,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "shibuya-sky",
+        "cityId": "tyo",
+        "name": "Shibuya Sky",
+        "localName": "渋谷スカイ",
+        "lat": 35.6583,
+        "lng": 139.7023,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "night",
+          "day"
+        ],
+        "when": "Sunset into the first city lights",
+        "tip": "Book a timed sunset ticket ahead; bags and tripods go in lockers before the open roof. The west edge faces Mount Fuji on clear November evenings, and the corner above the crossing gives the classic top-down view.",
+        "styles": [
+          "cityscape",
+          "night"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide",
+          "tele"
+        ],
+        "tripod": "banned",
+        "minutes": 90,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "shibuya-crossing",
+        "cityId": "tyo",
+        "name": "Shibuya Crossing",
+        "localName": "渋谷スクランブル交差点",
+        "lat": 35.6595,
+        "lng": 139.7005,
+        "light": "night",
+        "lights": [
+          "night",
+          "golden",
+          "day"
+        ],
+        "when": "After dark on a weekend",
+        "tip": "Shoot low and wide from the Hachiko corner as the lights turn green, then go up to the glass corridor by the Myth of Tomorrow mural between the JR station and Mark City for an elevated view. Use slow shutter speeds braced on the window ledge for motion blur.",
+        "styles": [
+          "street",
+          "night",
+          "cityscape",
+          "long-exposure"
+        ],
+        "focal": [
+          "wide",
+          "tele"
+        ],
+        "tripod": "no",
+        "minutes": 75,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "icho-namiki",
+        "cityId": "tyo",
+        "name": "Jingu Gaien Ginkgo Avenue",
+        "localName": "神宮外苑いちょう並木",
+        "lat": 35.6737,
+        "lng": 139.7201,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "day"
+        ],
+        "when": "Early morning, before the crowds",
+        "tip": "Stand on the centre line of the avenue near Aoyama-dori and shoot north with the 70-200 to stack the two rows of trees toward the Picture Gallery dome. The leaves usually reach full yellow later in November, so frame for the symmetry of the avenue.",
+        "styles": [
+          "cityscape",
+          "architecture"
+        ],
+        "focal": [
+          "tele",
+          "wide"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "forum-glass",
+        "cityId": "tyo",
+        "name": "Tokyo International Forum Glass Building",
+        "localName": "東京国際フォーラム ガラス棟",
+        "lat": 35.6767,
+        "lng": 139.7644,
+        "light": "day",
+        "lights": [
+          "day",
+          "night"
+        ],
+        "when": "Daytime, when light falls through the roof",
+        "tip": "Take the lift to the top walkway and shoot the ribbed steel roof and ramps with the 16-35 from either end. The public atrium is free to enter.",
+        "styles": [
+          "architecture"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "tokyo-station",
+        "cityId": "tyo",
+        "name": "Tokyo Station Marunouchi Building",
+        "localName": "東京駅丸の内駅舎",
+        "lat": 35.6812,
+        "lng": 139.766,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "night"
+        ],
+        "when": "Blue hour, as the facade lights come on",
+        "tip": "Set up on the Marunouchi plaza on the Gyoko-dori axis to get the full red-brick facade with both domes. Keep the tripod tight and out of the walkways.",
+        "styles": [
+          "architecture",
+          "night",
+          "heritage",
+          "long-exposure"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "zojoji-tower",
+        "cityId": "tyo",
+        "name": "Zojo-ji and Tokyo Tower",
+        "localName": "増上寺",
+        "lat": 35.6573,
+        "lng": 139.7483,
+        "light": "night",
+        "lights": [
+          "night",
+          "golden"
+        ],
+        "when": "After dark, when the tower is lit",
+        "tip": "Stand in front of the main hall and frame its roofline with Tokyo Tower rising behind it. A few seconds of exposure smooths out visitors crossing the courtyard.",
+        "styles": [
+          "night",
+          "heritage",
+          "cityscape",
+          "long-exposure"
+        ],
+        "focal": [
+          "wide",
+          "tele"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "hie-torii",
+        "cityId": "tyo",
+        "name": "Hie Shrine Torii Steps",
+        "localName": "日枝神社 稲荷参道",
+        "lat": 35.675,
+        "lng": 139.739,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "day"
+        ],
+        "when": "Early morning, from the gate opening",
+        "tip": "Climb the Inari stairway up from Sotobori-dori on the Akasaka side and shoot back down through the red torii toward the office towers. The 35mm keeps the tunnel tight and the lines straight.",
+        "styles": [
+          "heritage",
+          "architecture"
+        ],
+        "focal": [
+          "wide",
+          "ultrawide"
+        ],
+        "tripod": "helps",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "tmg-observatory",
+        "cityId": "tyo",
+        "name": "Tokyo Metropolitan Government Building Observatory",
+        "localName": "東京都庁 展望室",
+        "lat": 35.6895,
+        "lng": 139.6917,
+        "light": "night",
+        "lights": [
+          "night",
+          "golden"
+        ],
+        "when": "After dark, free entry",
+        "tip": "Ride the lift to the 45th-floor observatory and shoot east over Shinjuku's towers. Tripods are not allowed, so press the lens hood against the glass and cover reflections with a dark jacket.",
+        "styles": [
+          "cityscape",
+          "night"
+        ],
+        "focal": [
+          "wide",
+          "tele"
+        ],
+        "tripod": "banned",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "cocoon-tower",
+        "cityId": "tyo",
+        "name": "Mode Gakuen Cocoon Tower",
+        "localName": "モード学園コクーンタワー",
+        "lat": 35.6916,
+        "lng": 139.6969,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "night"
+        ],
+        "when": "Blue hour before sunrise",
+        "tip": "Shoot up from the plaza at the base with the 16-35 to bend the lattice against the sky, then step back toward Shinjuku Station for the tower among the neighbouring skyscrapers.",
+        "styles": [
+          "architecture",
+          "cityscape"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide"
+        ],
+        "tripod": "helps",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "akihabara",
+        "cityId": "tyo",
+        "name": "Akihabara Electric Town",
+        "localName": "秋葉原電気街",
+        "lat": 35.6995,
+        "lng": 139.7714,
+        "light": "night",
+        "lights": [
+          "night"
+        ],
+        "when": "Evening, when the signs are brightest",
+        "tip": "Walk Chuo-dori on the west pavement and shoot the stacked signs on the arcade buildings with the 70-200 to compress them. The side streets off Chuo-dori give tighter neon frames.",
+        "styles": [
+          "street",
+          "night"
+        ],
+        "focal": [
+          "tele",
+          "wide"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "ginza-wako",
+        "cityId": "tyo",
+        "name": "Ginza 4-chome Crossing",
+        "localName": "銀座四丁目交差点",
+        "lat": 35.6712,
+        "lng": 139.765,
+        "light": "night",
+        "lights": [
+          "night",
+          "day"
+        ],
+        "when": "Early evening",
+        "tip": "Frame the Wako clock tower on the corner from across the crossing, then use the pedestrian lights for shutter-drag shots of cars along Chuo-dori.",
+        "styles": [
+          "street",
+          "architecture",
+          "night"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "azuma-bridge",
+        "cityId": "tyo",
+        "name": "Azuma Bridge",
+        "localName": "吾妻橋",
+        "lat": 35.7101,
+        "lng": 139.7989,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "night"
+        ],
+        "when": "Before sunrise",
+        "tip": "Stand on the Asakusa side of the bridge facing east to frame the Asahi Beer Hall, its golden flame and Tokyo Skytree over the river. Use the ND10 once the sky brightens to smooth the water.",
+        "styles": [
+          "cityscape",
+          "long-exposure"
+        ],
+        "focal": [
+          "wide",
+          "tele"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "nezu-shrine",
+        "cityId": "tyo",
+        "name": "Nezu Shrine",
+        "localName": "根津神社",
+        "lat": 35.7201,
+        "lng": 139.7602,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "day"
+        ],
+        "when": "Early morning, at opening",
+        "tip": "Walk up the small torii tunnel of Otome Inari on the slope behind the pond and shoot along it with the 35mm. The lacquered main gate is the second frame on the way out.",
+        "styles": [
+          "heritage",
+          "architecture"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "jukkenbashi",
+        "cityId": "tyo",
+        "name": "Jukkenbashi Bridge",
+        "localName": "十間橋",
+        "lat": 35.7083,
+        "lng": 139.8181,
+        "light": "night",
+        "lights": [
+          "night",
+          "golden"
+        ],
+        "when": "Calm evenings after dark",
+        "tip": "Set up on the bridge facing west to catch Tokyo Skytree reflected in the Kitajukken River. Wait for still water and keep to the edge of the pavement.",
+        "styles": [
+          "night",
+          "cityscape",
+          "long-exposure"
+        ],
+        "focal": [
+          "wide"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "gion-shirakawa",
+        "cityId": "kyo",
+        "name": "Gion Shirakawa and Tatsumi Bridge",
+        "localName": "祇園白川 巽橋",
+        "lat": 35.0056,
+        "lng": 135.7745,
+        "light": "night",
+        "lights": [
+          "night",
+          "dawn"
+        ],
+        "when": "Late evening, when the lane is quiet",
+        "tip": "Shoot from the stone path along the canal to frame Tatsumi Bridge, the little shrine and the lit teahouses. Keep to the public street and leave the private alleys alone.",
+        "styles": [
+          "heritage",
+          "night",
+          "long-exposure"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "fushimi-inari",
+        "cityId": "kyo",
+        "name": "Fushimi Inari Taisha",
+        "localName": "伏見稲荷大社",
+        "lat": 34.9669,
+        "lng": 135.775,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "day"
+        ],
+        "when": "Sunrise, before the tour groups",
+        "tip": "Pass the main shrine fast and climb past the Senbon Torii toward Yotsutsuji, where the tunnels empty out. Shoot along the gates with the 70-200 to compress them, and take the view over the city from the Yotsutsuji junction.",
+        "styles": [
+          "heritage",
+          "architecture"
+        ],
+        "focal": [
+          "tele",
+          "wide"
+        ],
+        "tripod": "helps",
+        "minutes": 150,
+        "effort": 2,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "kenninji",
+        "cityId": "kyo",
+        "name": "Kennin-ji",
+        "localName": "建仁寺",
+        "lat": 35.0003,
+        "lng": 135.7737,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "Afternoon",
+        "tip": "Photography is permitted inside: shoot the twin dragon ceiling in the Hatto straight up with the 16-35, then the raked gravel garden framed by the open shoji.",
+        "styles": [
+          "heritage",
+          "architecture"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide"
+        ],
+        "tripod": "no",
+        "minutes": 75,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "yasaka-pagoda",
+        "cityId": "kyo",
+        "name": "Yasaka Pagoda (Hokan-ji)",
+        "localName": "八坂の塔（法観寺）",
+        "lat": 34.9985,
+        "lng": 135.7793,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "dawn",
+          "night"
+        ],
+        "when": "Blue hour, as the lamps come on",
+        "tip": "Stand on Yasaka-dori below the pagoda and shoot uphill so the slope and old houses lead to the tower. A longer lens from further down stacks the roofs.",
+        "styles": [
+          "heritage",
+          "architecture",
+          "street"
+        ],
+        "focal": [
+          "tele",
+          "wide"
+        ],
+        "tripod": "no",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "kiyomizu-dera",
+        "cityId": "kyo",
+        "name": "Kiyomizu-dera Autumn Light-up",
+        "localName": "清水寺",
+        "lat": 34.9947,
+        "lng": 135.785,
+        "light": "night",
+        "lights": [
+          "night",
+          "day",
+          "golden"
+        ],
+        "when": "Autumn evening illumination",
+        "tip": "Walk past the main stage to the terrace by Okunoin and look back at the stage over the lit maples. Tripods are not allowed, so brace on the railing; last entry is before the 21:00 closing.",
+        "styles": [
+          "heritage",
+          "night",
+          "architecture"
+        ],
+        "focal": [
+          "wide",
+          "tele"
+        ],
+        "tripod": "banned",
+        "minutes": 90,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "bamboo-grove",
+        "cityId": "kyo",
+        "name": "Arashiyama Bamboo Grove",
+        "localName": "嵐山 竹林の小径",
+        "lat": 35.0169,
+        "lng": 135.6716,
+        "light": "dawn",
+        "lights": [
+          "dawn"
+        ],
+        "when": "Sunrise, before 8:00",
+        "tip": "Walk the path toward Okochi Sanso and shoot up the stems with the 16-35 where the path curves. The light is low under the canopy, so raise the ISO.",
+        "styles": [
+          "heritage",
+          "architecture"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 2,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "tenryuji",
+        "cityId": "kyo",
+        "name": "Tenryu-ji",
+        "localName": "天龍寺",
+        "lat": 35.0159,
+        "lng": 135.6732,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "Midday in the autumn colour",
+        "tip": "Shoot the Sogenchi pond from the veranda of the main hall with the borrowed hills of Arashiyama behind. Then walk the garden path for maples over the stone groups.",
+        "styles": [
+          "heritage",
+          "architecture"
+        ],
+        "focal": [
+          "wide",
+          "tele"
+        ],
+        "tripod": "no",
+        "minutes": 75,
+        "effort": 2,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "togetsukyo",
+        "cityId": "kyo",
+        "name": "Togetsukyo Bridge",
+        "localName": "渡月橋",
+        "lat": 35.0129,
+        "lng": 135.6778,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "day"
+        ],
+        "when": "Late afternoon, into sunset",
+        "tip": "Shoot from the north bank just downstream of the bridge so it leads across the river to the coloured slopes of Arashiyama, with the low sun rimming the trees. The ND10 smooths the river surface.",
+        "styles": [
+          "heritage",
+          "long-exposure",
+          "cityscape"
+        ],
+        "focal": [
+          "wide",
+          "tele"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 2,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "pontocho",
+        "cityId": "kyo",
+        "name": "Pontocho",
+        "localName": "先斗町",
+        "lat": 35.0055,
+        "lng": 135.7711,
+        "light": "night",
+        "lights": [
+          "night"
+        ],
+        "when": "Evening, as the lanterns are lit",
+        "tip": "Shoot down the alley from the Shijo end with the 35mm wide open so the lanterns stack up. The lane is narrow, so step into doorways to let people pass and do not photograph guests or maiko without asking.",
+        "styles": [
+          "street",
+          "night",
+          "heritage"
+        ],
+        "focal": [
+          "wide",
+          "tele"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "kamo-delta",
+        "cityId": "kyo",
+        "name": "Kamo River Delta",
+        "localName": "鴨川デルタ",
+        "lat": 35.0301,
+        "lng": 135.7717,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "golden"
+        ],
+        "when": "Sunrise",
+        "tip": "Stand at the tip of the delta where the Kamo and Takano rivers meet and use the turtle stepping stones as the foreground, with the eastern hills behind. A long exposure with the ND10 smooths the water once the sky brightens.",
+        "styles": [
+          "long-exposure",
+          "cityscape"
+        ],
+        "focal": [
+          "wide",
+          "ultrawide"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "eikando",
+        "cityId": "kyo",
+        "name": "Eikando Autumn Light-up",
+        "localName": "永観堂（禅林寺）",
+        "lat": 35.014,
+        "lng": 135.795,
+        "light": "night",
+        "lights": [
+          "night",
+          "day"
+        ],
+        "when": "Autumn evening illumination",
+        "tip": "Follow the route to the Hojo pond and shoot the lit maples reflected in the water from the bridge. Tripods are not allowed, so use the 35mm wide open and a high ISO.",
+        "styles": [
+          "heritage",
+          "night"
+        ],
+        "focal": [
+          "wide",
+          "tele"
+        ],
+        "tripod": "banned",
+        "minutes": 90,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "yasaka-shrine",
+        "cityId": "kyo",
+        "name": "Yasaka Shrine",
+        "localName": "八坂神社",
+        "lat": 35.0037,
+        "lng": 135.7775,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "night"
+        ],
+        "when": "Dawn, before the visitors",
+        "tip": "Frame the vermilion west gate from across the Higashioji crossing at the end of Shijo-dori, then walk in to the dance hall hung with rows of paper lanterns. The grounds are open all night.",
+        "styles": [
+          "heritage",
+          "architecture"
+        ],
+        "focal": [
+          "wide",
+          "ultrawide"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "kyoto-station",
+        "cityId": "kyo",
+        "name": "Kyoto Station Building",
+        "localName": "京都駅ビル",
+        "lat": 34.9853,
+        "lng": 135.7585,
+        "light": "night",
+        "lights": [
+          "night"
+        ],
+        "when": "After dark",
+        "tip": "Climb the grand staircase on the west side for the steel and glass atrium, then cross the Skyway walkway high above the concourse for Kyoto Tower through the glass.",
+        "styles": [
+          "architecture",
+          "night"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "sannenzaka",
+        "cityId": "kyo",
+        "name": "Sannenzaka and Ninenzaka",
+        "localName": "産寧坂・二寧坂",
+        "lat": 34.9975,
+        "lng": 135.781,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "golden"
+        ],
+        "when": "First light, before the shops open",
+        "tip": "Start at the top of the Sannenzaka steps and shoot down the stone stairs and wooden shopfronts, then follow Ninenzaka north. By 8:00 the first visitors arrive.",
+        "styles": [
+          "heritage",
+          "street",
+          "architecture"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "hanamikoji",
+        "cityId": "kyo",
+        "name": "Hanamikoji",
+        "localName": "花見小路",
+        "lat": 35.0025,
+        "lng": 135.7748,
+        "light": "night",
+        "lights": [
+          "night",
+          "golden"
+        ],
+        "when": "Early evening",
+        "tip": "Shoot the teahouse facades and lanterns along the main street south of Shijo. Stay on the main street: the private side lanes are closed to tourists, and maiko should not be photographed without permission.",
+        "styles": [
+          "street",
+          "heritage",
+          "night"
+        ],
+        "focal": [
+          "wide",
+          "tele"
+        ],
+        "tripod": "no",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      }
+    ],
+    "days": [
+      {
+        "date": "2027-11-12",
+        "cityId": "tyo",
+        "title": "Arrival and Shinjuku neon",
+        "travel": {
+          "fromCityId": null,
+          "mode": "flight",
+          "label": "Flight to Tokyo Haneda",
+          "minutes": null
+        },
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Night",
+            "spotId": "omoide-yokocho",
+            "why": "A short walk from the hotel, the smoky lanes are an easy first night of street work after the flight.",
+            "note": null
+          },
+          {
+            "label": "Late",
+            "spotId": "kabukicho-gate",
+            "why": "The neon arch is at full strength late in the evening and sits a few minutes from Omoide Yokocho.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-11-13",
+        "cityId": "tyo",
+        "title": "Asakusa at dawn, Shibuya at night",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "sensoji",
+            "why": "Senso-ji is empty and still lit at first light, the only time to shoot it without crowds.",
+            "note": "Take the first Ginza Line train toward Asakusa."
+          },
+          {
+            "label": "Afternoon",
+            "spotId": "yanaka-ginza",
+            "why": "Old-Tokyo shopping street and lanes for an afternoon of relaxed street work.",
+            "note": null
+          },
+          {
+            "label": "Sunset",
+            "spotId": "shibuya-sky",
+            "why": "The open roof gives the widest sunset view over Tokyo, with Mount Fuji on a clear evening.",
+            "note": "Book the sunset time slot as soon as tickets open."
+          },
+          {
+            "label": "Night",
+            "spotId": "shibuya-crossing",
+            "why": "Saturday night brings the biggest crowds at the crossing, right below the rooftop.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-11-14",
+        "cityId": "tyo",
+        "title": "Ginkgo, glass and Tokyo Tower",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "icho-namiki",
+            "why": "The avenue is quiet early on a Sunday and the tele lens turns it into a corridor of trees.",
+            "note": null
+          },
+          {
+            "label": "Afternoon",
+            "spotId": "forum-glass",
+            "why": "A free, covered architecture subject with strong lines whatever the weather.",
+            "note": null
+          },
+          {
+            "label": "Blue hour",
+            "spotId": "tokyo-station",
+            "why": "The red-brick facade lights up against a blue sky a short walk from the Forum.",
+            "note": null
+          },
+          {
+            "label": "Night",
+            "spotId": "zojoji-tower",
+            "why": "Temple and tower in one frame, best after dark when the tower is lit.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-11-15",
+        "cityId": "tyo",
+        "title": "Torii before work, skyline after",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Before work",
+            "spotId": "hie-torii",
+            "why": "A compact torii tunnel that fits in under an hour before the work day.",
+            "note": null
+          },
+          {
+            "label": "Night",
+            "spotId": "tmg-observatory",
+            "why": "A free night skyline a short walk from the hotel, open into the evening.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-11-16",
+        "cityId": "tyo",
+        "title": "Shinjuku towers and Akihabara neon",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Before work",
+            "spotId": "cocoon-tower",
+            "why": "The lattice tower is a short walk from the hotel and takes the dawn sky well.",
+            "note": null
+          },
+          {
+            "label": "After work",
+            "spotId": "akihabara",
+            "why": "The arcade signs are at their brightest straight after work.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-11-17",
+        "cityId": "tyo",
+        "title": "Sumida dawn, Ginza evening",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Before work",
+            "spotId": "azuma-bridge",
+            "why": "Dawn over the Sumida with Skytree and the river for a long exposure before the day starts.",
+            "note": null
+          },
+          {
+            "label": "After work",
+            "spotId": "ginza-wako",
+            "why": "A classic Tokyo corner, one direct Marunouchi Line ride from Shinjuku.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-11-18",
+        "cityId": "tyo",
+        "title": "Nezu Shrine and Skytree reflections",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Before work",
+            "spotId": "nezu-shrine",
+            "why": "A quiet shrine with a small torii tunnel that rarely has visitors at opening.",
+            "note": null
+          },
+          {
+            "label": "Night",
+            "spotId": "jukkenbashi",
+            "why": "The best reflection of Skytree in the city, on a calm weekday evening.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-11-19",
+        "cityId": "kyo",
+        "title": "Shinkansen to Kyoto after work",
+        "travel": {
+          "fromCityId": "tyo",
+          "mode": "train",
+          "label": "Tokaido Shinkansen",
+          "minutes": 135
+        },
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Late",
+            "spotId": "gion-shirakawa",
+            "why": "Gion is near empty late on arrival night and the canal lanterns are still lit.",
+            "note": "Check out in the morning and take a Nozomi from Tokyo Station around 18:30 to reach Kyoto before 21:00."
+          }
+        ]
+      },
+      {
+        "date": "2027-11-20",
+        "cityId": "kyo",
+        "title": "Fushimi Inari and Higashiyama",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "fushimi-inari",
+            "why": "At sunrise the torii tunnels are empty enough to shoot clean frames, which is impossible after 9:00.",
+            "note": "JR Nara Line to Inari Station, about five minutes from Kyoto Station."
+          },
+          {
+            "label": "Afternoon",
+            "spotId": "kenninji",
+            "why": "One of the few Kyoto temples that allows photography inside, close to the hotel.",
+            "note": null
+          },
+          {
+            "label": "Blue hour",
+            "spotId": "yasaka-pagoda",
+            "why": "The pagoda and the lamps on Yasaka-dori balance best against a blue sky.",
+            "note": null
+          },
+          {
+            "label": "Night",
+            "spotId": "kiyomizu-dera",
+            "why": "The autumn light-up puts the main stage over glowing maples, a short climb from the pagoda.",
+            "note": "The autumn evening viewing runs from mid-November; check the dates when booking."
+          }
+        ]
+      },
+      {
+        "date": "2027-11-21",
+        "cityId": "kyo",
+        "title": "Arashiyama in autumn colour",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "bamboo-grove",
+            "why": "The grove only works before the crowds, so Sunday starts at sunrise.",
+            "note": "JR Sagano Line to Saga-Arashiyama, about 15 minutes from Kyoto Station."
+          },
+          {
+            "label": "Midday",
+            "spotId": "tenryuji",
+            "why": "The garden and maples next to the grove are at their best in full daylight.",
+            "note": null
+          },
+          {
+            "label": "Late afternoon",
+            "spotId": "togetsukyo",
+            "why": "The low sun rims the coloured hills behind the bridge before sunset.",
+            "note": null
+          },
+          {
+            "label": "Night",
+            "spotId": "pontocho",
+            "why": "Back in central Kyoto, the lantern alley closes the weekend with street work near the hotel.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-11-22",
+        "cityId": "kyo",
+        "title": "River dawn and Eikando maples",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Before work",
+            "spotId": "kamo-delta",
+            "why": "Open sky and moving water for a sunrise long exposure, a short taxi ride north.",
+            "note": null
+          },
+          {
+            "label": "After work",
+            "spotId": "eikando",
+            "why": "Kyoto's best known autumn light-up fits straight after work.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-11-23",
+        "cityId": "kyo",
+        "title": "Yasaka Shrine and Kyoto Station",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Before work",
+            "spotId": "yasaka-shrine",
+            "why": "Five minutes from the hotel and open all night, so it fits before work.",
+            "note": "23 November is a national holiday in Japan, so expect more visitors in the evening."
+          },
+          {
+            "label": "Night",
+            "spotId": "kyoto-station",
+            "why": "Modern architecture at night as a counterpoint to the temples.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-11-24",
+        "cityId": "kyo",
+        "title": "Last morning in Higashiyama",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Before work",
+            "spotId": "sannenzaka",
+            "why": "The stone lanes are only empty at first light, a short walk from the hotel.",
+            "note": null
+          },
+          {
+            "label": "After work",
+            "spotId": "hanamikoji",
+            "why": "A last evening walk through Gion's teahouse street.",
+            "note": null
+          }
+        ]
+      }
+    ],
+    "skipped": [
+      {
+        "name": "Tofuku-ji",
+        "reason": "Its Tsutenkyo view draws the longest autumn queues in Kyoto, and the weekend mornings go to Fushimi Inari and Arashiyama."
+      },
+      {
+        "name": "Kinkaku-ji",
+        "reason": "Daytime opening only, on the far north-west edge of the city; it does not fit around working hours."
+      },
+      {
+        "name": "Shinjuku Golden Gai",
+        "reason": "Many bars post no-photography signs, and the alleys are too narrow to shoot without photographing customers."
+      },
+      {
+        "name": "Chureito Pagoda",
+        "reason": "A full day trip from Tokyo for a Mount Fuji view, which the two Tokyo weekend days cannot spare."
+      }
+    ]
+  }
+}

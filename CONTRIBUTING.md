@@ -31,10 +31,19 @@ bun run dev          # localhost:4321
 ## Gate
 
 ```sh
+bun run check-demos  # demo trips import cleanly
 bun run build        # runs astro check first
 bun run check-links
 ```
 
 ## Rules for changes to the importer
 
-The importer in `src/photorouter/lib/byoai.ts` and the prompt rules in `src/photorouter/lib/prompt.ts` describe the same contract. A rule the importer enforces must be stated in the prompt, and a required prompt rule must be enforced by the importer. The bundled example answer (`src/photorouter/data/example-plan.json`) must keep importing with no errors.
+The importer in `src/photorouter/lib/byoai.ts` and the prompt rules in `src/photorouter/lib/prompt.ts` describe the same contract. A rule the importer enforces must be stated in the prompt, and a required prompt rule must be enforced by the importer. Every demo trip in `src/photorouter/data/demos/` must keep importing with no errors and no warnings:
+
+```sh
+bun scripts/check-demo.ts src/photorouter/data/demos/*.json
+```
+
+## Adding or changing a demo trip
+
+A demo is a brief plus the answer an AI would return for it. Print the real prompt for the brief with `buildPrompt` from `src/photorouter/lib/prompt.ts`, write the answer to its rules, then run `scripts/check-demo.ts` and `scripts/verify-coords.ts` on the file. Spots must be real places with accurate coordinates.

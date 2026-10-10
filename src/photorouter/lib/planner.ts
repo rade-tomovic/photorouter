@@ -1,29 +1,18 @@
-import { GEAR_BY_ID, SPOT, TRIP } from './data';
+import { dayLabel, weekday } from './data';
+import { cropFactor, gearItem, lensFocals, lensFor, type Lens } from './gear';
 import { km } from './geo';
-import { hhmm, sunDay } from './sun';
-import type {
-  Brief,
-  CityId,
-  DayFrame,
-  DayStep,
-  Focal,
-  KitItem,
-  Light,
-  Plan,
-  PlannedDay,
-  PlannedSlot,
-  Spot,
-} from './types';
+import { hhmm, sunDay, tzOffset } from './sun';
+import type { Brief, CityId, DayFrame, DayKind, DayStep, Focal, KitItem, Light, Plan, PlannedDay, PlannedSlot, Spot, Trip } from './types';
 
 // The trip calendar and plan assembly. PhotoRouter does not plan: the user's
-// own AI picks the spots. This module knows which slots each day allows and
-// turns validated picks into a planned day with kit, light windows, travel
-// order and walking distance.
+// own AI picks the cities, spots and travel days. This module knows which
+// slots each kind of day allows, and turns validated picks into planned days
+// with kit, light windows, travel order and walking distance.
 
 interface SlotDef {
   order: number;
   lights: Light[];
-  /** Work-day slot that has to fit around 09:00–18:00. */
+  /** Work-day slot that has to fit around 09:00 to 18:00. */
   tight?: boolean;
 }
 
@@ -40,75 +29,75 @@ export const SLOT: Record<string, SlotDef> = {
   Late: { order: 8, lights: ['night'] },
 };
 
-const FREE_LABELS = ['Morning', 'Midday', 'Sunset', 'Night'];
+const FREE = Object.keys(SLOT).filter((l) => !SLOT[l]!.tight);
+const AFTERNOON_ON = ['Afternoon', 'Late afternoon', 'Blue hour', 'Sunset', 'Night', 'Late'];
+const EVENING = ['After work', 'Night', 'Late'];
 
-function slotWindow(label: string, date: string, city: CityId): string {
-  const c = TRIP.cities[city];
-  const s = sunDay(date, c.ll[1], c.ll[0], TRIP.tz);
+const isWeekday = (iso: string) => !['Sat', 'Sun'].includes(weekday(iso));
+
+/**
+ * A day's kind from its date and travel. The first day is the arrival from
+ * home; a day with travel moves between two cities; working weekdays come from
+ * the brief.
+ */
+export function dayKind(date: string, travels: boolean, first: boolean, brief: Brief, dayTrip = false): DayKind {
+  const working = brief.work && isWeekday(date);
+  if (first) return 'arrive';
+  if (dayTrip) return 'daytrip';
+  if (travels) return working ? 'movework' : 'movefree';
+  return working ? 'work' : 'free';
+}
+
+/** Slot labels that fit a kind of day at all. The importer holds answers to this calendar. */
+export function labelsFor(kind: DayKind, date: string, brief: Brief): string[] {
+  const working = brief.work && isWeekday(date);
+  switch (kind) {
+    case 'work': {
+      const friday = weekday(date) === 'Fri';
+      return ['Before work', ...(friday && brief.fridayEarly ? ['Blue hour'] : []), ...EVENING];
+    }
+    case 'arrive': return working ? EVENING : AFTERNOON_ON;
+    case 'movework': return EVENING;
+    case 'movefree': return FREE.filter((l) => l !== 'Midday');
+    // A day trip on a working day only has the evening, like a working travel day.
+    case 'daytrip': return working ? EVENING : FREE;
+    default: return FREE;
+  }
+}
+
+export const allowedLabels = (day: DayFrame, brief: Brief) => labelsFor(day.kind, day.date, brief);
+
+/** How many stops a kind of day takes at a balanced pace. */
+const SUGGESTED: Record<DayKind, number> = { free: 4, work: 2, arrive: 2, movefree: 3, movework: 1, daytrip: 3 };
+
+/** The stop limit per day for the brief's pace: relaxed is one on a work day and two otherwise, packed adds one. */
+export function stopCap(kind: DayKind, brief: Brief): number {
+  const workish = kind === 'work' || kind === 'movework';
+  if (brief.pace === 'relaxed') return workish ? 1 : 2;
+  return SUGGESTED[kind] + (brief.pace === 'packed' ? 1 : 0);
+}
+
+/** Where a slot can happen: a travel day's morning is shot before leaving; a day trip's stops are there or back home. */
+export function slotCities(frame: DayFrame, label: string): CityId[] {
+  if (frame.dayTrip) return [frame.dayTrip, frame.city];
+  return [frame.kind === 'movefree' && frame.from && label === 'Morning' ? frame.from : frame.city];
+}
+
+function slotWindow(trip: Trip, label: string, date: string, city: CityId): string {
+  const c = trip.cities[city]!;
+  const s = sunDay(date, c.ll[1], c.ll[0], tzOffset(date, trip.tz));
   switch (label) {
-    case 'Before work': return `${hhmm(s.dawnBlue)}–08:15`;
-    case 'Morning': return `${hhmm(s.sunrise)}–11:00`;
-    case 'Midday': return '11:30–14:30';
-    case 'Afternoon': return '13:00–16:00';
-    case 'Late afternoon': return `15:30–${hhmm(s.sunset)}`;
+    case 'Before work': return `${hhmm(s.dawnBlue)}-08:15`;
+    case 'Morning': return `${hhmm(s.sunrise)}-11:00`;
+    case 'Midday': return '11:30-14:30';
+    case 'Afternoon': return '13:00-16:00';
+    case 'Late afternoon': return `15:30-${hhmm(s.sunset)}`;
     case 'Blue hour':
-    case 'Sunset': return `${hhmm(s.goldenPmStart)}–${hhmm(s.blueEnd)}`;
-    case 'After work': return '18:15–20:00';
-    case 'Night': return '19:30–21:30';
-    default: return '21:00–23:00';
+    case 'Sunset': return `${hhmm(s.goldenPmStart)}-${hhmm(s.blueEnd)}`;
+    case 'After work': return '18:15-20:00';
+    case 'Night': return `${hhmm(Math.max(s.blueEnd, 19 * 60))}-21:30`;
+    default: return '21:00-23:00';
   }
-}
-
-export function effectiveKind(day: DayFrame, brief: Brief): DayFrame['kind'] {
-  if (brief.work) return day.kind;
-  if (day.kind === 'work') return 'free';
-  if (day.kind === 'movework') return 'movefree';
-  return day.kind;
-}
-
-export function slotLabels(day: DayFrame, index: number, brief: Brief): string[] {
-  const kind = effectiveKind(day, brief);
-  if (kind === 'depart') return [];
-  let labels = day.seed.map((s) => s[0]);
-  if (kind !== day.kind) labels = kind === 'free' ? FREE_LABELS.slice() : ['Afternoon', 'Sunset', 'Night'];
-  if (!brief.fridayEarly) labels = labels.map((l) => (l === 'Blue hour' ? 'After work' : l));
-  labels = [...new Set(labels)];
-
-  const workish = kind === 'work' || kind === 'arrive' || kind === 'movework';
-  if (brief.pace === 'relaxed') {
-    if (workish) {
-      const nightFirst = brief.styles.some((s) => s === 'night' || s === 'cityscape');
-      const evening = labels.find((l) => SLOT[l]!.order >= 5);
-      const morning = labels.find((l) => SLOT[l]!.order < 5);
-      const pick = (index % 2 === 0) === nightFirst ? evening ?? morning : morning ?? evening;
-      labels = pick ? [pick] : [];
-    } else if (labels.length > 2) {
-      labels = [labels[0]!, labels[labels.length - 1]!];
-    }
-  } else if (brief.pace === 'packed') {
-    if (kind === 'work') {
-      if (!labels.includes('Before work')) labels.push('Before work');
-      if (!labels.includes('Night')) labels.push('Night');
-    } else if (kind === 'free' || kind === 'movefree') {
-      for (const l of ['Sunset', 'Night']) if (!labels.includes(l)) labels.push(l);
-    } else if (kind === 'movework' || kind === 'arrive') {
-      if (!labels.includes('Late')) labels.push('Late');
-    }
-  }
-  return labels.sort((a, b) => SLOT[a]!.order - SLOT[b]!.order);
-}
-
-/** Slot labels that fit a day at all, whatever the pace: the importer holds outside answers to the same calendar. */
-export function allowedLabels(day: DayFrame, brief: Brief): string[] {
-  const kind = effectiveKind(day, brief);
-  if (kind === 'depart') return [];
-  if (kind === 'work') {
-    const friday = new Date(`${day.date}T12:00:00Z`).getUTCDay() === 5;
-    return ['Before work', ...(friday && brief.fridayEarly ? ['Blue hour'] : []), 'After work', 'Night', 'Late'];
-  }
-  // Arrival and travel-then-work days only have the evening left.
-  if (kind === 'arrive' || kind === 'movework') return ['After work', 'Night', 'Late'];
-  return Object.keys(SLOT).filter((l) => !SLOT[l]!.tight);
 }
 
 /** Hops longer than this between stops are a bus, ferry or taxi, not a walk. */
@@ -118,31 +107,39 @@ export interface GearProfile {
   focals: Set<Focal>;
   tripod: boolean;
   clamp: boolean;
+  /** The strongest ND filter in the bag, for long exposures in daylight. */
   nd: string | null;
   cpl: boolean;
-  drone: boolean;
-  lenses: string[];
+  /** The drone in the bag, if any: mini, mid-size or large. */
+  drone: string | null;
+  /** Lenses with the focal classes they cover on this body. */
+  lenses: { lens: Lens; focals: Focal[] }[];
 }
 
+const ND_ORDER = ['nd15', 'nd10', 'vnd', 'nd6', 'nd3'];
+
 export function gearProfile(brief: Brief): GearProfile {
+  const crop = cropFactor(brief.gear);
   const focals = new Set<Focal>();
-  const lenses: string[] = [];
+  const lenses: GearProfile['lenses'] = [];
   for (const id of brief.gear) {
-    const g = GEAR_BY_ID[id];
-    if (!g) continue;
-    g.focal?.forEach((f) => focals.add(f));
-    if (g.kind === 'lens') lenses.push(id);
+    const lens = lensFor(id);
+    if (lens) {
+      const f = lensFocals(lens, crop);
+      lenses.push({ lens, focals: f });
+      f.forEach((x) => focals.add(x));
+    } else gearItem(id)?.focal?.forEach((f) => focals.add(f));
   }
-  const hasBody = brief.gear.some((id) => GEAR_BY_ID[id]?.kind === 'body');
+  const hasBody = brief.gear.some((id) => gearItem(id)?.crop);
   // An interchangeable body with no lens listed: assume a kit zoom.
-  if (hasBody && !lenses.length && !focals.size) { focals.add('wide'); focals.add('standard'); }
+  if (hasBody && !lenses.length) { focals.add('wide'); focals.add('standard'); }
   return {
     focals,
-    tripod: brief.gear.includes('tripod'),
+    tripod: brief.gear.includes('tripod') || brief.gear.includes('tripod-full'),
     clamp: brief.gear.includes('clamp'),
-    nd: brief.gear.includes('nd10') ? 'nd10' : brief.gear.includes('nd6') ? 'nd6' : null,
+    nd: ND_ORDER.find((id) => brief.gear.includes(id)) ?? null,
     cpl: brief.gear.includes('cpl'),
-    drone: brief.gear.includes('drone'),
+    drone: ['drone-large', 'drone-mid', 'drone'].find((id) => brief.gear.includes(id)) ?? null,
     lenses,
   };
 }
@@ -150,7 +147,6 @@ export function gearProfile(brief: Brief): GearProfile {
 interface Ctx {
   brief: Brief;
   gear: GearProfile;
-  used: Set<string>;
 }
 
 function buildKit(spot: Spot, label: string, ctx: Ctx): { kit: KitItem[]; warnings: string[] } {
@@ -158,31 +154,35 @@ function buildKit(spot: Spot, label: string, ctx: Ctx): { kit: KitItem[]; warnin
   const kit: KitItem[] = [];
   const warnings: string[] = [];
   const add = (id: string) => {
-    const g = GEAR_BY_ID[id];
+    const g = gearItem(id);
     if (g && !kit.some((k) => k.id === id)) kit.push({ id, label: g.short });
   };
+  const window = SLOT[label]!.lights[0];
+  // After dark the fastest lens for each focal range; otherwise the first one listed.
   for (const f of spot.focal) {
-    const lens = gear.lenses.find((id) => GEAR_BY_ID[id]!.focal?.includes(f));
-    if (lens) add(lens);
+    const fits = gear.lenses.filter((l) => l.focals.includes(f));
+    const pick = window === 'night' ? fits.sort((a, b) => a.lens.f - b.lens.f)[0] : fits[0];
+    if (pick) add(pick.lens.id);
     if (kit.length >= 2) break;
   }
   if (!kit.length) {
-    const body = brief.gear.find((id) => GEAR_BY_ID[id]?.focal);
+    const body = brief.gear.find((id) => gearItem(id)?.focal);
     if (body) add(body);
   }
-  const window = SLOT[label]!.lights[0];
   if (spot.tripod === 'banned') {
     if (gear.tripod) warnings.push('No tripods here. Leave it at the hotel.');
   } else if (spot.tripod === 'needed' || spot.tripod === 'helps') {
-    if (gear.tripod) add('tripod');
+    if (gear.tripod) add(brief.gear.includes('tripod') ? 'tripod' : 'tripod-full');
     else if (gear.clamp) add('clamp');
     else if (spot.tripod === 'needed') warnings.push('Wants a tripod: brace on a railing and raise ISO.');
   }
   if (gear.nd && spot.styles.includes('long-exposure') && (window === 'golden' || window === 'day')) add(gear.nd);
   if (gear.cpl && spot.styles.includes('landscape') && window !== 'night') add('cpl');
   if (gear.drone && spot.drone) {
-    add('drone');
-    warnings.push('Check the CAD drone map for restricted zones before flying.');
+    add(gear.drone);
+    warnings.push(gear.drone === 'drone'
+      ? 'Check the local drone rules and no-fly zones before flying.'
+      : 'At this weight most countries require registration and a pilot licence: check the rules and no-fly zones before flying.');
   }
   if (!spot.focal.some((f) => gear.focals.has(f))) warnings.push(`Best shot at ${spot.focal[0]}; work with what you have.`);
   return { kit, warnings };
@@ -199,91 +199,86 @@ function phrase(label: string, spot: Spot): string {
 
 const shortName = (s: Spot) => s.name.split(/,| & /)[0]!.replace(/^The /, '');
 
-function titleFor(frame: DayFrame, slots: PlannedSlot[]): string {
-  const seedIds = frame.seed.map((s) => s[1]).join();
-  if (slots.map((s) => s.spotId).join() === seedIds) return frame.title;
-  if (!slots.length) return frame.kind === 'depart' ? frame.title : 'A night off';
+function titleFor(frame: DayFrame, slots: PlannedSlot[], spot: (id: string) => Spot): string {
+  if (!slots.length) return frame.move ?? `${dayLabel(frame.date)}, a day off`;
   const a = slots[0]!;
-  const sa = SPOT[a.spotId]!;
+  const sa = spot(a.spotId);
   const first = `${shortName(sa)} ${phrase(a.label, sa)}`.trim();
   if (slots.length === 1) return first;
   const b = slots[slots.length - 1]!;
-  const sb = SPOT[b.spotId]!;
+  const sb = spot(b.spotId);
   return `${first}, ${shortName(sb)} ${phrase(b.label, sb)}`.trim();
 }
-
-const totals = (days: PlannedDay[], spots: number, skipped: Plan['skipped']): Plan => ({
-  days,
-  stops: days.reduce((n, d) => n + d.slots.length, 0),
-  spots,
-  walkKm: days.reduce((n, d) => n + d.walkKm, 0),
-  skipped,
-});
 
 export interface Pick {
   label: string;
   city: CityId;
   spotId: string;
-  score: number;
   why: string;
   note?: string;
 }
 
 /** Turn a day's picks into a planned day: kit, light windows, travel order, distance. */
-function finishDay(frame: DayFrame, index: number, kind: DayFrame['kind'], picks: Pick[], ctx: Ctx, title?: string): PlannedDay {
+function finishDay(trip: Trip, frame: DayFrame, index: number, picks: Pick[], ctx: Ctx, spot: (id: string) => Spot): PlannedDay {
   const slots: PlannedSlot[] = picks
     .slice()
     .sort((a, b) => SLOT[a.label]!.order - SLOT[b.label]!.order)
     .map((p) => {
-      const spot = SPOT[p.spotId]!;
-      const { kit, warnings } = buildKit(spot, p.label, ctx);
-      const note = p.note ?? frame.seed.find((s) => s[1] === spot.id)?.[2];
+      const s = spot(p.spotId);
+      const { kit, warnings } = buildKit(s, p.label, ctx);
       return {
         label: p.label,
-        window: slotWindow(p.label, frame.date, p.city),
-        spotId: spot.id,
+        window: slotWindow(trip, p.label, frame.date, p.city),
+        spotId: s.id,
         city: p.city,
-        ...(note ? { note } : {}),
+        ...(p.note ? { note: p.note } : {}),
         kit,
         warnings,
-        score: p.score,
         why: p.why,
       };
     });
 
   const steps: DayStep[] = [];
-  const before = kind === 'movefree' ? slots.filter((s) => s.city === frame.from) : [];
-  before.forEach((s) => steps.push({ type: 'stop', slot: slots.indexOf(s) }));
-  if (frame.leg) steps.push({ type: 'leg', leg: frame.leg });
-  slots.forEach((s, i) => { if (!before.includes(s)) steps.push({ type: 'stop', slot: i }); });
+  if (frame.dayTrip && frame.leg && frame.back) {
+    // Out to the day-trip city, its stops, back home for any stops left (in time order).
+    let away = false;
+    slots.forEach((s, i) => {
+      if (!away && s.city === frame.dayTrip) { steps.push({ type: 'leg', leg: frame.leg! }); away = true; }
+      else if (away && s.city !== frame.dayTrip) { steps.push({ type: 'leg', leg: frame.back! }); away = false; }
+      steps.push({ type: 'stop', slot: i });
+    });
+    if (away) steps.push({ type: 'leg', leg: frame.back });
+  } else {
+    const before = frame.kind === 'movefree' ? slots.filter((s) => s.city === frame.from) : [];
+    before.forEach((s) => steps.push({ type: 'stop', slot: slots.indexOf(s) }));
+    if (frame.leg) steps.push({ type: 'leg', leg: frame.leg });
+    slots.forEach((s, i) => { if (!before.includes(s)) steps.push({ type: 'stop', slot: i }); });
+  }
 
   let walkKm = 0;
   for (let i = 1; i < slots.length; i++) {
     if (slots[i]!.city !== slots[i - 1]!.city) continue;
-    const hop = km(SPOT[slots[i - 1]!.spotId]!.ll, SPOT[slots[i]!.spotId]!.ll);
+    const hop = km(spot(slots[i - 1]!.spotId).ll, spot(slots[i]!.spotId).ll);
     if (hop <= WALKABLE_KM) walkKm += hop;
   }
 
-  const { seed: _seed, ...rest } = frame;
-  return { ...rest, kind, index, title: title || titleFor(frame, slots), slots, steps, walkKm };
+  return { ...frame, index, title: frame.title || titleFor(frame, slots, spot), slots, steps, walkKm };
 }
 
-/** Build a plan from picks made elsewhere, e.g. by the user's own AI. Kit and windows are still computed here. */
-export function assemble(
-  brief: Brief,
-  days: { picks: Pick[]; title?: string }[],
-  skipped: Plan['skipped'] = [],
-): Plan {
-  const ctx: Ctx = { brief, gear: gearProfile(brief), used: new Set() };
-  const planned = TRIP.days.map((frame, index) => {
-    const d = days[index] ?? { picks: [] };
-    d.picks.forEach((p) => ctx.used.add(p.spotId));
-    return finishDay(frame, index, effectiveKind(frame, brief), d.picks, ctx, d.title);
-  });
-  return totals(planned, ctx.used.size, skipped);
+/** Build a plan from validated picks. Kit, light windows and travel order are computed here. */
+export function assemble(trip: Trip, brief: Brief, picks: Pick[][], skipped: Plan['skipped'] = []): Plan {
+  const ctx: Ctx = { brief, gear: gearProfile(brief) };
+  const byId = new Map(trip.spots.map((s) => [s.id, s]));
+  const spot = (id: string) => byId.get(id)!;
+  const days = trip.days.map((frame, i) => finishDay(trip, frame, i, picks[i] ?? [], ctx, spot));
+  const used = new Set(days.flatMap((d) => d.slots.map((s) => s.spotId)));
+  return {
+    trip,
+    days,
+    stops: days.reduce((n, d) => n + d.slots.length, 0),
+    spots: used.size,
+    walkKm: days.reduce((n, d) => n + d.walkKm, 0),
+    skipped,
+  };
 }
 
-/** Where a slot happens: a travel day's morning is shot before the train leaves. */
-export function slotCity(frame: DayFrame, kind: DayFrame['kind'], label: string): CityId {
-  return kind === 'movefree' && frame.from && label === 'Morning' ? frame.from : frame.city;
-}

@@ -10,7 +10,8 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "check-links": "node scripts/check-links.mjs"
+    "check-links": "node scripts/check-links.mjs",
+    "check-demos": "bun scripts/check-demo.ts src/photorouter/data/demos/*.json"
   },
   "dependencies": {
     "@astrojs/react": "^7.0.1",

@@ -1,37 +1,25 @@
 ---
 import SectionHead from './SectionHead.astro';
+import { daySheet, demoFor } from './demoData';
 
 const features = [
   {
     title: '3D map',
-    text: 'MapLibre GL with OpenFreeMap vector tiles, extruded 3D buildings and optional terrain.',
+    text: 'MapLibre GL with OpenFreeMap vector tiles, extruded 3D buildings and optional terrain, in Detailed or Clean style, light or dark.',
   },
-  { title: 'Styles and themes', text: 'Detailed and Clean map styles, each in light and dark.' },
   { title: 'Timeline', text: 'Scrub the trip day by day, or play it through from arrival to departure.' },
   {
     title: 'Day sheets',
-    text: "Each stop's light window computed from sun times, the kit to pack and the Chinese name to copy for a taxi.",
+    text: "Each stop's light window from sun times in the destination's time zone, the kit to pack from your gear and the local name to show a driver.",
+  },
+  {
+    title: 'Spot cards',
+    text: 'Every spot opens a card with its light, a tip, the local name to copy and a link to the place on OpenStreetMap.',
   },
 ];
 
-const stops = [
-  {
-    slot: 'Before work',
-    name: 'Shamian Island',
-    zh: '沙面岛',
-    light: 'dawn',
-    window: 'Dawn 06:18-08:15',
-    kit: ['16-35 mm'],
-  },
-  {
-    slot: 'After work',
-    name: 'Pearl River night cruise',
-    zh: '天字码头',
-    light: 'night',
-    window: 'Night 18:15-20:00',
-    kit: ['16-35 mm'],
-  },
-];
+const demo = demoFor('europe');
+const sheet = daySheet(demo, 1);
 ---
 
 <section id="map" aria-labelledby="map-title" class="scroll-mt-4 border-b border-line">
@@ -57,39 +45,50 @@ const stops = [
       </div>
 
       <figure class="m-0 min-w-0">
-        <div class="c-gz rounded-[22px] border border-line bg-surface p-4 shadow-card sm:p-5">
+        <div class={`c-${sheet.cityColor} rounded-[22px] border border-line bg-surface p-4 shadow-card sm:p-5`}>
           <div class="flex flex-wrap items-center justify-between gap-2">
-            <p class="m-0 font-mono text-[11px] tracking-[0.08em] text-muted uppercase">Day 2 · Tue 17 Nov</p>
-            <span class="t-c inline-flex h-6 items-center rounded-full border border-current px-2.5 text-xs font-semibold">Guangzhou</span>
+            <p class="m-0 font-mono text-[11px] tracking-[0.08em] text-muted uppercase">
+              Day {sheet.number} of {sheet.total} · {sheet.label}
+            </p>
+            <span class="inline-flex h-6 items-center gap-1.5 rounded-full border border-line px-2.5 text-xs font-semibold">
+              <span class="size-2 rounded-full bg-(--c)" aria-hidden="true"></span>{sheet.city}
+            </span>
           </div>
-          <p class="mt-2 mb-0 font-display text-[28px] leading-none font-extrabold uppercase">Shamian at dawn, the river by night</p>
+          <p class="mt-2 mb-0 font-display text-[28px] leading-none font-extrabold text-balance uppercase">{sheet.title}</p>
           <ol class="m-0 mt-5 flex list-none flex-col gap-3 p-0">
             {
-              stops.map((s) => (
+              sheet.stops.map((s) => (
                 <li class="rounded-2xl border border-line bg-surface-2 p-3.5">
                   <div class="flex flex-wrap items-center justify-between gap-2">
-                    <span class="font-mono text-[10.5px] tracking-[0.08em] text-muted uppercase">{s.slot}</span>
+                    <span class="font-mono text-[10.5px] tracking-[0.08em] text-muted uppercase">
+                      {s.label} · <span class="text-ink">{s.window}</span>
+                    </span>
                     <span class={`lt-${s.light} inline-flex h-6 items-center gap-1.5 rounded-full border border-line bg-surface px-2.5 text-xs font-semibold`}>
                       <span class="size-2 rounded-full bg-(--c)" aria-hidden="true" />
-                      {s.window}
+                      {s.lightLabel}
                     </span>
                   </div>
-                  <p class="mt-2 mb-0 text-base font-bold">{s.name}</p>
+                  <p class="mt-2 mb-0 flex flex-wrap items-baseline gap-x-2 text-base font-bold">
+                    {s.name}
+                    {s.local && <span class="text-[13px] font-medium text-muted">{s.local}</span>}
+                  </p>
                   <div class="mt-2 flex flex-wrap items-center gap-1.5">
                     {s.kit.map((k) => (
-                      <span class="inline-flex h-6 items-center rounded-full border border-line bg-surface px-2.5 text-xs font-semibold text-muted">{k}</span>
+                      <span class="inline-flex h-6 items-center rounded-full border border-line bg-surface px-2.5 font-mono text-xs font-medium text-muted">{k}</span>
                     ))}
-                    <span class="ml-auto inline-flex h-6 items-center gap-1.5 rounded-full border border-line bg-surface px-2.5 text-xs font-semibold">
-                      <span class="font-zh text-[13px]" lang="zh-Hans">{s.zh}</span>
-                      <span class="text-muted">Copy</span>
-                    </span>
                   </div>
+                  {s.warnings.map((w) => (
+                    <p class="t-warn mt-2 mb-0 text-xs">{w}</p>
+                  ))}
                 </li>
               ))
             }
           </ol>
         </div>
-        <figcaption class="mt-3 px-1 text-[13px] text-muted">17 November from the bundled example plan, simplified.</figcaption>
+        <figcaption class="mt-3 px-1 text-[13px] text-muted">
+          Day {sheet.number} of the {demo.label} demo, simplified. Light windows come from sun times for {sheet.city} on {sheet.longDate},
+          in {sheet.tz} time.
+        </figcaption>
       </figure>
     </div>
 
@@ -102,11 +101,13 @@ const stops = [
           <path d="M8 48 C 30 46, 40 20, 62 18 S 88 12, 94 10" pathLength="1000" class="train" fill="none" stroke="var(--accent)" stroke-width="5" stroke-linecap="round"></path>
         </svg>
         <p class="mt-3 mb-0 text-[15px] font-bold">Chase camera</p>
-        <p class="mt-1 mb-0 text-[14.5px] leading-relaxed text-muted">Follows the train along each rail leg between cities.</p>
+        <p class="mt-1 mb-0 text-[14.5px] leading-relaxed text-muted">
+          Rides each travel leg between cities behind a marker that matches the mode: train, plane, boat or car.
+        </p>
       </li>
       <li class="rounded-[22px] border border-line bg-surface p-4">
         <svg viewBox="0 0 100 60" class="block h-auto w-full rounded-xl bg-surface-2" aria-hidden="true" focusable="false">
-          <path d="M14 44 L36 26 L58 38 L84 16" class="c-gz walk" fill="none" stroke="var(--c)" stroke-width="1.6" stroke-dasharray="3 4" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="M14 44 L36 26 L58 38 L84 16" class="c-0 walk" fill="none" stroke="var(--c)" stroke-width="1.6" stroke-dasharray="3 4" stroke-linecap="round" stroke-linejoin="round"></path>
           <path d="M14 44 L36 26 L58 38 L84 16" pathLength="1000" class="walker-dot" fill="none" stroke="var(--accent)" stroke-width="6" stroke-linecap="round"></path>
           <circle cx="14" cy="44" r="3.6" class="lt-dawn" fill="var(--c)"></circle>
           <circle cx="36" cy="26" r="3.6" class="lt-day" fill="var(--c)"></circle>

@@ -1,0 +1,1407 @@
+{
+  "id": "oceania-sydney-great-ocean-road",
+  "continent": "oceania",
+  "label": "Sydney, Melbourne and the Great Ocean Road",
+  "blurb": "12 days in March: harbour light, laneways and limestone stacks.",
+  "brief": {
+    "destination": "Sydney, Melbourne and the Great Ocean Road",
+    "start": "2027-03-05",
+    "days": 12,
+    "text": "I want the classic Sydney harbour views at dawn and blue hour, Melbourne's laneways for street work, and a few nights on the Great Ocean Road for the limestone stacks. I am happy to get up early and walk, and I bring a drone for places where flying is legal.",
+    "gear": [
+      "ff-body",
+      "uwz-14-24",
+      "std-24-70",
+      "tz-70-200",
+      "tripod",
+      "nd10",
+      "cpl",
+      "drone"
+    ],
+    "styles": [
+      "landscape",
+      "cityscape",
+      "long-exposure",
+      "street",
+      "aerial"
+    ],
+    "pace": "balanced",
+    "walking": "high",
+    "work": false,
+    "fridayEarly": false,
+    "avoidCrowds": false,
+    "must": [
+      "Sydney Opera House",
+      "Twelve Apostles"
+    ],
+    "avoid": []
+  },
+  "answer": {
+    "version": "photorouter.plan/v2",
+    "title": "Sydney, Melbourne and the Great Ocean Road in March",
+    "summary": "Five nights in Sydney for the harbour at dawn and blue hour, the Bondi coast, a day in the Blue Mountains and a sunrise at Sea Cliff Bridge. A short flight to Melbourne gives three nights of laneways and skyline, then a drive along the Great Ocean Road to Port Campbell for three nights at the Twelve Apostles and the stacks around them, with the last night back in Melbourne.",
+    "timezone": "Australia/Sydney",
+    "cities": [
+      {
+        "id": "syd",
+        "name": "Sydney",
+        "localName": null,
+        "lat": -33.8688,
+        "lng": 151.2093,
+        "base": {
+          "label": "The Rocks, near Circular Quay",
+          "lat": -33.8599,
+          "lng": 151.2085
+        }
+      },
+      {
+        "id": "mel",
+        "name": "Melbourne",
+        "localName": null,
+        "lat": -37.8136,
+        "lng": 144.9631,
+        "base": {
+          "label": "CBD, near Flinders Lane",
+          "lat": -37.8165,
+          "lng": 144.966
+        }
+      },
+      {
+        "id": "pcb",
+        "name": "Port Campbell",
+        "localName": null,
+        "lat": -38.6196,
+        "lng": 142.9954,
+        "base": {
+          "label": "Port Campbell village, Lord Street",
+          "lat": -38.6197,
+          "lng": 142.9946
+        }
+      }
+    ],
+    "spots": [
+      {
+        "id": "argyle-cut",
+        "cityId": "syd",
+        "name": "Argyle Cut",
+        "localName": null,
+        "lat": -33.8588,
+        "lng": 151.2066,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "day",
+          "night"
+        ],
+        "when": "Late afternoon, low sun through the cut",
+        "tip": "Shoot from the stairs that climb to Cumberland Street for a higher angle on the hand-cut sandstone walls, then work the lanes around Kendall Lane and Playfair Street for street frames.",
+        "styles": [
+          "street",
+          "heritage"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "dawes-point",
+        "cityId": "syd",
+        "name": "Dawes Point Reserve",
+        "localName": null,
+        "lat": -33.8553,
+        "lng": 151.2092,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "night"
+        ],
+        "when": "Blue hour, Opera House across the water",
+        "tip": "Walk to the waterline beneath the southern approach of the Harbour Bridge and frame the Opera House across Sydney Cove; 10 to 30 seconds smooths the harbour.",
+        "styles": [
+          "cityscape",
+          "long-exposure"
+        ],
+        "focal": [
+          "wide",
+          "standard",
+          "tele"
+        ],
+        "tripod": "needed",
+        "minutes": 75,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "mrs-macquaries-chair",
+        "cityId": "syd",
+        "name": "Mrs Macquarie's Chair",
+        "localName": null,
+        "lat": -33.8597,
+        "lng": 151.2226,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "golden"
+        ],
+        "when": "Sunrise, looking west over Farm Cove",
+        "tip": "Set up on the rocks beside the carved sandstone seat; the Opera House sits in front of the Harbour Bridge from here, so 70-200 stacks them tightly and 24-70 takes in Farm Cove.",
+        "styles": [
+          "cityscape",
+          "landscape",
+          "long-exposure"
+        ],
+        "focal": [
+          "tele",
+          "standard",
+          "wide"
+        ],
+        "tripod": "helps",
+        "minutes": 90,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "opera-house",
+        "cityId": "syd",
+        "name": "Sydney Opera House",
+        "localName": null,
+        "lat": -33.8572,
+        "lng": 151.2151,
+        "light": "day",
+        "lights": [
+          "day",
+          "golden",
+          "night"
+        ],
+        "when": "Afternoon, sun on the western sails",
+        "tip": "Work the forecourt and the Monumental Steps for abstracts of the chevron tiles with the 14-24, then walk around the northern promenade for the sails against the bridge.",
+        "styles": [
+          "architecture",
+          "cityscape",
+          "street"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 90,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "blues-point",
+        "cityId": "syd",
+        "name": "Blues Point Reserve",
+        "localName": null,
+        "lat": -33.8496,
+        "lng": 151.2034,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "night"
+        ],
+        "when": "Blue hour, bridge and city skyline",
+        "tip": "Set up on the seawall at the tip of the point, where the bridge spans the frame with the city towers behind it; a 30 second exposure turns ferry wakes into light trails.",
+        "styles": [
+          "cityscape",
+          "long-exposure"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "needed",
+        "minutes": 90,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "bondi-icebergs",
+        "cityId": "syd",
+        "name": "Bondi Icebergs Pool",
+        "localName": null,
+        "lat": -33.8951,
+        "lng": 151.2746,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "day"
+        ],
+        "when": "Sunrise, with swell breaking over the pool wall",
+        "tip": "Shoot from the Notts Avenue walkway above the pool as waves break over the ocean wall; half a second to one second blurs the white water and keeps the lane ropes sharp.",
+        "styles": [
+          "long-exposure",
+          "landscape"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide"
+        ],
+        "tripod": "needed",
+        "minutes": 75,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "mackenzies-point",
+        "cityId": "syd",
+        "name": "Mackenzies Point Lookout",
+        "localName": null,
+        "lat": -33.8989,
+        "lng": 151.2762,
+        "light": "day",
+        "lights": [
+          "day",
+          "dawn"
+        ],
+        "when": "Late morning, water at its most turquoise",
+        "tip": "Look back north along the sandstone cliffs towards Bondi from the coastal walk; a polariser deepens the colour of the water, and Tamarama beach is a short walk south.",
+        "styles": [
+          "landscape"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 2,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "jeffrey-st-wharf",
+        "cityId": "syd",
+        "name": "Jeffrey Street Wharf",
+        "localName": null,
+        "lat": -33.8498,
+        "lng": 151.2139,
+        "light": "night",
+        "lights": [
+          "night",
+          "golden"
+        ],
+        "when": "After blue hour, Opera House and city lit",
+        "tip": "Stand at the end of the wharf in Kirribilli for the Opera House with the city lights behind it and the bridge on the right; 24mm takes in both, 70-200 isolates the sails.",
+        "styles": [
+          "cityscape",
+          "long-exposure"
+        ],
+        "focal": [
+          "wide",
+          "standard",
+          "tele"
+        ],
+        "tripod": "needed",
+        "minutes": 75,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "echo-point",
+        "cityId": "syd",
+        "name": "Echo Point Lookout",
+        "localName": null,
+        "lat": -33.7327,
+        "lng": 150.312,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "day",
+          "golden"
+        ],
+        "when": "Sunrise, mist in the Jamison Valley",
+        "tip": "Arrive before first light and take the lower tier of the lookout for the Three Sisters side-lit above the valley; 70-200 compresses the ridgelines when mist lies in the Jamison Valley.",
+        "styles": [
+          "landscape"
+        ],
+        "focal": [
+          "standard",
+          "tele",
+          "wide"
+        ],
+        "tripod": "helps",
+        "minutes": 120,
+        "effort": 3,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "wentworth-falls",
+        "cityId": "syd",
+        "name": "Wentworth Falls Lookout",
+        "localName": null,
+        "lat": -33.7261,
+        "lng": 150.372,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "Afternoon, falls and escarpment",
+        "tip": "From the lookout the falls drop off the escarpment into the Jamison Valley; the ND gives a one to two second exposure and the polariser cuts glare on the wet rock.",
+        "styles": [
+          "landscape",
+          "long-exposure"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "needed",
+        "minutes": 90,
+        "effort": 2,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "govetts-leap",
+        "cityId": "syd",
+        "name": "Govetts Leap Lookout",
+        "localName": null,
+        "lat": -33.6279,
+        "lng": 150.3115,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "dawn"
+        ],
+        "when": "Sunset, last light on the Grose Valley walls",
+        "tip": "Frame Bridal Veil Falls dropping off the escarpment beside the lookout, then turn to the far walls of the Grose Valley, which face west and glow in the last 30 minutes of sun.",
+        "styles": [
+          "landscape"
+        ],
+        "focal": [
+          "wide",
+          "standard",
+          "tele"
+        ],
+        "tripod": "helps",
+        "minutes": 75,
+        "effort": 2,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "sea-cliff-bridge",
+        "cityId": "syd",
+        "name": "Sea Cliff Bridge",
+        "localName": null,
+        "lat": -34.2541,
+        "lng": 150.9735,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "day"
+        ],
+        "when": "Sunrise over the Tasman Sea",
+        "tip": "Walk the ocean-side footpath for the curve of the bridge against the escarpment and use the ND for a 30 second sea.",
+        "styles": [
+          "landscape",
+          "long-exposure",
+          "aerial"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide",
+          "standard"
+        ],
+        "tripod": "needed",
+        "minutes": 120,
+        "effort": 3,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "pylon-lookout",
+        "cityId": "syd",
+        "name": "Pylon Lookout",
+        "localName": null,
+        "lat": -33.8547,
+        "lng": 151.2095,
+        "light": "day",
+        "lights": [
+          "day",
+          "golden"
+        ],
+        "when": "Afternoon, Opera House side-lit",
+        "tip": "Climb the 200 steps inside the south-east pylon of the Harbour Bridge for an elevated view of the Opera House and Circular Quay; hold the lens close to the safety mesh to shoot through it.",
+        "styles": [
+          "cityscape"
+        ],
+        "focal": [
+          "standard",
+          "tele",
+          "wide"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 2,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "circular-quay",
+        "cityId": "syd",
+        "name": "Circular Quay",
+        "localName": null,
+        "lat": -33.8614,
+        "lng": 151.2107,
+        "light": "night",
+        "lights": [
+          "night",
+          "golden"
+        ],
+        "when": "Evening, ferries arriving and leaving",
+        "tip": "Set up between ferry berths and leave the shutter open for 5 to 15 seconds as a ferry pulls out with the lit bridge behind; handheld, shoot commuters against the wharf signs.",
+        "styles": [
+          "street",
+          "long-exposure",
+          "cityscape"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "observatory-hill",
+        "cityId": "syd",
+        "name": "Observatory Hill",
+        "localName": null,
+        "lat": -33.8597,
+        "lng": 151.2054,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "golden",
+          "day"
+        ],
+        "when": "Sunrise, first light on the bridge",
+        "tip": "Stand near the rotunda for the arch of the Harbour Bridge over the rooftops of Millers Point; 70-200 picks out the arch and the pylons.",
+        "styles": [
+          "cityscape",
+          "heritage"
+        ],
+        "focal": [
+          "standard",
+          "tele"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "princes-bridge",
+        "cityId": "mel",
+        "name": "Princes Bridge",
+        "localName": null,
+        "lat": -37.8192,
+        "lng": 144.9683,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "night"
+        ],
+        "when": "Blue hour, station lights on",
+        "tip": "Set up on the western footpath and frame the dome and clocks of Flinders Street Station across the Yarra; 2 to 8 seconds turns passing trams into light trails.",
+        "styles": [
+          "cityscape",
+          "long-exposure",
+          "street"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "needed",
+        "minutes": 75,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "shrine",
+        "cityId": "mel",
+        "name": "Shrine of Remembrance",
+        "localName": null,
+        "lat": -37.8305,
+        "lng": 144.9734,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "day",
+          "golden"
+        ],
+        "when": "Sunrise, columns and the view north",
+        "tip": "Frame the columns of the Shrine against the dawn sky from the forecourt steps with the 14-24, then turn north for the city skyline at the end of the ceremonial avenue.",
+        "styles": [
+          "architecture",
+          "heritage",
+          "cityscape"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide",
+          "tele"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "hosier-lane",
+        "cityId": "mel",
+        "name": "Hosier Lane",
+        "localName": null,
+        "lat": -37.8163,
+        "lng": 144.9691,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "Midday, light reaches the lane floor",
+        "tip": "Work the full length of the lane and the connecting Rutledge Lane for wide frames of the painted walls, and wait for people walking through to give scale.",
+        "styles": [
+          "street"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "brighton-boxes",
+        "cityId": "mel",
+        "name": "Brighton Bathing Boxes",
+        "localName": null,
+        "lat": -37.9185,
+        "lng": 144.9872,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "dawn"
+        ],
+        "when": "Sunset, low sun on the painted boxes",
+        "tip": "The boxes face west over Port Phillip, so the setting sun lights them front-on; shoot low along the row with the 14-24 or pick out single doors with the 70-200.",
+        "styles": [
+          "landscape",
+          "street"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide",
+          "tele"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 2,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "reb",
+        "cityId": "mel",
+        "name": "Royal Exhibition Building",
+        "localName": null,
+        "lat": -37.8047,
+        "lng": 144.9715,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "day"
+        ],
+        "when": "Early morning, fountain and dome",
+        "tip": "Stand on the southern path in Carlton Gardens so the Hochgurtel Fountain leads to the dome; the main facade faces south and morning light rakes across it.",
+        "styles": [
+          "architecture",
+          "heritage"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "degraves",
+        "cityId": "mel",
+        "name": "Degraves Street",
+        "localName": null,
+        "lat": -37.8171,
+        "lng": 144.9657,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "Midday, cafe tables full",
+        "tip": "Shoot from the Flinders Street end down the lane of cafe tables, then cross Flinders Lane into Centre Place for tight frames of people under the arcade signs.",
+        "styles": [
+          "street",
+          "people"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "skydeck",
+        "cityId": "mel",
+        "name": "Melbourne Skydeck",
+        "localName": null,
+        "lat": -37.8217,
+        "lng": 144.9645,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "night"
+        ],
+        "when": "Sunset into the first city lights",
+        "tip": "Arrive an hour before sunset for a west-facing window over Docklands and the bay, then move to the north side as the city lights come on; press the lens hood to the glass to kill reflections.",
+        "styles": [
+          "cityscape"
+        ],
+        "focal": [
+          "wide",
+          "standard",
+          "tele"
+        ],
+        "tripod": "no",
+        "minutes": 90,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "st-kilda-pier",
+        "cityId": "mel",
+        "name": "St Kilda Pier",
+        "localName": null,
+        "lat": -37.8647,
+        "lng": 144.9689,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "golden",
+          "night"
+        ],
+        "when": "Sunrise, calm water",
+        "tip": "Walk out towards the kiosk and the breakwater and use the ND for a minute-long exposure of the pier posts, with the city skyline across the bay to the north.",
+        "styles": [
+          "long-exposure",
+          "landscape",
+          "cityscape"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "needed",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "webb-bridge",
+        "cityId": "mel",
+        "name": "Webb Bridge",
+        "localName": null,
+        "lat": -37.8234,
+        "lng": 144.9473,
+        "light": "night",
+        "lights": [
+          "night",
+          "golden"
+        ],
+        "when": "Night, lit steel lattice",
+        "tip": "Stand inside the curved lattice section and fill the frame with the steel ribs at 14mm; a long exposure removes passing cyclists.",
+        "styles": [
+          "architecture",
+          "long-exposure",
+          "cityscape"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide"
+        ],
+        "tripod": "needed",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "teddys-lookout",
+        "cityId": "pcb",
+        "name": "Teddy's Lookout",
+        "localName": null,
+        "lat": -38.5542,
+        "lng": 143.979,
+        "light": "day",
+        "lights": [
+          "day",
+          "golden"
+        ],
+        "when": "Afternoon, the road curving along the coast",
+        "tip": "From the lookout above Lorne look down on the Great Ocean Road bending around the hills at the mouth of the St George River; 70-200 compresses road and coastline.",
+        "styles": [
+          "landscape"
+        ],
+        "focal": [
+          "standard",
+          "tele"
+        ],
+        "tripod": "helps",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "gibson-steps",
+        "cityId": "pcb",
+        "name": "Gibson Steps",
+        "localName": null,
+        "lat": -38.6686,
+        "lng": 143.1121,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "day"
+        ],
+        "when": "Sunset from the beach",
+        "tip": "Take the 86 steps down to the beach and frame the Gog and Magog stacks against the setting sun; stay well back from the waterline on an incoming tide.",
+        "styles": [
+          "landscape",
+          "long-exposure"
+        ],
+        "focal": [
+          "wide",
+          "ultrawide",
+          "standard"
+        ],
+        "tripod": "needed",
+        "minutes": 75,
+        "effort": 2,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "twelve-apostles",
+        "cityId": "pcb",
+        "name": "Twelve Apostles",
+        "localName": null,
+        "lat": -38.6643,
+        "lng": 143.1038,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "golden"
+        ],
+        "when": "Sunrise from the main viewing platforms",
+        "tip": "Be on the boardwalk 40 minutes before sunrise, when the rising sun lights the stacks from the east; 14-24 takes the full sweep of the coast and 70-200 isolates single stacks in the swell.",
+        "styles": [
+          "landscape",
+          "long-exposure"
+        ],
+        "focal": [
+          "wide",
+          "ultrawide",
+          "standard",
+          "tele"
+        ],
+        "tripod": "needed",
+        "minutes": 120,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "the-grotto",
+        "cityId": "pcb",
+        "name": "The Grotto",
+        "localName": null,
+        "lat": -38.6184,
+        "lng": 142.9145,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "Afternoon, near low tide",
+        "tip": "Take the stairs down to the lower platform and frame the ocean through the sinkhole arch with the rock pool in front; a one second exposure softens the incoming waves.",
+        "styles": [
+          "landscape",
+          "long-exposure"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide"
+        ],
+        "tripod": "needed",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "loch-ard-gorge",
+        "cityId": "pcb",
+        "name": "Loch Ard Gorge",
+        "localName": null,
+        "lat": -38.6464,
+        "lng": 143.0707,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "day"
+        ],
+        "when": "Late afternoon to sunset",
+        "tip": "Go down the stairs to the beach for the gorge walls framing the narrow entrance, then walk the track to the Razorback for the knife-edge rock in the last light.",
+        "styles": [
+          "landscape"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide",
+          "standard"
+        ],
+        "tripod": "helps",
+        "minutes": 90,
+        "effort": 2,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "triplet-falls",
+        "cityId": "pcb",
+        "name": "Triplet Falls",
+        "localName": null,
+        "lat": -38.6711,
+        "lng": 143.493,
+        "light": "day",
+        "lights": [
+          "day",
+          "dawn"
+        ],
+        "when": "Morning, soft light in the rainforest",
+        "tip": "Follow the 2 km loop through mountain ash and myrtle beech to the viewing platform; the ND and a one to two second exposure smooth the three cascades, and the polariser cuts glare on wet ferns.",
+        "styles": [
+          "landscape",
+          "long-exposure"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "needed",
+        "minutes": 150,
+        "effort": 3,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "london-arch",
+        "cityId": "pcb",
+        "name": "London Arch",
+        "localName": null,
+        "lat": -38.6218,
+        "lng": 142.9316,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "day"
+        ],
+        "when": "Late afternoon, warm light on the arch",
+        "tip": "From the main viewing platform frame the arch and the stack that lost its span in 1990; 70-200 isolates the arch against the swell.",
+        "styles": [
+          "landscape"
+        ],
+        "focal": [
+          "wide",
+          "standard",
+          "tele"
+        ],
+        "tripod": "helps",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "bay-of-islands",
+        "cityId": "pcb",
+        "name": "Bay of Islands",
+        "localName": null,
+        "lat": -38.5851,
+        "lng": 142.8257,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "dawn"
+        ],
+        "when": "Sunset over the stacks",
+        "tip": "The clifftop platforms look west along the coast towards the setting sun; line the stacks up along the shore and bracket for the bright horizon.",
+        "styles": [
+          "landscape",
+          "long-exposure"
+        ],
+        "focal": [
+          "wide",
+          "standard",
+          "tele"
+        ],
+        "tripod": "needed",
+        "minutes": 75,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "the-arch",
+        "cityId": "pcb",
+        "name": "The Arch",
+        "localName": null,
+        "lat": -38.6237,
+        "lng": 142.9432,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "day"
+        ],
+        "when": "Sunrise, low light on the arch",
+        "tip": "From the lookout at the end of the short path, frame the arch with the swell breaking through it; half a second gives movement in the surf.",
+        "styles": [
+          "landscape",
+          "long-exposure"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "helps",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      }
+    ],
+    "days": [
+      {
+        "date": "2027-03-05",
+        "cityId": "syd",
+        "title": "Arrival: The Rocks and the harbour",
+        "travel": {
+          "fromCityId": null,
+          "mode": "flight",
+          "label": "Flight from home to Sydney",
+          "minutes": null
+        },
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Late afternoon",
+            "spotId": "argyle-cut",
+            "why": "An easy first stop near the base for street frames in warm side light after the flight.",
+            "note": null
+          },
+          {
+            "label": "Blue hour",
+            "spotId": "dawes-point",
+            "why": "The first view of the Opera House across Sydney Cove, a short walk from The Rocks, for a long exposure at blue hour.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-03-06",
+        "cityId": "syd",
+        "title": "Opera House from three sides",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "mrs-macquaries-chair",
+            "why": "The rising sun lights the Opera House and the bridge from behind the camera, and the classic stacked view needs the telephoto.",
+            "note": "Sunrise is about 06:50; the point is a 25 minute walk from The Rocks along the harbour foreshore."
+          },
+          {
+            "label": "Afternoon",
+            "spotId": "opera-house",
+            "why": "Close architecture and tile details of the must-see building while the sails are bright in daylight.",
+            "note": null
+          },
+          {
+            "label": "Blue hour",
+            "spotId": "blues-point",
+            "why": "The widest skyline view of the bridge and city from the north shore, best at blue hour with a long exposure.",
+            "note": "Train to Milsons Point station, then a 15 minute walk west."
+          }
+        ]
+      },
+      {
+        "date": "2027-03-07",
+        "cityId": "syd",
+        "title": "Bondi coast and Kirribilli lights",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "bondi-icebergs",
+            "why": "Sunrise over the ocean with swell over the pool wall is Sydney's signature long exposure.",
+            "note": null
+          },
+          {
+            "label": "Midday",
+            "spotId": "mackenzies-point",
+            "why": "The coastal walk gives open landscape frames, and midday sun with a polariser makes the water turquoise.",
+            "note": null
+          },
+          {
+            "label": "Night",
+            "spotId": "jeffrey-st-wharf",
+            "why": "A quiet north shore wharf with the lit Opera House and city skyline across the water.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-03-08",
+        "cityId": "syd",
+        "title": "A day in the Blue Mountains",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "echo-point",
+            "why": "Valley mist and low sun on the Three Sisters are at their best in the first hour of light.",
+            "note": "Katoomba is about 1 h 45 min by car from the city; leave by 05:00 or stay in Katoomba the night before."
+          },
+          {
+            "label": "Afternoon",
+            "spotId": "wentworth-falls",
+            "why": "A waterfall and escarpment stop for the ND, ten minutes east of Katoomba.",
+            "note": null
+          },
+          {
+            "label": "Sunset",
+            "spotId": "govetts-leap",
+            "why": "The west-facing walls of the Grose Valley catch the last sun from this lookout.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-03-09",
+        "cityId": "syd",
+        "title": "Sea Cliff Bridge and the bridge pylon",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "sea-cliff-bridge",
+            "why": "Sunrise over the sea behind the curving bridge, with the escarpment and a long exposure for the water.",
+            "note": "About 1 h by car south of the city."
+          },
+          {
+            "label": "Afternoon",
+            "spotId": "pylon-lookout",
+            "why": "An elevated view of the Opera House and Circular Quay with a camera, at a fraction of the BridgeClimb price.",
+            "note": null
+          },
+          {
+            "label": "Night",
+            "spotId": "circular-quay",
+            "why": "Ferries leaving the lit wharves give long-exposure trails and street frames on the last Sydney night.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-03-10",
+        "cityId": "mel",
+        "title": "Sydney sunrise, Melbourne blue hour",
+        "travel": {
+          "fromCityId": "syd",
+          "mode": "flight",
+          "label": "Flight Sydney to Melbourne",
+          "minutes": 95
+        },
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "observatory-hill",
+            "why": "A short dawn stop above The Rocks for the bridge before checking out.",
+            "note": null
+          },
+          {
+            "label": "Blue hour",
+            "spotId": "princes-bridge",
+            "why": "Flinders Street Station lit at blue hour is the classic first frame of Melbourne.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-03-11",
+        "cityId": "mel",
+        "title": "Shrine, street art and bathing boxes",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "shrine",
+            "why": "The Shrine is quiet at dawn and its columns take the first light, with the skyline down the avenue.",
+            "note": null
+          },
+          {
+            "label": "Midday",
+            "spotId": "hosier-lane",
+            "why": "Overhead light reaches into the narrow lane, and midday crowds give the street art scale.",
+            "note": null
+          },
+          {
+            "label": "Sunset",
+            "spotId": "brighton-boxes",
+            "why": "The west-facing boxes are lit front-on by the setting sun over the bay.",
+            "note": "Sandringham line train to Brighton Beach station, then a 15 minute walk north along the foreshore."
+          }
+        ]
+      },
+      {
+        "date": "2027-03-12",
+        "cityId": "mel",
+        "title": "Exhibition Building, laneways and the skyline",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "reb",
+            "why": "Soft morning side light on the dome and facade, before the gardens fill.",
+            "note": null
+          },
+          {
+            "label": "Midday",
+            "spotId": "degraves",
+            "why": "The covered cafe lanes are at their busiest at lunch, which is the point for street work.",
+            "note": null
+          },
+          {
+            "label": "Sunset",
+            "spotId": "skydeck",
+            "why": "The highest public view in the city, from sunset into the first lights.",
+            "note": "Buy a ticket ahead for a sunset entry."
+          }
+        ]
+      },
+      {
+        "date": "2027-03-13",
+        "cityId": "pcb",
+        "title": "Along the Great Ocean Road",
+        "travel": {
+          "fromCityId": "mel",
+          "mode": "car",
+          "label": "Drive the Great Ocean Road via Torquay and Lorne",
+          "minutes": 270
+        },
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "st-kilda-pier",
+            "why": "A calm-water long exposure on the bay at sunrise before picking up the car.",
+            "note": null
+          },
+          {
+            "label": "Afternoon",
+            "spotId": "teddys-lookout",
+            "why": "The best elevated view of the road itself, right on the way at Lorne.",
+            "note": null
+          },
+          {
+            "label": "Sunset",
+            "spotId": "gibson-steps",
+            "why": "Beach-level stacks at sunset, 15 minutes east of Port Campbell.",
+            "note": "Lorne to Gibson Steps is about 2 h 15 min by car; leave Lorne by 16:30."
+          }
+        ]
+      },
+      {
+        "date": "2027-03-14",
+        "cityId": "pcb",
+        "title": "Twelve Apostles at sunrise",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "twelve-apostles",
+            "why": "The must-see stacks are lit from the east at sunrise, and the platforms are far quieter than at sunset.",
+            "note": null
+          },
+          {
+            "label": "Afternoon",
+            "spotId": "the-grotto",
+            "why": "A framed view of the sea through the sinkhole that works in flat afternoon light.",
+            "note": null
+          },
+          {
+            "label": "Sunset",
+            "spotId": "loch-ard-gorge",
+            "why": "Warm last light on the gorge walls and the Razorback, 10 minutes from Port Campbell.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-03-15",
+        "cityId": "pcb",
+        "title": "Otways rainforest and western stacks",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "triplet-falls",
+            "why": "A rainforest waterfall adds a different landscape to the coast, best in soft morning light.",
+            "note": "About an hour by car east of Port Campbell, via Lavers Hill."
+          },
+          {
+            "label": "Late afternoon",
+            "spotId": "london-arch",
+            "why": "Low sun from the west lights the arch face on the way to the sunset stop.",
+            "note": null
+          },
+          {
+            "label": "Sunset",
+            "spotId": "bay-of-islands",
+            "why": "The bay faces west and is the quietest place on the coast for a sunset over the stacks.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-03-16",
+        "cityId": "mel",
+        "title": "Last sunrise on the coast, back to Melbourne",
+        "travel": {
+          "fromCityId": "pcb",
+          "mode": "car",
+          "label": "Drive inland via Colac",
+          "minutes": 190
+        },
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "the-arch",
+            "why": "A short sunrise stop five minutes from Port Campbell before the drive back.",
+            "note": null
+          },
+          {
+            "label": "Night",
+            "spotId": "webb-bridge",
+            "why": "A lit architectural long exposure in Docklands to finish the trip.",
+            "note": null
+          }
+        ]
+      }
+    ],
+    "skipped": [
+      {
+        "name": "Sydney Harbour BridgeClimb",
+        "reason": "Cameras are not allowed on the climb; the Pylon Lookout gives an elevated view with a camera."
+      },
+      {
+        "name": "Figure Eight Pools",
+        "reason": "The rock platform is only safe at low tide with a small swell, which a fixed date cannot promise."
+      },
+      {
+        "name": "Cape Otway Lightstation",
+        "reason": "A long detour off the coast road; Triplet Falls covers the Otways."
+      },
+      {
+        "name": "Phillip Island Penguin Parade",
+        "reason": "Photography is not allowed at the parade, and it takes a full evening away from Melbourne."
+      }
+    ]
+  }
+}

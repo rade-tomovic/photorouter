@@ -1,0 +1,1068 @@
+{
+  "id": "south-america-rio-paraty",
+  "continent": "south-america",
+  "label": "Rio de Janeiro and Paraty",
+  "blurb": "9 days in May: granite peaks, beaches and a colonial town.",
+  "brief": {
+    "destination": "Rio de Janeiro and Paraty",
+    "start": "2027-05-14",
+    "days": 9,
+    "text": "I want the big Rio views from the granite peaks, the beaches at sunrise and the street life in the old neighbourhoods. After that, a few slower days in Paraty for the colonial streets and the bay. I am happy to hike for a view.",
+    "gear": [
+      "apsc-body",
+      "std-24-70",
+      "p35",
+      "tz-70-200",
+      "clamp",
+      "cpl"
+    ],
+    "styles": [
+      "landscape",
+      "cityscape",
+      "street",
+      "people",
+      "heritage"
+    ],
+    "pace": "balanced",
+    "walking": "high",
+    "work": false,
+    "fridayEarly": false,
+    "avoidCrowds": false,
+    "must": [
+      "Sugarloaf Mountain",
+      "Paraty historic centre"
+    ],
+    "avoid": []
+  },
+  "answer": {
+    "version": "photorouter.plan/v2",
+    "title": "Rio de Janeiro and Paraty in May",
+    "summary": "Five nights in Ipanema cover the big granite viewpoints, the beaches at sunrise and sunset, and the street life of Lapa, Centro and the port. A coach down the Costa Verde then gives four slower days in Paraty for the colonial centre, the bay and two hikes, to Mamanguá and Trindade.",
+    "timezone": "America/Sao_Paulo",
+    "cities": [
+      {
+        "id": "rio",
+        "name": "Rio de Janeiro",
+        "localName": null,
+        "lat": -22.9068,
+        "lng": -43.1729,
+        "base": {
+          "label": "Ipanema, near Praça General Osório",
+          "lat": -22.9852,
+          "lng": -43.1978
+        }
+      },
+      {
+        "id": "paraty",
+        "name": "Paraty",
+        "localName": null,
+        "lat": -23.2178,
+        "lng": -44.7131,
+        "base": {
+          "label": "Historic centre, near Praça da Matriz",
+          "lat": -23.2185,
+          "lng": -44.7135
+        }
+      }
+    ],
+    "spots": [
+      {
+        "id": "ipanema-posto-9",
+        "cityId": "rio",
+        "name": "Ipanema Beach at Posto 9",
+        "localName": "Praia de Ipanema, Posto 9",
+        "lat": -22.9868,
+        "lng": -43.2042,
+        "light": "day",
+        "lights": [
+          "day",
+          "golden"
+        ],
+        "when": "Afternoon, beach life at its peak",
+        "tip": "Walk the hard sand at the waterline and shoot back towards the beach crowd, volleyball and vendors with the 70-200. Dois Irmãos closes the frame to the west.",
+        "styles": [
+          "people",
+          "street",
+          "landscape"
+        ],
+        "focal": [
+          "tele",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 75,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "arpoador",
+        "cityId": "rio",
+        "name": "Arpoador Rock",
+        "localName": "Pedra do Arpoador",
+        "lat": -22.9904,
+        "lng": -43.1904,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "dawn",
+          "day"
+        ],
+        "when": "Sunset, from the top of the rock",
+        "tip": "Climb to the upper ledge and look west along Ipanema to Dois Irmãos and Pedra da Gávea. Turn round for the crowd lined up on the rock against the sky.",
+        "styles": [
+          "landscape",
+          "people"
+        ],
+        "focal": [
+          "standard",
+          "tele",
+          "wide"
+        ],
+        "tripod": "no",
+        "minutes": 90,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "cristo-redentor",
+        "cityId": "rio",
+        "name": "Christ the Redeemer",
+        "localName": "Cristo Redentor",
+        "lat": -22.9519,
+        "lng": -43.2105,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "First train of the morning",
+        "tip": "Take the first Corcovado train from Cosme Velho and shoot the statue from the lower steps before the platform fills. Then turn to Sugarloaf and Guanabara Bay with the 70-200.",
+        "styles": [
+          "cityscape",
+          "landscape",
+          "heritage"
+        ],
+        "focal": [
+          "wide",
+          "tele",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 120,
+        "effort": 2,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "escadaria-selaron",
+        "cityId": "rio",
+        "name": "Selarón Steps",
+        "localName": "Escadaria Selarón",
+        "lat": -22.9155,
+        "lng": -43.1796,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "Afternoon, between tour groups",
+        "tip": "Stand a few steps up from Rua Joaquim Silva and frame the tiled stairs rising into Santa Teresa. People posing on the steps are part of the picture here.",
+        "styles": [
+          "street",
+          "heritage",
+          "people"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "parque-das-ruinas",
+        "cityId": "rio",
+        "name": "Parque das Ruínas",
+        "localName": null,
+        "lat": -22.9178,
+        "lng": -43.1825,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "day"
+        ],
+        "when": "Late afternoon, low sun on the bay",
+        "tip": "Climb to the top terrace of the ruined mansion for Guanabara Bay with Sugarloaf on the horizon. The 70-200 compresses the Centro towers against the bay.",
+        "styles": [
+          "cityscape",
+          "heritage"
+        ],
+        "focal": [
+          "tele",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "arcos-da-lapa",
+        "cityId": "rio",
+        "name": "Lapa Arches",
+        "localName": "Arcos da Lapa",
+        "lat": -22.913,
+        "lng": -43.18,
+        "light": "night",
+        "lights": [
+          "night",
+          "day"
+        ],
+        "when": "Weekend night, street life under the arches",
+        "tip": "Shoot from Largo da Lapa with the floodlit arches behind the crowd and the street stalls. Fast primes and a raised ISO handle the light.",
+        "styles": [
+          "street",
+          "people",
+          "heritage"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "copacabana-fishermen",
+        "cityId": "rio",
+        "name": "Copacabana fishermen's colony",
+        "localName": "Colônia de Pescadores de Copacabana",
+        "lat": -22.9861,
+        "lng": -43.1886,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "day"
+        ],
+        "when": "Sunrise, boats on the sand",
+        "tip": "Stand on the sand by the fishing boats at Posto 6 with the sun rising over the sea and the curve of Copacabana towards Leme. Ask before close portraits of the fishermen.",
+        "styles": [
+          "people",
+          "street",
+          "landscape"
+        ],
+        "focal": [
+          "wide",
+          "standard",
+          "tele"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "sugarloaf",
+        "cityId": "rio",
+        "name": "Sugarloaf Mountain",
+        "localName": "Pão de Açúcar",
+        "lat": -22.9494,
+        "lng": -43.1564,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "night",
+          "day"
+        ],
+        "when": "Sunset into the first city lights",
+        "tip": "Ride up an hour before sunset, stop on Morro da Urca, then take the second cable car to the summit deck. Frame Botafogo Bay with Christ the Redeemer on Corcovado as the lights come on.",
+        "styles": [
+          "cityscape",
+          "landscape"
+        ],
+        "focal": [
+          "standard",
+          "tele",
+          "wide"
+        ],
+        "tripod": "helps",
+        "minutes": 150,
+        "effort": 2,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "mureta-da-urca",
+        "cityId": "rio",
+        "name": "Mureta da Urca",
+        "localName": null,
+        "lat": -22.9477,
+        "lng": -43.1641,
+        "light": "night",
+        "lights": [
+          "night",
+          "golden"
+        ],
+        "when": "After dark, from the seawall",
+        "tip": "Brace the camera on the wall and shoot across the moored boats to the lights of Botafogo and the lit statue on Corcovado. Locals sitting on the wall make the foreground.",
+        "styles": [
+          "cityscape",
+          "people"
+        ],
+        "focal": [
+          "standard",
+          "tele"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "pedra-do-telegrafo",
+        "cityId": "rio",
+        "name": "Pedra do Telégrafo",
+        "localName": null,
+        "lat": -23.0683,
+        "lng": -43.5582,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "day"
+        ],
+        "when": "Early morning, before the queue builds",
+        "tip": "From the summit, shoot the restinga and beaches of Guaratiba with the 24-70. The famous hanging shot is a camera-angle trick over a short drop; people queue to take turns, so offer to shoot for the person ahead.",
+        "styles": [
+          "landscape",
+          "people"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 180,
+        "effort": 3,
+        "crowd": 2,
+        "drone": false,
+        "hike": true
+      },
+      {
+        "id": "etnias-mural",
+        "cityId": "rio",
+        "name": "Etnias mural, Boulevard Olímpico",
+        "localName": "Mural Etnias, Boulevard Olímpico",
+        "lat": -22.8945,
+        "lng": -43.1867,
+        "light": "day",
+        "lights": [
+          "day",
+          "golden"
+        ],
+        "when": "Late afternoon, sun on the warehouse wall",
+        "tip": "Step back across the boulevard to fit the whole mural in, then walk closer and use passers-by and cyclists for scale.",
+        "styles": [
+          "street",
+          "people",
+          "cityscape"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "pedra-do-sal",
+        "cityId": "rio",
+        "name": "Pedra do Sal",
+        "localName": null,
+        "lat": -22.898,
+        "lng": -43.1855,
+        "light": "night",
+        "lights": [
+          "night"
+        ],
+        "when": "Monday evening samba circle",
+        "tip": "Stand on the rock steps above the square for the musicians and dancers below. Use the 35mm wide open and keep shutter speeds above 1/125 for the dancers.",
+        "styles": [
+          "people",
+          "street",
+          "heritage"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 90,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "real-gabinete",
+        "cityId": "rio",
+        "name": "Royal Portuguese Reading Room",
+        "localName": "Real Gabinete Português de Leitura",
+        "lat": -22.9054,
+        "lng": -43.1822,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "Morning, at opening",
+        "tip": "Stand at the far end of the reading room under the chandelier and shoot back towards the entrance to get the three tiers of books and the skylight.",
+        "styles": [
+          "heritage"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "confeitaria-colombo",
+        "cityId": "rio",
+        "name": "Confeitaria Colombo",
+        "localName": null,
+        "lat": -22.9052,
+        "lng": -43.1787,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "Midday, the lunch crowd",
+        "tip": "Take a table near the back and shoot along the room to catch the Belgian mirrors repeating the waiters and diners. A coffee buys the time to work.",
+        "styles": [
+          "heritage",
+          "people"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "dois-irmaos",
+        "cityId": "rio",
+        "name": "Dois Irmãos summit",
+        "localName": "Morro Dois Irmãos",
+        "lat": -22.9908,
+        "lng": -43.2397,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "day",
+          "dawn"
+        ],
+        "when": "Sunset, from the summit rocks",
+        "tip": "From the top, frame Ipanema and Leblon running towards Sugarloaf with the Lagoa behind. Turn west for Pedra da Gávea and the Vidigal rooftops in the last light.",
+        "styles": [
+          "landscape",
+          "cityscape"
+        ],
+        "focal": [
+          "wide",
+          "standard",
+          "tele"
+        ],
+        "tripod": "no",
+        "minutes": 180,
+        "effort": 2,
+        "crowd": 2,
+        "drone": false,
+        "hike": true
+      },
+      {
+        "id": "lagoa",
+        "cityId": "rio",
+        "name": "Rodrigo de Freitas Lagoon",
+        "localName": "Lagoa Rodrigo de Freitas, Parque dos Patins",
+        "lat": -22.9717,
+        "lng": -43.2168,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "day"
+        ],
+        "when": "Sunrise, while the water is still",
+        "tip": "Shoot from the shore at Parque dos Patins across the lagoon to Corcovado with the statue on top. Rowers and runners crossing the frame give scale.",
+        "styles": [
+          "landscape",
+          "cityscape"
+        ],
+        "focal": [
+          "standard",
+          "tele"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "santa-rita",
+        "cityId": "paraty",
+        "name": "Santa Rita Church",
+        "localName": "Igreja de Santa Rita",
+        "lat": -23.2205,
+        "lng": -44.7132,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "dawn",
+          "day"
+        ],
+        "when": "Sunset and blue hour",
+        "tip": "Stand at the waterfront south of the church for the white facade with the boats and the green hills behind. Stay into blue hour when the church lights come on.",
+        "styles": [
+          "heritage",
+          "landscape"
+        ],
+        "focal": [
+          "standard",
+          "wide"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "paraty-centro",
+        "cityId": "paraty",
+        "name": "Paraty historic centre",
+        "localName": "Centro Histórico de Paraty",
+        "lat": -23.2191,
+        "lng": -44.7134,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "day",
+          "night"
+        ],
+        "when": "Dawn, before the shops open",
+        "tip": "Walk Rua do Comércio and the lanes around Praça da Matriz while they are empty and shoot low along the cobbles to the coloured doorways. The 35mm suits the narrow lanes.",
+        "styles": [
+          "heritage",
+          "street"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 90,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "forte-defensor",
+        "cityId": "paraty",
+        "name": "Defensor Perpétuo Fort",
+        "localName": "Forte Defensor Perpétuo",
+        "lat": -23.2118,
+        "lng": -44.7115,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "day"
+        ],
+        "when": "Late afternoon, low sun over the bay",
+        "tip": "Walk up from Praia do Pontal and shoot past the cannons to the bay and its islands. The 70-200 picks out schooners on the water.",
+        "styles": [
+          "heritage",
+          "landscape"
+        ],
+        "focal": [
+          "standard",
+          "tele",
+          "wide"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "igreja-matriz",
+        "cityId": "paraty",
+        "name": "Our Lady of Remedies Church",
+        "localName": "Igreja Matriz de Nossa Senhora dos Remédios",
+        "lat": -23.2179,
+        "lng": -44.7137,
+        "light": "night",
+        "lights": [
+          "night",
+          "day"
+        ],
+        "when": "Evening, the facade floodlit",
+        "tip": "Shoot from the far side of Praça da Matriz with the lit facade above the people in the square. Clamp to a bench or railing for a steady frame.",
+        "styles": [
+          "heritage",
+          "people"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "helps",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "mamangua",
+        "cityId": "paraty",
+        "name": "Saco do Mamanguá viewpoint",
+        "localName": "Pão de Açúcar do Mamanguá",
+        "lat": -23.2635,
+        "lng": -44.6147,
+        "light": "day",
+        "lights": [
+          "day",
+          "dawn"
+        ],
+        "when": "Morning, from the summit",
+        "tip": "From the top, look south down the full length of the narrow inlet with the mangroves at its end. A polariser cuts the glare on the water.",
+        "styles": [
+          "landscape"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 300,
+        "effort": 3,
+        "crowd": 1,
+        "drone": false,
+        "hike": true
+      },
+      {
+        "id": "jabaquara",
+        "cityId": "paraty",
+        "name": "Jabaquara Beach",
+        "localName": "Praia do Jabaquara",
+        "lat": -23.2065,
+        "lng": -44.7181,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "day"
+        ],
+        "when": "Sunset, best at low tide",
+        "tip": "Walk out onto the wet tidal flats and use the reflections of the hills and the moored boats. A low angle doubles the sky.",
+        "styles": [
+          "landscape",
+          "people"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "cachadaco",
+        "cityId": "paraty",
+        "name": "Cachadaço natural pool, Trindade",
+        "localName": "Piscina Natural do Cachadaço",
+        "lat": -23.3624,
+        "lng": -44.7312,
+        "light": "day",
+        "lights": [
+          "day",
+          "dawn"
+        ],
+        "when": "Morning, at low tide and calm sea",
+        "tip": "Climb onto the boulders on the seaward side and shoot down into the pool with the jungle-covered hill behind. Swimmers in the green water give scale.",
+        "styles": [
+          "landscape",
+          "people"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 180,
+        "effort": 3,
+        "crowd": 2,
+        "drone": false,
+        "hike": true
+      },
+      {
+        "id": "toboga",
+        "cityId": "paraty",
+        "name": "Tobogã waterfall",
+        "localName": "Cachoeira do Tobogã",
+        "lat": -23.2126,
+        "lng": -44.7923,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "Afternoon, when locals slide",
+        "tip": "Stand on the rocks beside the lower pool and use the 70-200 for the sliders coming down the smooth granite. A fast shutter freezes the splash.",
+        "styles": [
+          "people",
+          "landscape"
+        ],
+        "focal": [
+          "tele",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 75,
+        "effort": 2,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "paraty-pier",
+        "cityId": "paraty",
+        "name": "Paraty pier",
+        "localName": "Cais de Paraty",
+        "lat": -23.2214,
+        "lng": -44.7097,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "day"
+        ],
+        "when": "Late afternoon, as the schooners return",
+        "tip": "Walk to the end of the pier and shoot back at the painted schooners with the church and the hills behind. The 70-200 isolates crews tying up.",
+        "styles": [
+          "people",
+          "landscape",
+          "heritage"
+        ],
+        "focal": [
+          "standard",
+          "tele"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      }
+    ],
+    "days": [
+      {
+        "date": "2027-05-14",
+        "cityId": "rio",
+        "title": "Arrival and sunset on Arpoador",
+        "travel": {
+          "fromCityId": null,
+          "mode": "flight",
+          "label": "Flight to Rio de Janeiro (GIG)",
+          "minutes": null
+        },
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Afternoon",
+            "spotId": "ipanema-posto-9",
+            "why": "A gentle first outing with the beach crowd close to the base.",
+            "note": null
+          },
+          {
+            "label": "Sunset",
+            "spotId": "arpoador",
+            "why": "Rio's best-known sunset rock is a short walk along the beach.",
+            "note": "Pickpocketing is common in the sunset crowd; keep the camera on a strap."
+          }
+        ]
+      },
+      {
+        "date": "2027-05-15",
+        "cityId": "rio",
+        "title": "Corcovado, Selarón and Lapa",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "cristo-redentor",
+            "why": "The first train gets the statue and the bay view before the platform fills.",
+            "note": "Buy timed train tickets in advance, and check the forecast first: cloud often sits on the summit."
+          },
+          {
+            "label": "Afternoon",
+            "spotId": "escadaria-selaron",
+            "why": "Colour, tiles and people at a walk from Lapa.",
+            "note": null
+          },
+          {
+            "label": "Late afternoon",
+            "spotId": "parque-das-ruinas",
+            "why": "Low light on Guanabara Bay and Sugarloaf, a short climb above the steps.",
+            "note": null
+          },
+          {
+            "label": "Night",
+            "spotId": "arcos-da-lapa",
+            "why": "Saturday night under the arches is the city's liveliest street scene.",
+            "note": "Carry only the camera you use and take an app car back rather than walking side streets."
+          }
+        ]
+      },
+      {
+        "date": "2027-05-16",
+        "cityId": "rio",
+        "title": "Fishermen at dawn, Sugarloaf at dusk",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "copacabana-fishermen",
+            "why": "Sunrise over the sea with working boats and people in the frame.",
+            "note": null
+          },
+          {
+            "label": "Sunset",
+            "spotId": "sugarloaf",
+            "why": "The must-see summit at its best light, into the first city lights.",
+            "note": null
+          },
+          {
+            "label": "Night",
+            "spotId": "mureta-da-urca",
+            "why": "Walk down from the cable car station for night lights over Botafogo Bay.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-05-17",
+        "cityId": "rio",
+        "title": "Pedra do Telégrafo and the Monday samba",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "pedra-do-telegrafo",
+            "why": "A real hike to a big landscape view, with a short weekday queue.",
+            "note": "Start from Barra de Guaratiba, 60 to 90 minutes by car from Ipanema; the climb takes under an hour."
+          },
+          {
+            "label": "Late afternoon",
+            "spotId": "etnias-mural",
+            "why": "Street art at port-district scale before the samba starts nearby.",
+            "note": null
+          },
+          {
+            "label": "Night",
+            "spotId": "pedra-do-sal",
+            "why": "Live samba in the oldest corner of the port district.",
+            "note": "Arrive and leave by app car and avoid walking the surrounding streets after dark."
+          }
+        ]
+      },
+      {
+        "date": "2027-05-18",
+        "cityId": "rio",
+        "title": "Old Centro and Dois Irmãos at sunset",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "real-gabinete",
+            "why": "Rio's finest heritage interior, quiet before tour groups arrive.",
+            "note": null
+          },
+          {
+            "label": "Midday",
+            "spotId": "confeitaria-colombo",
+            "why": "A Belle Époque interior full of people, a short walk away.",
+            "note": null
+          },
+          {
+            "label": "Sunset",
+            "spotId": "dois-irmaos",
+            "why": "The classic hike for the whole south zone in one frame.",
+            "note": "The trail starts at the top of Vidigal; go with a local guide and bring a headlamp for the descent."
+          }
+        ]
+      },
+      {
+        "date": "2027-05-19",
+        "cityId": "paraty",
+        "title": "Down the Costa Verde to Paraty",
+        "travel": {
+          "fromCityId": "rio",
+          "mode": "bus",
+          "label": "Costa Verde coach from Novo Rio bus station",
+          "minutes": 270
+        },
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "lagoa",
+            "why": "Calm water and Corcovado at sunrise, close to the base before the bus.",
+            "note": null
+          },
+          {
+            "label": "Sunset",
+            "spotId": "santa-rita",
+            "why": "Paraty's signature church on the water, a short walk from the bus station.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-05-20",
+        "cityId": "paraty",
+        "title": "Paraty streets, the fort and the Matriz",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "paraty-centro",
+            "why": "The must-see colonial streets, empty at first light.",
+            "note": null
+          },
+          {
+            "label": "Late afternoon",
+            "spotId": "forte-defensor",
+            "why": "Bay and islands in low sun from a short climb north of town.",
+            "note": null
+          },
+          {
+            "label": "Night",
+            "spotId": "igreja-matriz",
+            "why": "The floodlit main church and the square in the evening.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-05-21",
+        "cityId": "paraty",
+        "title": "Saco do Mamanguá from above",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "mamangua",
+            "why": "A boat and a steep hike for the best landscape view on the coast.",
+            "note": "Book a boat from Paraty-Mirim to Praia do Cruzeiro; the climb is about an hour and steep, so start early and carry water."
+          },
+          {
+            "label": "Sunset",
+            "spotId": "jabaquara",
+            "why": "Reflections on the tidal flats, a short ride from the centre.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-05-22",
+        "cityId": "paraty",
+        "title": "Trindade, Tobogã and the schooners",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "cachadaco",
+            "why": "A hike through the forest to a clear sea pool, before the weekend crowd.",
+            "note": "The trail from Praia do Meio crosses rocks and takes about 30 minutes; swim only when the sea is calm."
+          },
+          {
+            "label": "Afternoon",
+            "spotId": "toboga",
+            "why": "Saturday brings locals to the rock slide, which makes the picture.",
+            "note": null
+          },
+          {
+            "label": "Late afternoon",
+            "spotId": "paraty-pier",
+            "why": "Schooners coming back from the bay in warm light.",
+            "note": null
+          }
+        ]
+      }
+    ],
+    "skipped": [
+      {
+        "name": "Pedra da Gávea",
+        "reason": "A full-day climb with an exposed rock section that needs a guide and rope; Dois Irmãos and Pedra do Telégrafo give big views with less risk."
+      },
+      {
+        "name": "Mirante Dona Marta",
+        "reason": "Repeats the bay and Sugarloaf view already covered from Corcovado and Parque das Ruínas."
+      },
+      {
+        "name": "Pedra Bonita",
+        "reason": "The hang-gliding ramp view over São Conrado overlaps with Dois Irmãos."
+      },
+      {
+        "name": "Ilha Grande",
+        "reason": "Needs two nights on its own to justify the transfer."
+      }
+    ]
+  }
+}

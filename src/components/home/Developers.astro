@@ -2,13 +2,28 @@
 import SectionHead from './SectionHead.astro';
 import GitHubIcon from './GitHubIcon.astro';
 import { REPO_URL, SCHEMA_PATH } from './links';
+import { DEMOS } from './demoData';
+import { PLAN_SCHEMA, PLAN_VERSION } from '@/photorouter/lib/byoai';
 
 const rules = [
   { title: 'Closed objects', text: 'Every object sets additionalProperties to false.' },
   { title: 'Every key required', text: 'Optional values are present and null, never missing.' },
   { title: 'Nullable as anyOf', text: 'A nullable field is anyOf its type and null.' },
-  { title: 'Enums for ids', text: 'Dates, slot labels and spot ids are enums from the trip data.' },
+  {
+    title: 'Enums, not limits',
+    text: 'Lights, focal ranges, tripod needs, travel modes, slot labels, effort and crowd levels are enums. There are no numeric or length limits.',
+  },
 ];
+
+const demo = DEMOS[0]!;
+const dates = demo.answer.days.map((d) => d.date);
+// Read back from the served JSON so the excerpt shows exactly what the endpoint returns.
+const schema = JSON.parse(JSON.stringify(PLAN_SCHEMA));
+const top: string[] = schema.required;
+const day: { required: string[] } = schema.properties.days.items;
+const lights: string[] = schema.properties.spots.items.properties.light.enum;
+const modes: string[] = schema.properties.days.items.properties.travel.anyOf[0].properties.mode.enum;
+const half = Math.ceil(top.length / 2);
 ---
 
 <section id="developers" aria-labelledby="developers-title" class="scroll-mt-4 border-b border-line">
@@ -19,6 +34,9 @@ const rules = [
           The plan format is a JSON Schema served at <a href={SCHEMA_PATH} class="t-accent font-mono text-[15px] font-medium underline underline-offset-2">{SCHEMA_PATH}</a>.
           It keeps to the subset that the structured-output modes of the major AI APIs accept, so the same file works as the
           response format for any of them.
+        </p>
+        <p>
+          The published file is generic. The planner also gives a copy pinned to your trip, where <code class="font-mono text-[14px] text-ink">date</code> is an enum of the trip dates: {dates.length} of them, from <span class="whitespace-nowrap">{dates[0]}</span> to <span class="whitespace-nowrap">{dates.at(-1)}</span> for the {demo.label} demo.
         </p>
         <p>
           With the API target, the prompt leaves the schema out and you pass it to your provider's structured-output option.
@@ -36,7 +54,7 @@ const rules = [
         }
       </dl>
       <p class="mt-10 mb-0 text-[15px] leading-relaxed text-muted">
-        PhotoRouter is open source under the MIT licence.
+        PhotoRouter is open source under the MIT licence and maintained by AMPQ.
         <a href={REPO_URL} class="ml-1 inline-flex items-center gap-1.5 font-semibold text-ink underline underline-offset-2">
           <GitHubIcon class="size-4" />Source on GitHub
         </a>
@@ -55,32 +73,43 @@ const rules = [
   <span class="k">"type"</span>: <span class="s">"object"</span>,
   <span class="k">"additionalProperties"</span>: <span class="n">false</span>,
   <span class="k">"required"</span>: [
-    <span class="s">"version"</span>, <span class="s">"summary"</span>, <span class="s">"days"</span>, <span class="s">"skipped"</span>
+    {top.slice(0, half).map((k, i) => <><span class="s">"{k}"</span>{i < half - 1 ? ', ' : ',\n    '}</>)}{top.slice(half).map((k, i, a) => <><span class="s">"{k}"</span>{i < a.length - 1 ? ', ' : ''}</>)}
   ],
   <span class="k">"properties"</span>: {'{'}
     <span class="k">"version"</span>: {'{'}
       <span class="k">"type"</span>: <span class="s">"string"</span>,
-      <span class="k">"const"</span>: <span class="s">"photorouter.plan/v1"</span>
+      <span class="k">"const"</span>: <span class="s">"{PLAN_VERSION}"</span>
+    {'}'},
+    <span class="n">…</span>,
+    <span class="k">"spots"</span>: {'{'}
+      <span class="k">"type"</span>: <span class="s">"array"</span>,
+      <span class="k">"items"</span>: {'{'} <span class="n">…</span>
+        <span class="k">"light"</span>: {'{'} <span class="k">"enum"</span>: [{lights.map((l, i) => <><span class="s">"{l}"</span>{i < lights.length - 1 ? ', ' : ''}</>)}] {'}'}
+      {'}'}
     {'}'},
     <span class="k">"days"</span>: {'{'}
       <span class="k">"type"</span>: <span class="s">"array"</span>,
       <span class="k">"items"</span>: {'{'}
-        <span class="k">"required"</span>: [<span class="s">"date"</span>, <span class="s">"title"</span>, <span class="s">"slots"</span>],
+        <span class="k">"required"</span>: [
+          {day.required.map((k, i) => <><span class="s">"{k}"</span>{i < day.required.length - 1 ? ', ' : ''}</>)}
+        ],
         <span class="k">"properties"</span>: {'{'}
-          <span class="k">"date"</span>: {'{'} <span class="k">"enum"</span>: [<span class="s">"2026-11-16"</span>, <span class="n">…</span>] {'}'},
-          <span class="k">"title"</span>: {'{'} <span class="k">"anyOf"</span>: [
-            {'{'} <span class="k">"type"</span>: <span class="s">"string"</span> {'}'},
+          <span class="k">"date"</span>: {'{'} <span class="k">"type"</span>: <span class="s">"string"</span> {'}'},
+          <span class="k">"travel"</span>: {'{'} <span class="k">"anyOf"</span>: [
+            {'{'} <span class="n">…</span> <span class="k">"mode"</span>: {'{'} <span class="k">"enum"</span>: [
+              {modes.map((m, i) => <><span class="s">"{m}"</span>{i < modes.length - 1 ? ', ' : ''}</>)}
+            ] {'}'} {'}'},
             {'{'} <span class="k">"type"</span>: <span class="s">"null"</span> {'}'}
           ] {'}'},
           <span class="k">"slots"</span>: <span class="n">…</span>
         {'}'}
       {'}'}
     {'}'},
-    <span class="k">"skipped"</span>: <span class="n">…</span>
+    <span class="n">…</span>
   {'}'}
 {'}'}</pre>
       </div>
-      <figcaption class="mt-3 px-1 text-[13px] text-muted">An excerpt of the published schema.</figcaption>
+      <figcaption class="mt-3 px-1 text-[13px] text-muted">An excerpt of the published schema, descriptions left out.</figcaption>
     </figure>
   </div>
 </section>

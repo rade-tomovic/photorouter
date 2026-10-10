@@ -1,0 +1,1200 @@
+{
+  "id": "europe-lisbon-porto",
+  "continent": "europe",
+  "label": "Lisbon and Porto",
+  "blurb": "10 days in April: tiled streets, river light, two cities by train.",
+  "brief": {
+    "destination": "Lisbon and Porto",
+    "start": "2027-04-09",
+    "days": 10,
+    "text": "I want to photograph the tiled streets, trams and viewpoints of Lisbon, then take the train to Porto for the river and the bridges. I like working the old quarters by day and doing long exposures over the water at blue hour and after dark.",
+    "gear": [
+      "ff-body",
+      "wz-16-35",
+      "std-24-70",
+      "tz-70-200",
+      "tripod",
+      "nd6",
+      "cpl"
+    ],
+    "styles": [
+      "street",
+      "architecture",
+      "heritage",
+      "cityscape",
+      "night"
+    ],
+    "pace": "balanced",
+    "walking": "medium",
+    "work": false,
+    "fridayEarly": false,
+    "avoidCrowds": false,
+    "must": [
+      "Belem Tower",
+      "Dom Luis I Bridge"
+    ],
+    "avoid": []
+  },
+  "answer": {
+    "version": "photorouter.plan/v2",
+    "title": "Lisbon and Porto in spring",
+    "summary": "Six nights in Lisbon for viewpoints, trams and the Belém riverfront, with a morning at Pena Palace in Sintra, then the Alfa Pendular to Porto for azulejos, the Ribeira quay and the Dom Luís I Bridge. Sunsets go to west-facing viewpoints, and blue hour and night stops sit on the water for long exposures with the tripod and the six-stop ND.",
+    "timezone": "Europe/Lisbon",
+    "cities": [
+      {
+        "id": "lis",
+        "name": "Lisbon",
+        "localName": "Lisboa",
+        "lat": 38.7105,
+        "lng": -9.137,
+        "base": {
+          "label": "Baixa, near Rossio",
+          "lat": 38.7138,
+          "lng": -9.1393
+        }
+      },
+      {
+        "id": "opo",
+        "name": "Porto",
+        "localName": null,
+        "lat": 41.1484,
+        "lng": -8.611,
+        "base": {
+          "label": "Near São Bento station",
+          "lat": 41.145,
+          "lng": -8.61
+        }
+      }
+    ],
+    "spots": [
+      {
+        "id": "senhora-do-monte",
+        "cityId": "lis",
+        "name": "Senhora do Monte Viewpoint",
+        "localName": "Miradouro da Senhora do Monte",
+        "lat": 38.7191,
+        "lng": -9.1328,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "night",
+          "day"
+        ],
+        "when": "Sunset, from the low wall",
+        "tip": "Stand at the stone wall by the pine and frame the castle on the left with Baixa and the river beyond. Stay past sunset for the city lights coming on.",
+        "styles": [
+          "cityscape",
+          "night"
+        ],
+        "focal": [
+          "wide",
+          "standard",
+          "tele"
+        ],
+        "tripod": "helps",
+        "minutes": 90,
+        "effort": 2,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "santa-justa",
+        "cityId": "lis",
+        "name": "Santa Justa Lift",
+        "localName": "Elevador de Santa Justa",
+        "lat": 38.7121,
+        "lng": -9.1394,
+        "light": "night",
+        "lights": [
+          "night",
+          "golden",
+          "day"
+        ],
+        "when": "After dark, from the street below",
+        "tip": "Stand on Rua do Ouro at the foot of the lift and shoot up the lit iron tower with the 16-35. A two-second exposure turns a moving cabin into a soft streak.",
+        "styles": [
+          "architecture",
+          "night",
+          "heritage"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide",
+          "standard"
+        ],
+        "tripod": "helps",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "jeronimos",
+        "cityId": "lis",
+        "name": "Jerónimos Monastery",
+        "localName": "Mosteiro dos Jerónimos",
+        "lat": 38.6978,
+        "lng": -9.2056,
+        "light": "day",
+        "lights": [
+          "day",
+          "golden"
+        ],
+        "when": "Morning, at opening",
+        "tip": "Be at the door at opening and go straight to the two-storey cloister, shooting the carved arches from the corners of the upper gallery. Tripods are not allowed inside.",
+        "styles": [
+          "heritage",
+          "architecture"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide",
+          "standard"
+        ],
+        "tripod": "banned",
+        "minutes": 120,
+        "effort": 2,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "maat",
+        "cityId": "lis",
+        "name": "MAAT",
+        "localName": "Museu de Arte, Arquitetura e Tecnologia",
+        "lat": 38.6959,
+        "lng": -9.1936,
+        "light": "day",
+        "lights": [
+          "day",
+          "golden"
+        ],
+        "when": "Afternoon, from the roof",
+        "tip": "Walk up onto the curved roof and use the 70-200 to line up its tiled curves with the 25 de Abril Bridge upriver.",
+        "styles": [
+          "architecture",
+          "cityscape"
+        ],
+        "focal": [
+          "wide",
+          "tele",
+          "ultrawide"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 2,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "belem-tower",
+        "cityId": "lis",
+        "name": "Belém Tower",
+        "localName": "Torre de Belém",
+        "lat": 38.6916,
+        "lng": -9.2159,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "dawn",
+          "day"
+        ],
+        "when": "Sunset, from the riverside path",
+        "tip": "Stand on the riverside path west of the tower so the low sun lights its carved face. At blue hour turn to the water with the six-stop ND for a smooth river.",
+        "styles": [
+          "heritage",
+          "architecture",
+          "long-exposure"
+        ],
+        "focal": [
+          "wide",
+          "standard",
+          "tele"
+        ],
+        "tripod": "helps",
+        "minutes": 75,
+        "effort": 2,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "santa-luzia",
+        "cityId": "lis",
+        "name": "Santa Luzia Viewpoint",
+        "localName": "Miradouro de Santa Luzia",
+        "lat": 38.7117,
+        "lng": -9.1302,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "day"
+        ],
+        "when": "Sunrise, over Alfama and the river",
+        "tip": "Use the azulejo panels and the pergola as foreground with Alfama's roofs and the river behind. At sunrise you have the terrace almost to yourself.",
+        "styles": [
+          "cityscape",
+          "heritage"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "helps",
+        "minutes": 75,
+        "effort": 2,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "se-tram",
+        "cityId": "lis",
+        "name": "Lisbon Cathedral and Tram 28",
+        "localName": "Sé de Lisboa",
+        "lat": 38.71,
+        "lng": -9.1327,
+        "light": "day",
+        "lights": [
+          "day",
+          "golden"
+        ],
+        "when": "Midday, as the trams pass",
+        "tip": "Stand uphill on Rua Augusto Rosa and wait for a yellow tram to round the bend in front of the cathedral towers. The 70-200 compresses tram and facade together.",
+        "styles": [
+          "street",
+          "heritage"
+        ],
+        "focal": [
+          "tele",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "alfama-lanes",
+        "cityId": "lis",
+        "name": "Alfama lanes at Chafariz de Dentro",
+        "localName": "Largo do Chafariz de Dentro",
+        "lat": 38.7112,
+        "lng": -9.1281,
+        "light": "day",
+        "lights": [
+          "day",
+          "golden"
+        ],
+        "when": "Afternoon, in the lanes",
+        "tip": "Start at the old fountain square and climb into Beco do Mexias and Rua de São Miguel for laundry lines, tiled doorways and neighbours on their steps. Work at 35 to 50mm and ask before close portraits.",
+        "styles": [
+          "street",
+          "heritage"
+        ],
+        "focal": [
+          "standard",
+          "wide"
+        ],
+        "tripod": "no",
+        "minutes": 90,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "pena",
+        "cityId": "lis",
+        "name": "Pena Palace",
+        "localName": "Palácio da Pena",
+        "lat": 38.7876,
+        "lng": -9.3906,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "Morning, first entry slot",
+        "tip": "Take the train from Rossio to Sintra and the bus up, and shoot the red and yellow towers from the terraces before the tour groups arrive. The 70-200 picks out the Moorish Castle on the next ridge.",
+        "styles": [
+          "heritage",
+          "architecture"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide",
+          "tele"
+        ],
+        "tripod": "no",
+        "minutes": 300,
+        "effort": 3,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "cais-colunas",
+        "cityId": "lis",
+        "name": "Cais das Colunas",
+        "localName": null,
+        "lat": 38.7066,
+        "lng": -9.1362,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "dawn",
+          "night"
+        ],
+        "when": "Blue hour, on the river steps",
+        "tip": "Set up on the steps between the two marble columns and use the six-stop ND to smooth the Tagus, with the 25 de Abril Bridge on the right horizon. Keep off the lowest steps when ferry wash comes in.",
+        "styles": [
+          "long-exposure",
+          "cityscape",
+          "heritage"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide"
+        ],
+        "tripod": "needed",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "arco-augusta",
+        "cityId": "lis",
+        "name": "Rua Augusta Arch",
+        "localName": "Arco da Rua Augusta",
+        "lat": 38.7084,
+        "lng": -9.1368,
+        "light": "night",
+        "lights": [
+          "night",
+          "golden",
+          "day"
+        ],
+        "when": "After dark, floodlit",
+        "tip": "Stand in the middle of Praça do Comércio and shoot north through the floodlit arch, using the empty paving as foreground. The square thins out later in the evening.",
+        "styles": [
+          "architecture",
+          "heritage",
+          "night"
+        ],
+        "focal": [
+          "wide",
+          "ultrawide",
+          "standard"
+        ],
+        "tripod": "helps",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "feira-ladra",
+        "cityId": "lis",
+        "name": "Feira da Ladra flea market",
+        "localName": "Feira da Ladra",
+        "lat": 38.7154,
+        "lng": -9.1259,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "Tuesday or Saturday morning",
+        "tip": "Walk the stalls of Campo de Santa Clara with the 24-70 for traders, old tiles and bric-a-brac laid out on blankets. Go early, before the lanes between stalls fill up.",
+        "styles": [
+          "street"
+        ],
+        "focal": [
+          "standard",
+          "wide"
+        ],
+        "tripod": "no",
+        "minutes": 75,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "panteao",
+        "cityId": "lis",
+        "name": "National Pantheon",
+        "localName": "Panteão Nacional",
+        "lat": 38.715,
+        "lng": -9.1247,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "Midday, from the roof terrace",
+        "tip": "Climb to the terrace around the dome for a wide view over Alfama and the river, then shoot the marble floor from the gallery inside. Tripods are not allowed inside.",
+        "styles": [
+          "heritage",
+          "architecture",
+          "cityscape"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide",
+          "standard"
+        ],
+        "tripod": "banned",
+        "minutes": 75,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "sao-pedro",
+        "cityId": "lis",
+        "name": "São Pedro de Alcântara Viewpoint",
+        "localName": "Miradouro de São Pedro de Alcântara",
+        "lat": 38.7154,
+        "lng": -9.1441,
+        "light": "night",
+        "lights": [
+          "night",
+          "golden"
+        ],
+        "when": "After dark, castle floodlit",
+        "tip": "Stand at the balustrade and shoot east across Baixa to the floodlit castle with the 70-200, keeping the railing out of the frame.",
+        "styles": [
+          "cityscape",
+          "night"
+        ],
+        "focal": [
+          "tele",
+          "standard"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "bica",
+        "cityId": "lis",
+        "name": "Bica Funicular",
+        "localName": "Elevador da Bica",
+        "lat": 38.7104,
+        "lng": -9.146,
+        "light": "day",
+        "lights": [
+          "day",
+          "golden"
+        ],
+        "when": "Morning, from the top of the street",
+        "tip": "Stand at the top by Largo do Calhariz and shoot down the steep street with the 70-200 to stack the yellow car, the houses and a slice of river. Wait for the car to climb toward you.",
+        "styles": [
+          "street",
+          "heritage"
+        ],
+        "focal": [
+          "tele",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "carmo-convent",
+        "cityId": "lis",
+        "name": "Carmo Convent ruins",
+        "localName": "Convento do Carmo",
+        "lat": 38.7124,
+        "lng": -9.1404,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "Midday, sky through the open nave",
+        "tip": "Shoot the roofless Gothic arches from the west end of the nave with the 16-35, letting the sky stand in for the vault. Closed on Sundays.",
+        "styles": [
+          "heritage",
+          "architecture"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "santa-catarina",
+        "cityId": "lis",
+        "name": "Santa Catarina Viewpoint",
+        "localName": "Miradouro de Santa Catarina",
+        "lat": 38.7095,
+        "lng": -9.1477,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "day"
+        ],
+        "when": "Sunset, toward the bridge",
+        "tip": "Stand at the edge of the terrace by the Adamastor statue and frame the 25 de Abril Bridge over the river as the sun goes down to its right. The 70-200 isolates the bridge and the Cristo Rei statue across the water.",
+        "styles": [
+          "cityscape"
+        ],
+        "focal": [
+          "tele",
+          "standard",
+          "wide"
+        ],
+        "tripod": "helps",
+        "minutes": 75,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "gloria",
+        "cityId": "lis",
+        "name": "Glória Funicular",
+        "localName": "Ascensor da Glória",
+        "lat": 38.7152,
+        "lng": -9.1434,
+        "light": "day",
+        "lights": [
+          "day",
+          "golden"
+        ],
+        "when": "Morning, halfway up the street",
+        "tip": "Stand on the stepped pavement halfway up Calçada da Glória and frame the yellow car against the painted walls as it passes. The cars run every few minutes, so you get plenty of attempts.",
+        "styles": [
+          "street",
+          "heritage"
+        ],
+        "focal": [
+          "standard",
+          "tele",
+          "wide"
+        ],
+        "tripod": "no",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "jardim-morro",
+        "cityId": "opo",
+        "name": "Jardim do Morro",
+        "localName": null,
+        "lat": 41.1371,
+        "lng": -8.6092,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "night"
+        ],
+        "when": "Sunset, over Ribeira",
+        "tip": "Stand at the top of the garden slope and frame the iron arch of the Dom Luís I Bridge with the Ribeira houses behind it in the last sun. Stay for blue hour as the bridge lights come on.",
+        "styles": [
+          "cityscape",
+          "architecture",
+          "night"
+        ],
+        "focal": [
+          "wide",
+          "standard",
+          "tele"
+        ],
+        "tripod": "helps",
+        "minutes": 90,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "sao-bento",
+        "cityId": "opo",
+        "name": "São Bento Station",
+        "localName": "Estação de São Bento",
+        "lat": 41.1455,
+        "lng": -8.6104,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "Morning, in the main hall",
+        "tip": "Stand at the back of the hall and shoot the blue and white azulejo panels wide, then use the 70-200 to pick out single scenes. Keep the tripod packed in the busy hall.",
+        "styles": [
+          "heritage",
+          "architecture"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide",
+          "tele"
+        ],
+        "tripod": "no",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "igreja-carmo",
+        "cityId": "opo",
+        "name": "Carmo Church tiled wall",
+        "localName": "Igreja do Carmo",
+        "lat": 41.1475,
+        "lng": -8.6163,
+        "light": "day",
+        "lights": [
+          "day",
+          "golden"
+        ],
+        "when": "Midday, on the side wall",
+        "tip": "Cross to the far side of Rua do Carmo and fit the whole azulejo side wall in with the 16-35. Then step back to show the narrow house squeezed between Carmo and the Carmelitas church.",
+        "styles": [
+          "heritage",
+          "architecture",
+          "street"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide"
+        ],
+        "tripod": "no",
+        "minutes": 45,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "dom-luis",
+        "cityId": "opo",
+        "name": "Dom Luís I Bridge",
+        "localName": "Ponte Luís I",
+        "lat": 41.14,
+        "lng": -8.6095,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "night",
+          "day"
+        ],
+        "when": "Blue hour, from the upper deck",
+        "tip": "Walk to the middle of the upper deck and shoot down over the Ribeira houses and the river as the lights come on. Metro trains share the deck, so time long exposures between them to avoid shake.",
+        "styles": [
+          "cityscape",
+          "architecture",
+          "heritage",
+          "night"
+        ],
+        "focal": [
+          "wide",
+          "ultrawide",
+          "standard"
+        ],
+        "tripod": "helps",
+        "minutes": 75,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "ribeira",
+        "cityId": "opo",
+        "name": "Cais da Ribeira",
+        "localName": null,
+        "lat": 41.1405,
+        "lng": -8.6126,
+        "light": "dawn",
+        "lights": [
+          "dawn",
+          "day",
+          "night"
+        ],
+        "when": "Sunrise, before the cafes open",
+        "tip": "Shoot along the quay with the stacked coloured houses on the left and the bridge closing the frame, before the cafe tables come out. The moored rabelo boats make a good foreground.",
+        "styles": [
+          "street",
+          "cityscape",
+          "heritage"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 3,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "capela-almas",
+        "cityId": "opo",
+        "name": "Chapel of Souls",
+        "localName": "Capela das Almas",
+        "lat": 41.1498,
+        "lng": -8.6056,
+        "light": "day",
+        "lights": [
+          "day"
+        ],
+        "when": "Midday, from across the street",
+        "tip": "Stand across Rua de Santa Catarina and fit the tiled facade in at 16mm, then wait for a passer-by in front of the blue panels.",
+        "styles": [
+          "heritage",
+          "architecture",
+          "street"
+        ],
+        "focal": [
+          "ultrawide",
+          "wide"
+        ],
+        "tripod": "no",
+        "minutes": 30,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "felgueiras",
+        "cityId": "opo",
+        "name": "Felgueiras Lighthouse",
+        "localName": "Farolim de Felgueiras",
+        "lat": 41.1467,
+        "lng": -8.6773,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "day"
+        ],
+        "when": "Sunset, waves around the pier",
+        "tip": "Set up on the promenade at the root of the breakwater and use the six-stop ND to smooth the swell around the small lighthouse as the sun drops into the Atlantic. Stay off the pier when waves break over it.",
+        "styles": [
+          "long-exposure",
+          "landscape"
+        ],
+        "focal": [
+          "standard",
+          "tele",
+          "wide"
+        ],
+        "tripod": "needed",
+        "minutes": 90,
+        "effort": 2,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "se-porto",
+        "cityId": "opo",
+        "name": "Porto Cathedral terrace",
+        "localName": "Sé do Porto",
+        "lat": 41.1428,
+        "lng": -8.6115,
+        "light": "day",
+        "lights": [
+          "day",
+          "golden"
+        ],
+        "when": "Morning, from the terrace",
+        "tip": "Shoot the fortress-like facade from beside the pillory in the square, then turn to the terrace wall for the rooftops running down to the river.",
+        "styles": [
+          "heritage",
+          "architecture",
+          "cityscape"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "no",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "vitoria",
+        "cityId": "opo",
+        "name": "Vitória Viewpoint",
+        "localName": "Miradouro da Vitória",
+        "lat": 41.1431,
+        "lng": -8.6158,
+        "light": "golden",
+        "lights": [
+          "golden",
+          "day",
+          "night"
+        ],
+        "when": "Late afternoon, over the rooftops",
+        "tip": "Use the 70-200 to compress the tiled roofs falling to the river against the port cellars of Gaia on the far bank. The cathedral sits on the ridge to your left.",
+        "styles": [
+          "cityscape",
+          "heritage"
+        ],
+        "focal": [
+          "tele",
+          "standard",
+          "wide"
+        ],
+        "tripod": "helps",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 1,
+        "drone": false,
+        "hike": false
+      },
+      {
+        "id": "cais-gaia",
+        "cityId": "opo",
+        "name": "Ribeira from the Gaia riverfront",
+        "localName": "Cais de Gaia",
+        "lat": 41.1378,
+        "lng": -8.6128,
+        "light": "night",
+        "lights": [
+          "night",
+          "golden"
+        ],
+        "when": "After dark, opposite Ribeira",
+        "tip": "Set the tripod at the river wall opposite Praça da Ribeira and use a 20 to 30 second exposure to smooth the water under the lit houses, with the bridge on the right.",
+        "styles": [
+          "night",
+          "cityscape",
+          "long-exposure"
+        ],
+        "focal": [
+          "wide",
+          "standard"
+        ],
+        "tripod": "needed",
+        "minutes": 60,
+        "effort": 1,
+        "crowd": 2,
+        "drone": false,
+        "hike": false
+      }
+    ],
+    "days": [
+      {
+        "date": "2027-04-09",
+        "cityId": "lis",
+        "title": "Arrival and first light over Lisbon",
+        "travel": {
+          "fromCityId": null,
+          "mode": "flight",
+          "label": "Flight to Lisbon",
+          "minutes": null
+        },
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Sunset",
+            "spotId": "senhora-do-monte",
+            "why": "The highest viewpoint in the city gives a first sunset over the castle and Baixa.",
+            "note": null
+          },
+          {
+            "label": "Night",
+            "spotId": "santa-justa",
+            "why": "The lit iron lift is a short walk from the base and an easy first night subject.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-04-10",
+        "cityId": "lis",
+        "title": "Belém: monastery, river and tower",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "jeronimos",
+            "why": "The cloister is at its quietest in the first hour after opening.",
+            "note": "Closed on Mondays; tram 15 runs from Praça da Figueira."
+          },
+          {
+            "label": "Afternoon",
+            "spotId": "maat",
+            "why": "Clean modern lines and the bridge add an architecture frame between two heritage stops.",
+            "note": null
+          },
+          {
+            "label": "Sunset",
+            "spotId": "belem-tower",
+            "why": "The tower faces the estuary and takes warm side light in the last hour.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-04-11",
+        "cityId": "lis",
+        "title": "Alfama from sunrise to the lanes",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "santa-luzia",
+            "why": "Sunrise lights Alfama's roofs and the river from the tiled terrace.",
+            "note": null
+          },
+          {
+            "label": "Midday",
+            "spotId": "se-tram",
+            "why": "Midday tram traffic on Rua Augusto Rosa gives plenty of chances at the classic street frame.",
+            "note": null
+          },
+          {
+            "label": "Afternoon",
+            "spotId": "alfama-lanes",
+            "why": "The lanes below the viewpoint are a short walk downhill and quiet in the afternoon.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-04-12",
+        "cityId": "lis",
+        "title": "Sintra morning, Baixa by night",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "pena",
+            "why": "An early entry at Pena gets the palace terraces before the day crowds.",
+            "note": "Book a timed ticket in advance."
+          },
+          {
+            "label": "Blue hour",
+            "spotId": "cais-colunas",
+            "why": "Back in the city, the columns and the river make the trip's first long exposure.",
+            "note": null
+          },
+          {
+            "label": "Night",
+            "spotId": "arco-augusta",
+            "why": "The floodlit arch is steps from the river and the square empties after dinner.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-04-13",
+        "cityId": "lis",
+        "title": "Flea market, Pantheon and castle lights",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "feira-ladra",
+            "why": "Tuesday is market day, and the stalls give the trip's best street portraits.",
+            "note": null
+          },
+          {
+            "label": "Midday",
+            "spotId": "panteao",
+            "why": "The Pantheon is next to the market and its terrace gives a high view over Alfama.",
+            "note": null
+          },
+          {
+            "label": "Night",
+            "spotId": "sao-pedro",
+            "why": "The floodlit castle across Baixa is the classic night view from Bairro Alto.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-04-14",
+        "cityId": "lis",
+        "title": "Chiado funiculars and a bridge sunset",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "bica",
+            "why": "The steep street is quiet in the morning and the funicular runs from early on.",
+            "note": null
+          },
+          {
+            "label": "Midday",
+            "spotId": "carmo-convent",
+            "why": "High sun pours into the roofless nave, which suits the ruins.",
+            "note": null
+          },
+          {
+            "label": "Sunset",
+            "spotId": "santa-catarina",
+            "why": "A west-facing terrace close to Bica, with the bridge and the river under the setting sun.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-04-15",
+        "cityId": "opo",
+        "title": "Train north to Porto",
+        "travel": {
+          "fromCityId": "lis",
+          "mode": "train",
+          "label": "Alfa Pendular train",
+          "minutes": 170
+        },
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "gloria",
+            "why": "A short street session near Rossio before the train north.",
+            "note": null
+          },
+          {
+            "label": "Sunset",
+            "spotId": "jardim-morro",
+            "why": "The first Porto evening goes to the classic view of Ribeira and the bridge from Gaia.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-04-16",
+        "cityId": "opo",
+        "title": "Azulejos and the bridge at blue hour",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "sao-bento",
+            "why": "The station hall is next to the base and best before the midday tour groups.",
+            "note": null
+          },
+          {
+            "label": "Midday",
+            "spotId": "igreja-carmo",
+            "why": "Even midday light shows the tiled wall without hard shadows in the pattern.",
+            "note": null
+          },
+          {
+            "label": "Blue hour",
+            "spotId": "dom-luis",
+            "why": "The must-see bridge at blue hour, looking down on Ribeira as the lights come on.",
+            "note": null
+          }
+        ]
+      },
+      {
+        "date": "2027-04-17",
+        "cityId": "opo",
+        "title": "Ribeira dawn and an Atlantic sunset",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "ribeira",
+            "why": "At dawn the quay is empty, hours before the cafe tables and the crowds arrive.",
+            "note": null
+          },
+          {
+            "label": "Midday",
+            "spotId": "capela-almas",
+            "why": "The tiled chapel suits flat midday light and sits on a busy shopping street.",
+            "note": null
+          },
+          {
+            "label": "Sunset",
+            "spotId": "felgueiras",
+            "why": "The coast faces west, so the sun sets straight into the sea behind the lighthouse.",
+            "note": "Bus 500 or tram 1 runs from the centre to Foz."
+          }
+        ]
+      },
+      {
+        "date": "2027-04-18",
+        "cityId": "opo",
+        "title": "Cathedral, rooftops and Ribeira at night",
+        "travel": null,
+        "dayTrip": null,
+        "slots": [
+          {
+            "label": "Morning",
+            "spotId": "se-porto",
+            "why": "Morning light on the terrace and the rooftops below the cathedral.",
+            "note": null
+          },
+          {
+            "label": "Late afternoon",
+            "spotId": "vitoria",
+            "why": "Low sun warms the roofs between the viewpoint and the river.",
+            "note": null
+          },
+          {
+            "label": "Night",
+            "spotId": "cais-gaia",
+            "why": "The last night closes with a long exposure of Ribeira lit across the river.",
+            "note": null
+          }
+        ]
+      }
+    ],
+    "skipped": [
+      {
+        "name": "Quinta da Regaleira",
+        "reason": "Sintra gets one morning, and Pena Palace is the stronger architecture subject."
+      },
+      {
+        "name": "Castelo de São Jorge",
+        "reason": "The castle photographs better from Senhora do Monte and São Pedro de Alcântara than from inside its walls."
+      },
+      {
+        "name": "Livraria Lello",
+        "reason": "Timed tickets and a packed interior make it a poor use of a camera morning."
+      },
+      {
+        "name": "Serra do Pilar Monastery viewpoint",
+        "reason": "It repeats the Jardim do Morro view a short climb higher."
+      }
+    ]
+  }
+}

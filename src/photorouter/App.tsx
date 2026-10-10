@@ -50,6 +50,8 @@ export default function App() {
         className={cx(
           'outline-none',
           'grid min-h-0 flex-1',
+          // On wide screens the page is exactly one viewport tall: the single row is capped so each panel scrolls inside itself.
+          mid && 'grid-rows-[minmax(0,1fr)] overflow-hidden',
           wide ? 'grid-cols-[360px_minmax(0,1fr)_400px]' : mid ? 'grid-cols-[minmax(0,1fr)_390px]' : 'grid-cols-1',
         )}
       >

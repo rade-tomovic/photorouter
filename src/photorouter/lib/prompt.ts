@@ -1,10 +1,10 @@
-import { CITY_IDS, LIGHT_LABEL, STYLES, TRIP } from './data';
-import { PLAN_SCHEMA, SCHEMA_URL, buildRequest } from './byoai';
-import type { Brief, CityId } from './types';
+import { LIGHT_LABEL, STYLES, tripDates } from './data';
+import { SCHEMA_URL, buildRequest, planSchema } from './byoai';
+import type { Brief } from './types';
 
-// The prompt builder behind "Your own AI". Required rules keep the answer
-// importable and cannot be switched off; everything else is the
-// photographer's call: voice, priorities, optional rules, scope and style.
+// The prompt builder. Required rules keep the answer importable and cannot be
+// switched off; everything else is the photographer's call: voice,
+// priorities, optional rules and style.
 
 export type Weight = 0 | 1 | 2;
 export type PriorityId = 'light' | 'style' | 'walking' | 'crowds' | 'variety' | 'icons';
@@ -15,8 +15,6 @@ export interface PromptConfig {
   persona: 'guide' | 'planner' | 'scout';
   priorities: Record<PriorityId, Weight>;
   rules: Record<RuleId, boolean>;
-  cities: CityId[];
-  tips: boolean;
   why: 'short' | 'detailed';
   language: string;
   extra: string;
@@ -25,7 +23,7 @@ export interface PromptConfig {
 export const PERSONAS: Record<PromptConfig['persona'], { label: string; text: string }> = {
   guide: {
     label: 'Local guide',
-    text: 'You are a local photo guide who knows the Pearl River Delta well, planning a trip for a visiting photographer.',
+    text: 'You are a local photo guide who knows the destination well, planning a trip for a visiting photographer.',
   },
   planner: {
     label: 'Planner',
@@ -51,22 +49,23 @@ const STYLE_NAMES = STYLES.map((s) => `${s.id} (${s.label})`).join(', ');
 
 /** Rules the importer depends on. Shown in the builder, never optional. */
 export const REQUIRED_RULES = [
-  'Use only spot ids from "spots", and on each day only the slot labels in that day\'s "allowedSlots".',
-  'A slot\'s spot must be in that day\'s city. On a "movefree" day the "Morning" slot happens in the "from" city before the train and takes 120 minutes or less unless the spot is in "mustSee"; every other slot is in "city". "depart" days have no slots.',
-  `A spot fits a slot when one of the spot's "lights" is in the slot type's "lights" (${LIGHTS}).`,
-  'Use each spot at most once in the whole trip. "Blue hour" and "Sunset" are the same time of day, so use at most one of them per day.',
+  'Plan a real trip to the destination over exactly the dates in "trip.dates". Choose the cities, a base in each, and real photo spots with accurate coordinates (the viewpoint, not the city centre). Every spot used in "days" must be listed in "spots", and every spot must be within 150 km of its city.',
+  'Return one "days" entry per date, in order. "cityId" is where the photographer sleeps. The first day is the arrival from home: its "travel" has "fromCityId": null. Any later day that changes city has a "travel" from the previous night\'s city; a day without "travel" stays in the same city. For a day trip (out to another city and back the same day, which is often better than an extra hotel night), keep "cityId" as the city slept in and set "dayTrip" to the city visited, listed in "cities" with the station or centre as its base; that day\'s slots can be in either city. A day has "travel" or "dayTrip", never both.',
+  'Each date lists the day kinds it can be, with "allowedSlots" and "maxStops" for each: "arrival" for the first day, "stayDay" without travel, "travelDay" with it and "dayTripDay" for a day trip. Use only the allowed slot labels, at most "maxStops" slots, and each label once per day. On a "movefree" travel day the "Morning" slot is in the city being left and takes 120 minutes or less unless the spot is a must-see; every other slot is in "cityId".',
+  `A spot fits a slot when one of the spot's "lights" is in the slot type's "lights" (${LIGHTS}). "Blue hour" and "Sunset" are the same time of day, so use at most one of them per day.`,
+  'Use each spot at most once in the whole trip.',
   'The brief\'s "text" is the photographer\'s own description: use it for taste and context. Where it disagrees with the structured brief fields, the fields win.',
-  `Follow the brief. Prefer spots whose "styles" match the brief's styles (${STYLE_NAMES}) and whose "focal" ranges the photographer's lenses cover. Never use a "tripod": "needed" spot when the gear has neither a tripod nor a clamp, unless it is in "mustSee". Plan every "mustSee" spot; if one truly cannot fit, list it in "skipped" with the reason. Honour "skip" and "avoidCrowds" (crowd 3 is busiest). Pace: "relaxed" means one slot on work days and two on free days, "balanced" means use "suggestedSlots", "packed" means add a slot. Walking "low" means avoid effort-2 and effort-3 spots and never use a "hike": true spot.`,
+  `Follow the brief. Prefer spots whose "styles" match the brief's styles (${STYLE_NAMES}) and whose "focal" ranges the photographer's lenses cover (each lens lists its focal classes on this body; a fast lens, f/2 or brighter, makes handheld night spots realistic). Never use a "tripod": "needed" spot when the gear has neither a tripod nor a clamp, unless it is a must-see. Plan every place in "mustSee"; if one truly cannot fit, list it in "skipped" with the reason. Never plan a place in "skip". With "avoidCrowds", never use a crowd-3 spot unless it is a must-see. Walking "low" means avoid effort-2 and effort-3 spots and never use a "hike": true spot.`,
 ];
 
 export const OPTIONAL_RULES: Record<RuleId, { label: string; text: string }> = {
   workHours: {
     label: 'Respect working hours',
-    text: 'On "work", "arrive" and "movework" days the photographer works 09:00–18:00 (unless "worksWeekdays" is null): use only effort-1 spots, and a "Before work" spot must take 90 minutes or less.',
+    text: 'On working weekdays (when "worksWeekdays" is set) the photographer works 09:00-18:00: on "work", "movework" and working-day arrivals use only effort-1 spots, and a "Before work" spot takes 90 minutes or less.',
   },
   halfDay: {
     label: 'Half-day trips only on free mornings',
-    text: 'Effort-3 spots are half-day trips: only in a "Morning" or "Midday" slot on a free day.',
+    text: 'Effort-3 spots are half-day trips: only in a "Morning" or "Midday" slot on a "free" or "daytrip" day.',
   },
   together: {
     label: 'Keep each day compact',
@@ -78,7 +77,7 @@ export const OPTIONAL_RULES: Record<RuleId, { label: string; text: string }> = {
   },
   skipped: {
     label: 'Explain what was left out',
-    text: 'In "skipped", list up to five notable spots you left out, each with a one-line reason. Never list a spot you planned.',
+    text: 'In "skipped", list up to five notable places you left out, each with a one-line reason. Never list a place you planned.',
   },
 };
 
@@ -87,8 +86,6 @@ export const DEFAULT_PROMPT: PromptConfig = {
   persona: 'guide',
   priorities: { light: 2, style: 2, walking: 1, crowds: 1, variety: 1, icons: 1 },
   rules: { workHours: true, halfDay: true, together: true, variety: false, skipped: true },
-  cities: [...CITY_IDS],
-  tips: true,
   why: 'short',
   language: '',
   extra: '',
@@ -104,7 +101,6 @@ export const PRESETS: { id: string; label: string; config: PromptConfig }[] = [
       persona: 'planner',
       priorities: { light: 1, style: 2, walking: 2, crowds: 1, variety: 0, icons: 0 },
       rules: { workHours: true, halfDay: true, together: true, variety: false, skipped: false },
-      tips: false,
     },
   },
   {
@@ -122,23 +118,11 @@ export const PRESETS: { id: string; label: string; config: PromptConfig }[] = [
 
 const WEIGHT_WORD = ['low', 'normal', 'high'] as const;
 
-/** Cities a day touches; a day is in scope when any of them is selected. */
-const dayCities = (d: (typeof TRIP.days)[number]): CityId[] => (d.from ? [d.from, d.city] : [d.city]);
-
-export function inScopeDates(cfg: PromptConfig): Set<string> {
-  return new Set(TRIP.days.filter((d) => dayCities(d).some((c) => cfg.cities.includes(c))).map((d) => d.date));
-}
-
 export function buildPrompt(brief: Brief, cfg: PromptConfig = DEFAULT_PROMPT): string {
   const rules = [
     ...REQUIRED_RULES,
     ...(Object.keys(OPTIONAL_RULES) as RuleId[]).filter((r) => cfg.rules[r] && r !== 'skipped').map((r) => OPTIONAL_RULES[r].text),
   ];
-  const partial = cfg.cities.length < CITY_IDS.length;
-  if (partial) {
-    const names = cfg.cities.map((c) => TRIP.cities[c].name).join(' and ');
-    rules.push(`Plan only slots in ${names}. Leave the other days and slots out of "days".`);
-  }
 
   const ranked = (Object.keys(PRIORITIES) as PriorityId[])
     .filter((p) => cfg.priorities[p] > 0)
@@ -149,18 +133,19 @@ export function buildPrompt(brief: Brief, cfg: PromptConfig = DEFAULT_PROMPT): s
   const why = cfg.why === 'detailed'
     ? 'Write "why" as two or three sentences per slot: what to shoot, from where, and which lens or setting.'
     : 'Write "why" as one short sentence per slot.';
-  const skipped = cfg.rules.skipped ? OPTIONAL_RULES.skipped.text : 'Return "skipped" as an empty array, except for any must-see spot that could not fit.';
+  const skipped = cfg.rules.skipped ? OPTIONAL_RULES.skipped.text : 'Return "skipped" as an empty array, except for any must-see place that could not fit.';
   const language = cfg.language.trim()
-    ? `Write every text value ("summary", "title", "why", "note", "reason") in ${cfg.language.trim()}. Keep ids, labels, dates and keys exactly as given.`
+    ? `Write every text value ("title", "summary", "when", "tip", "why", "note", "reason") in ${cfg.language.trim()}. Keep ids, labels, dates, enum values and keys exactly as given.`
     : '';
 
-  const request = buildRequest(brief, { cities: cfg.cities, tips: cfg.tips });
+  const request = buildRequest(brief);
+  const schema = planSchema(tripDates(brief.start, brief.days));
   const output = cfg.target === 'api'
     ? `Return the plan as the JSON object the response format requires (schema: ${SCHEMA_URL}).`
     : 'Return only one JSON object matching the response schema. No markdown fences, no text before or after it.';
 
   return [
-    `${PERSONAS[cfg.persona].text} Choose which photo spot to shoot in each time slot of each day, then return the plan as JSON for PhotoRouter.`,
+    `${PERSONAS[cfg.persona].text} Plan a photo trip to ${brief.destination || 'the destination in the request'}: pick the cities and photo spots, decide which spot to shoot in each time slot of each day, and return the plan as JSON for PhotoRouter.`,
     '',
     '## Rules',
     ...rules.map((r, i) => `${i + 1}. ${r}`),
@@ -170,7 +155,7 @@ export function buildPrompt(brief: Brief, cfg: PromptConfig = DEFAULT_PROMPT): s
     ...(ignored.length ? [`Don't optimise for: ${ignored.join('; ')}.`] : []),
     '',
     '## Writing',
-    `${why} Write the day "title" as a short headline and "summary" as two or three sentences to the photographer. Use null for "note" and "title" when you have nothing to add. ${skipped}`,
+    `${why} Give each spot a "when" of a few words and a "tip" of one or two sentences on where to stand. Write the day "title" as a short headline and "summary" as two or three sentences to the photographer. Use null for "note", "title" and "localName" when you have nothing to add. ${skipped}`,
     ...(language ? [language] : []),
     ...(cfg.extra.trim() ? ['', '## Extra instructions from the photographer', cfg.extra.trim()] : []),
     '',
@@ -178,7 +163,7 @@ export function buildPrompt(brief: Brief, cfg: PromptConfig = DEFAULT_PROMPT): s
     '',
     '## Request',
     JSON.stringify(request),
-    ...(cfg.target === 'chat' ? ['', `## Response schema (JSON Schema; also at ${SCHEMA_URL})`, JSON.stringify(PLAN_SCHEMA)] : []),
+    ...(cfg.target === 'chat' ? ['', `## Response schema (JSON Schema; generic form at ${SCHEMA_URL})`, JSON.stringify(schema)] : []),
     '',
   ].join('\n');
 }
