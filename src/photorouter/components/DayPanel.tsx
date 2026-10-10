@@ -53,7 +53,7 @@ export function SidePanel({ withPlan }: { withPlan: boolean }) {
           </button>
         ))}
       </div>
-      <div role="tabpanel" id={`panel-${active}`} aria-labelledby={`tab-${active}`} className={cx('min-h-0 flex-1', active === 'plan' ? 'flex flex-col' : 'scroll-thin overflow-y-auto')}>
+      <div role="tabpanel" id={`panel-${active}`} aria-labelledby={`tab-${active}`} className={cx('relative min-h-0 flex-1', active === 'plan' ? 'flex flex-col' : 'scroll-thin overflow-y-auto')}>
         {active === 'plan' && <PlanPanel />}
         {active === 'day' && <DayView />}
         {active === 'spots' && <SpotIndex />}

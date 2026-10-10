@@ -59,7 +59,8 @@ export function PlanPanel() {
           </Button>
         )}
       </header>
-      <div className="scroll-thin min-h-0 flex-1 overflow-y-auto">
+      {/* relative: keeps absolutely positioned sr-only labels inside the scroll area, so they cannot stretch the page. */}
+      <div className="scroll-thin relative min-h-0 flex-1 overflow-y-auto">
         <div className="grid gap-4 px-4 py-4">
           <TripStep />
           <PromptStep />
