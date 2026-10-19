@@ -10,7 +10,7 @@ const points = [
   },
   {
     title: 'No location tracking',
-    text: 'The only thing the planner downloads while you use it is the map. It picks the nearest example trip from your time zone setting, not your location.',
+    text: 'The only outside requests the planner makes are for the map, which loads from public map services. It picks the nearest example trip from your time zone setting, not your location.',
   },
 ];
 const inBrowser = ['Your trip', 'Prompt', 'Checks', 'Map', 'Day sheets', 'Example trips'];
@@ -65,7 +65,7 @@ const inBrowser = ['Your trip', 'Prompt', 'Checks', 'Map', 'Day sheets', 'Exampl
         </div>
       </div>
       <figcaption class="mt-3 px-1 text-[13px] text-muted">
-        Only the prompt and the reply leave the page, and only when you copy them.
+        The prompt and the reply leave the page only when you copy them. The map loads from public map services.
       </figcaption>
     </figure>
   </div>
