@@ -1,6 +1,6 @@
 ---
 import RouteMap from './RouteMap.astro';
-import LightDay from './LightDay.astro';
+import MeterHero from './meter/Hero.astro';
 import { APP_PATH } from './links';
 import { DEMOS, HERO_DAY, countWord, daySheet, demoFor } from './demoData';
 
@@ -10,11 +10,11 @@ const day = HERO_DAY.index;
 const sheet = daySheet(demo, day);
 ---
 
-<section aria-labelledby="hero-title" class="grain relative overflow-hidden border-b border-line">
+<section aria-labelledby="hero-title" class="grain relative overflow-hidden">
   <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:py-20">
     <div class="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:items-center lg:gap-12">
       <div class="min-w-0">
-        <p class="t-accent m-0 font-mono text-[11.5px] tracking-[0.1em] uppercase">For travel photographers</p>
+        <p class="rt-plate m-0 font-mono text-[11px] tracking-[0.16em] uppercase">For travel photographers</p>
         <h1
           id="hero-title"
           class="mt-4 mb-0 font-display text-[clamp(46px,9vw,92px)] leading-[0.92] font-extrabold tracking-[0.01em] text-balance uppercase"
@@ -46,7 +46,7 @@ const sheet = daySheet(demo, day);
         <div class="mt-8 flex flex-wrap items-center gap-3">
           <a
             href={APP_PATH}
-            class="inline-flex h-12 items-center gap-2 rounded-full bg-accent px-6 text-[15px] font-semibold text-accent-ink no-underline shadow-card hover:brightness-110"
+            class="rt-btn inline-flex h-12 items-center gap-2 rounded-full px-6 text-[15px] font-semibold no-underline"
           >
             Plan my trip
             <svg viewBox="0 0 16 16" class="size-4" aria-hidden="true" focusable="false">
@@ -55,7 +55,7 @@ const sheet = daySheet(demo, day);
           </a>
           <a
             href={`${APP_PATH}?demo=${demo.id}`}
-            class="inline-flex h-12 items-center gap-2 rounded-full border border-line bg-surface px-5 text-[15px] font-semibold text-ink no-underline hover:border-muted"
+            class="rt-btn-quiet inline-flex h-12 items-center gap-2 rounded-full px-5 text-[15px] font-semibold no-underline"
           >
             <svg viewBox="0 0 16 16" class="size-3.5" aria-hidden="true" focusable="false">
               <path d="M5 3.5v9l7.5-4.5Z" fill="currentColor"></path>
@@ -67,7 +67,7 @@ const sheet = daySheet(demo, day);
       </div>
 
       <figure class="m-0 min-w-0">
-        <LightDay demo={demo} index={day} />
+        <MeterHero demo={demo} index={day} />
         <figcaption class="mt-3 px-1 text-[13px] text-muted">
           A day of the {demo.label} example: the sun over {sheet.city} on {sheet.longDate}, each stop at its planned time.
           Scroll down to follow the day.
@@ -76,7 +76,7 @@ const sheet = daySheet(demo, day);
     </div>
 
     <figure class="m-0 mt-10 min-w-0 sm:mt-12">
-      <div class="rounded-[22px] border border-line bg-surface p-3 shadow-card sm:p-5">
+      <div class="rt-panel rounded-[22px] p-3 sm:p-5">
         <RouteMap />
       </div>
       <figcaption class="mt-3 px-1 text-[13px] text-muted">

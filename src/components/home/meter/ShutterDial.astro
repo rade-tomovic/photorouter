@@ -1,0 +1,46 @@
+---
+// A shutter speed dial seen from above, drawn inside a parent SVG: a knurled chrome rim and
+// engraved speeds on a face that play.ts turns (data-dial) so the set speed meets the index.
+import { DIAL } from './meter';
+import { polar } from './plate';
+
+interface Props {
+  cx: number;
+  cy: number;
+  r: number;
+  /** The face's starting turn in degrees. */
+  turn: number;
+  /** Prefix of the parent SVG's gradient ids. */
+  ids: string;
+}
+const { cx, cy, r, turn, ids } = Astro.props;
+const teeth = Math.round(r * 2.2);
+const pitch = (2 * Math.PI * r) / teeth;
+const label = (s: string) => s.replace('s', '″');
+---
+
+<g class="mt-dial" aria-hidden="true">
+  <circle cx={cx} cy={cy} r={r * 1.1} class="mt-collar"></circle>
+  <circle cx={cx} cy={cy} r={r} fill="none" stroke={`url(#${ids}-knurl)`} stroke-width={r * 0.13} stroke-dasharray={`${(pitch * 0.45).toFixed(2)} ${(pitch * 0.55).toFixed(2)}`}></circle>
+  <circle cx={cx} cy={cy} r={r * 0.92} fill={`url(#${ids}-cap)`}></circle>
+  <g class="mt-turn" data-dial style={`transform-origin:${cx}px ${cy}px;transform:rotate(${turn}deg)`}>
+    {
+      DIAL.map((s, i) => {
+        const p = polar(cx, cy, r * 0.7, i * 30);
+        return (
+          <text
+            x={p.x.toFixed(2)}
+            y={p.y.toFixed(2)}
+            transform={`rotate(${i * 30} ${p.x.toFixed(2)} ${p.y.toFixed(2)})`}
+            class:list={['mt-dial-num', /s|B/.test(s) && 'mt-dial-slow']}
+            font-size={(r * 0.18).toFixed(2)}
+          >
+            {label(s)}
+          </text>
+        );
+      })
+    }
+  </g>
+  <circle cx={cx} cy={cy} r={r * 0.34} fill="none" class="mt-dial-ring"></circle>
+  <circle cx={cx} cy={cy} r={r * 0.2} fill={`url(#${ids}-cap)`} class="mt-dial-hub"></circle>
+</g>

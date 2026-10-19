@@ -1,0 +1,89 @@
+---
+// The day as an engraved scale: a band coloured by the light, hour ticks, the sun's rise
+// and set, each stop's window with a numbered notch at its planned time, and a pointer
+// (data-follow) that play.ts slides along with the clock. `thin` is the phone header's bar.
+import type { SunDay } from '@/photorouter/lib/sun';
+import { hhmm } from '@/photorouter/lib/sun';
+import { phases, type Phase } from '../daylight';
+
+interface Props {
+  sun: SunDay;
+  start: number;
+  end: number;
+  stops: { n: number; t: number; from: number; to: number; light: string }[];
+  /** The minute the pointer starts at. */
+  at: number;
+  thin?: boolean;
+  class?: string;
+}
+const { sun, start, end, stops, at, thin = false, class: className = '' } = Astro.props;
+
+const pct = (m: number) => ((m - start) / (end - start)) * 100;
+const COLOR: Record<Phase, string> = {
+  night: 'var(--mt-night)',
+  blue: 'var(--night)',
+  golden: 'var(--golden)',
+  day: 'var(--day)',
+};
+const gradient = phases(sun, start, end)
+  .flatMap((p) => {
+    const a = pct(p.from);
+    const b = pct(p.to);
+    const pad = Math.min(0.8, (b - a) / 3);
+    return [`${COLOR[p.phase]} ${(a + pad).toFixed(2)}%`, `${COLOR[p.phase]} ${(b - pad).toFixed(2)}%`];
+  })
+  .join(', ');
+const first = Math.ceil(start / 60);
+const hours = Array.from({ length: Math.floor(end / 60) - first + 1 }, (_, i) => (first + i) * 60);
+// Hours close to sunrise or sunset only fit beside them on a wider scale.
+const gap = (m: number) => Math.min(Math.abs(m - sun.sunrise), Math.abs(m - sun.sunset));
+const marks = [
+  { m: sun.sunrise, text: `↑ ${hhmm(sun.sunrise)}`, wide: false },
+  { m: sun.sunset, text: `↓ ${hhmm(sun.sunset)}`, wide: false },
+  ...hours.filter((h) => h % 180 === 0 && pct(h) > 8 && pct(h) < 92 && gap(h) > 70).map((h) => ({ m: h, text: hhmm(h), wide: gap(h) < 160 })),
+];
+const left = (m: number) => `left:${pct(m).toFixed(2)}%`;
+---
+
+{
+  thin ? (
+    <div class={`mt-scale relative overflow-x-clip ${className}`} aria-hidden="true">
+      <div class="mt-band absolute inset-0" style={`background:linear-gradient(to right, ${gradient})`} />
+      {stops.map((s) => <span class={`lt-${s.light} mt-tick-stop absolute inset-y-0 w-[3px] -translate-x-1/2`} style={left(s.t)} data-notch={s.n} />)}
+      <div class="mt-follow pointer-events-none absolute inset-0" data-follow style={`transform:translateX(${pct(at).toFixed(2)}%)`}>
+        <span class="mt-pointer absolute inset-y-[-2px] left-0 w-[3px] -translate-x-1/2 rounded-full" />
+      </div>
+    </div>
+  ) : (
+    <div class={`mt-scale relative overflow-x-clip px-2 ${className}`} aria-hidden="true">
+      <div class="relative h-full">
+        <div class="mt-band absolute inset-x-0 top-[19px] h-[5px] rounded-full" style={`background:linear-gradient(to right, ${gradient})`} />
+        {hours.map((h) => <span class="mt-hour absolute top-[14px] h-[4px] w-px" style={left(h)} />)}
+        {stops.map((s) => (
+          <>
+            <span
+              class={`lt-${s.light} mt-win absolute top-[18px] h-[7px] rounded-full`}
+              style={`${left(s.from)};width:${(pct(s.to) - pct(s.from)).toFixed(2)}%`}
+            />
+            <span
+              class={`lt-${s.light} mt-notch absolute top-0 grid size-[15px] -translate-x-1/2 place-items-center rounded-full font-mono text-[9px] font-bold`}
+              style={left(s.t)}
+              data-notch={s.n}
+              data-lit={s.t <= at ? '' : undefined}
+            >
+              {s.n}
+            </span>
+          </>
+        ))}
+        {marks.map((k) => (
+          <span class:list={['absolute top-[29px] -translate-x-1/2 font-mono text-[10px] whitespace-nowrap text-muted', k.wide && 'mt-wide-only']} style={left(k.m)}>
+            {k.text}
+          </span>
+        ))}
+        <div class="mt-follow pointer-events-none absolute inset-0" data-follow style={`transform:translateX(${pct(at).toFixed(2)}%)`}>
+          <span class="mt-pointer absolute top-[12px] left-0 h-[19px] w-[2px] -translate-x-1/2 rounded-full" />
+        </div>
+      </div>
+    </div>
+  )
+}

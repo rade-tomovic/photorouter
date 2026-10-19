@@ -1,0 +1,61 @@
+---
+// The meter's EV scale on its face, drawn inside a parent SVG: ticks every half stop,
+// numerals on the odd stops and a band coloured by the light each brightness belongs to,
+// from the same rule of thumb that moves the needle.
+import { EV_MAX, EV_MIN, needleAngle, polar } from './plate';
+import { sceneEv } from './meter';
+
+interface Props {
+  cx: number;
+  cy: number;
+  /** Radius of the tick marks' outer end. */
+  r: number;
+  sweep: number;
+  /** Numeral size; 0 leaves the numerals off. */
+  font: number;
+}
+const { cx, cy, r, sweep, font } = Astro.props;
+
+const at = (radius: number, ev: number) => polar(cx, cy, radius, needleAngle(ev, sweep));
+const arc = (radius: number, a: number, b: number) => {
+  const p = at(radius, a);
+  const q = at(radius, b);
+  return `M${p.x.toFixed(2)} ${p.y.toFixed(2)}A${radius} ${radius} 0 0 1 ${q.x.toFixed(2)} ${q.y.toFixed(2)}`;
+};
+// The light a brightness belongs to: where the sun stands at each phase boundary.
+const blueTop = sceneEv(-0.833);
+const goldenTop = sceneEv(6);
+const zones = [
+  { from: EV_MIN, to: sceneEv(-6), cls: 'mt-zone-night' },
+  { from: sceneEv(-6), to: blueTop, cls: 'mt-zone-blue' },
+  { from: blueTop, to: goldenTop, cls: 'mt-zone-golden' },
+  { from: goldenTop, to: EV_MAX, cls: 'mt-zone-day' },
+];
+const halves = Array.from({ length: (EV_MAX - EV_MIN) * 2 + 1 }, (_, i) => EV_MIN + i / 2);
+const band = Math.min(6, r * 0.1);
+---
+
+<g class="mt-scale-face" aria-hidden="true">
+  {zones.map((z) => <path d={arc(r - r * 0.15 - band / 2 - 2, z.from, z.to)} class={z.cls} fill="none" stroke-width={band} />)}
+  {
+    halves.map((ev) => {
+      const major = Number.isInteger(ev);
+      const a = at(r - (major ? r * 0.15 : r * 0.08), ev);
+      const b = at(r, ev);
+      return <path d={`M${a.x.toFixed(2)} ${a.y.toFixed(2)}L${b.x.toFixed(2)} ${b.y.toFixed(2)}`} class="mt-tick" stroke-width={major ? 1 : 0.6} />;
+    })
+  }
+  {
+    font > 0 &&
+      halves
+        .filter((ev) => Number.isInteger(ev) && ev % 2 === 1)
+        .map((ev) => {
+          const p = at(r + font * 0.95, ev);
+          return (
+            <text x={p.x.toFixed(2)} y={p.y.toFixed(2)} class="mt-scale-num" font-size={font}>
+              {ev}
+            </text>
+          );
+        })
+  }
+</g>
