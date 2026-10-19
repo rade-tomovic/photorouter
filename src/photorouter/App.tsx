@@ -25,7 +25,7 @@ export default function App() {
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#0c131a' : '#ecf0f3');
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#0b0908' : '#ece4d2');
     try { localStorage.setItem('photorouter:theme', theme); } catch { /* private mode */ }
   }, [theme]);
 
@@ -79,12 +79,12 @@ function TopBar() {
   const terrain = useStore((s) => s.terrain);
   const set = useStore((s) => s.set);
   return (
-    <header className="flex h-14 shrink-0 items-center gap-3 border-b border-line bg-surface px-3 sm:px-4">
+    <header className="rt-leather rt-rule flex h-14 shrink-0 items-center gap-3 px-3 sm:px-4">
       <a href="/" className="flex items-center gap-2 text-ink no-underline">
         <Logo />
         <h1 className="m-0 font-display text-[22px] leading-none font-extrabold tracking-wide uppercase">PhotoRouter</h1>
       </a>
-      <span className="hidden rounded-full border border-line px-2 py-0.5 font-mono text-[10.5px] tracking-wide text-muted uppercase sm:inline">
+      <span className="rt-plate hidden font-mono text-[10px] tracking-[0.14em] uppercase sm:inline-flex">
         Bring your own AI · no backend
       </span>
       <div className="ml-auto flex items-center gap-1.5">
@@ -93,8 +93,8 @@ function TopBar() {
           aria-pressed={terrain}
           onClick={() => set({ terrain: !terrain })}
           className={cx(
-            'inline-flex h-8 items-center gap-1.5 rounded-full border px-3 text-xs font-semibold',
-            terrain ? 'border-ink bg-ink text-surface' : 'border-line bg-surface-2 text-muted hover:text-ink',
+            'inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-semibold',
+            terrain ? 'rt-btn' : 'rt-btn-quiet text-muted hover:text-ink',
           )}
         >
           <Mountain className="size-3.5" aria-hidden />
@@ -104,7 +104,7 @@ function TopBar() {
           type="button"
           aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
           onClick={() => set({ theme: theme === 'dark' ? 'light' : 'dark' })}
-          className="grid size-8 place-items-center rounded-full border border-line bg-surface-2 text-ink hover:border-muted"
+          className="rt-btn-quiet grid size-8 place-items-center rounded-full"
         >
           {theme === 'dark' ? <Sun className="size-4" aria-hidden /> : <Moon className="size-4" aria-hidden />}
         </button>

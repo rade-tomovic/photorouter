@@ -9,7 +9,7 @@ const { demo, index } = Astro.props;
 const sheet = daySheet(demo, index);
 ---
 
-<div class={`c-${sheet.cityColor} rounded-[22px] border border-line bg-surface p-4 shadow-card sm:p-5`}>
+<div class={`c-${sheet.cityColor} rt-panel rounded-[22px] p-4 sm:p-5`}>
   <div class="flex flex-wrap items-center justify-between gap-2">
     <p class="m-0 font-mono text-[11px] tracking-[0.08em] text-muted uppercase">
       Day {sheet.number} of {sheet.total} · {sheet.label}

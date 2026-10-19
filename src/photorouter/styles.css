@@ -4,6 +4,9 @@
 /* ---------- map markers (built imperatively by the map engine) ---------- */
 
 .maplibregl-map { font: inherit; }
+/* A light sepia so the map sits in the darkroom palette with the rest of the app. */
+.maplibregl-canvas { filter: sepia(0.22) saturate(0.9); }
+:root[data-theme='dark'] .maplibregl-canvas { filter: sepia(0.15); }
 .maplibregl-ctrl-attrib { font-size: 11px; background: color-mix(in oklab, var(--surface) 80%, transparent) !important; color: var(--muted); }
 .maplibregl-ctrl-attrib, .maplibregl-ctrl-attrib.maplibregl-compact, .maplibregl-ctrl-attrib a { color: var(--muted); }
 .maplibregl-ctrl-attrib-button { filter: var(--attrib-filter, none); }

@@ -45,7 +45,7 @@ export function Timeline() {
           type="button"
           disabled={disabled}
           onClick={togglePlay}
-          className="inline-flex h-9 items-center gap-1.5 rounded-full bg-accent pr-4 pl-3 text-[13px] font-semibold text-accent-ink disabled:opacity-40"
+          className="rt-btn inline-flex h-9 items-center gap-1.5 rounded-full pr-4 pl-3 text-[13px] font-semibold disabled:opacity-40"
         >
           {playing ? <Pause className="size-4 fill-current" aria-hidden /> : <Play className="size-4 fill-current" aria-hidden />}
           {playing ? 'Pause' : 'Play trip'}

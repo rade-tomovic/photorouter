@@ -18,7 +18,7 @@ const CUSTOM_APERTURES = [0.95, 1.2, 1.4, 1.8, 2, 2.8, 3.5, 4, 4.5, 5, 5.6, 6.3,
 const chip = (on: boolean) =>
   cx(
     'inline-flex h-7 items-center rounded-full border px-2.5 text-xs font-semibold transition-colors',
-    on ? 'border-ink bg-ink text-surface' : 'border-line bg-surface-2 text-muted hover:border-muted hover:text-ink',
+    on ? 'border-transparent bg-accent text-accent-ink' : 'border-line bg-surface-2 text-muted hover:border-muted hover:text-ink',
   );
 
 /** The lenses in the brief, with a button that opens the full catalog. */
