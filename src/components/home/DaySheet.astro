@@ -1,0 +1,51 @@
+---
+import { daySheet, type Demo } from './demoData';
+
+interface Props {
+  demo: Demo;
+  index: number;
+}
+const { demo, index } = Astro.props;
+const sheet = daySheet(demo, index);
+---
+
+<div class={`c-${sheet.cityColor} rounded-[22px] border border-line bg-surface p-4 shadow-card sm:p-5`}>
+  <div class="flex flex-wrap items-center justify-between gap-2">
+    <p class="m-0 font-mono text-[11px] tracking-[0.08em] text-muted uppercase">
+      Day {sheet.number} of {sheet.total} · {sheet.label}
+    </p>
+    <span class="inline-flex h-6 items-center gap-1.5 rounded-full border border-line px-2.5 text-xs font-semibold">
+      <span class="size-2 rounded-full bg-(--c)" aria-hidden="true"></span>{sheet.city}
+    </span>
+  </div>
+  <p class="mt-2 mb-0 font-display text-[28px] leading-none font-extrabold text-balance uppercase">{sheet.title}</p>
+  <ol class="m-0 mt-5 flex list-none flex-col gap-3 p-0">
+    {
+      sheet.stops.map((s) => (
+        <li class="rounded-2xl border border-line bg-surface-2 p-3.5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="font-mono text-[10.5px] tracking-[0.08em] text-muted uppercase">
+              {s.label} · <span class="text-ink">{s.window}</span>
+            </span>
+            <span class={`lt-${s.light} inline-flex h-6 items-center gap-1.5 rounded-full border border-line bg-surface px-2.5 text-xs font-semibold`}>
+              <span class="size-2 rounded-full bg-(--c)" aria-hidden="true" />
+              {s.lightLabel}
+            </span>
+          </div>
+          <p class="mt-2 mb-0 flex flex-wrap items-baseline gap-x-2 text-base font-bold">
+            {s.name}
+            {s.local && <span class="text-[13px] font-medium text-muted">{s.local}</span>}
+          </p>
+          <div class="mt-2 flex flex-wrap items-center gap-1.5">
+            {s.kit.map((k) => (
+              <span class="inline-flex h-6 items-center rounded-full border border-line bg-surface px-2.5 font-mono text-xs font-medium text-muted">{k}</span>
+            ))}
+          </div>
+          {s.warnings.map((w) => (
+            <p class="t-warn mt-2 mb-0 text-xs">{w}</p>
+          ))}
+        </li>
+      ))
+    }
+  </ol>
+</div>

@@ -1,56 +1,77 @@
 ---
 import RouteMap from './RouteMap.astro';
+import DaySheet from './DaySheet.astro';
 import { APP_PATH } from './links';
-import { DEMOS, countWord } from './demoData';
+import { DEMOS, countWord, daySheet, demoFor } from './demoData';
 
-const facts = ['Any destination', 'Free', 'No sign-up', `${DEMOS.length} example trips`];
+const steps = ['Describe your trip', 'Ask your AI assistant', 'Follow the route'];
+const demo = demoFor('europe');
+const day = 7;
+const sheet = daySheet(demo, day);
 ---
 
 <section aria-labelledby="hero-title" class="grain relative overflow-hidden border-b border-line">
   <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:py-20">
-    <div class="grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-end lg:gap-12">
+    <div class="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:items-center lg:gap-12">
       <div class="min-w-0">
-        <p class="t-accent m-0 font-mono text-[11.5px] tracking-[0.1em] uppercase">Photo trip planner</p>
+        <p class="t-accent m-0 font-mono text-[11.5px] tracking-[0.1em] uppercase">For travel photographers</p>
         <h1
           id="hero-title"
           class="mt-4 mb-0 font-display text-[clamp(46px,9vw,92px)] leading-[0.92] font-extrabold tracking-[0.01em] text-balance uppercase"
         >
-          Plan a photo trip anywhere
+          <span class="block">Right place.</span>
+          <span class="t-accent block">Right light.</span>
         </h1>
-      </div>
-      <div class="min-w-0">
-        <p class="m-0 max-w-[36rem] text-[17px] leading-relaxed text-muted sm:text-lg">
-          Tell PhotoRouter where you are going, for how long and what you like to shoot. It writes a request for the AI chat
-          assistant you already use, checks the plan that comes back and turns it into a day by day route on a 3D map: where
-          to shoot, at what time of day and what to pack.
+        <p class="mt-6 mb-0 max-w-[34rem] text-[17px] leading-relaxed text-muted sm:text-lg">
+          Plan a photo trip anywhere: where to shoot, when the light is best and what to pack, for every day of your trip, on a
+          3D map.
         </p>
-        <div class="mt-7 flex flex-wrap items-center gap-3">
+        <ol class="mt-6 flex list-none flex-wrap items-center gap-x-3 gap-y-2 p-0 text-sm font-semibold" aria-label="How it works">
+          {
+            steps.map((step, i) => (
+              <li class="flex items-center gap-3">
+                <span class="flex items-center gap-2">
+                  <span class="grid size-6 place-items-center rounded-full border border-line bg-surface-2 font-mono text-[11px] text-accent">
+                    {i + 1}
+                  </span>
+                  {step}
+                </span>
+                {i < steps.length - 1 && (
+                  <span class="text-muted" aria-hidden="true">→</span>
+                )}
+              </li>
+            ))
+          }
+        </ol>
+        <div class="mt-8 flex flex-wrap items-center gap-3">
           <a
             href={APP_PATH}
             class="inline-flex h-12 items-center gap-2 rounded-full bg-accent px-6 text-[15px] font-semibold text-accent-ink no-underline shadow-card hover:brightness-110"
           >
-            Open the planner
+            Plan my trip
             <svg viewBox="0 0 16 16" class="size-4" aria-hidden="true" focusable="false">
               <path d="M3 8h9M8.5 4 12.5 8l-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
           </a>
           <a
-            href="#demos"
+            href={`${APP_PATH}?demo=${demo.id}`}
             class="inline-flex h-12 items-center gap-2 rounded-full border border-line bg-surface px-5 text-[15px] font-semibold text-ink no-underline hover:border-muted"
           >
-            See an example trip
+            <svg viewBox="0 0 16 16" class="size-3.5" aria-hidden="true" focusable="false">
+              <path d="M5 3.5v9l7.5-4.5Z" fill="currentColor"></path>
+            </svg>
+            Watch {demo.label}
           </a>
         </div>
-        <ul class="mt-7 flex list-none flex-wrap gap-2 p-0" aria-label="At a glance">
-          {
-            facts.map((f) => (
-              <li class="inline-flex h-7 items-center rounded-full border border-line bg-surface-2 px-3 font-mono text-[11px] tracking-[0.06em] text-muted uppercase">
-                {f}
-              </li>
-            ))
-          }
-        </ul>
+        <p class="mt-4 mb-0 text-[13px] text-muted">Free · No sign-up · Any destination</p>
       </div>
+
+      <figure class="m-0 min-w-0">
+        <DaySheet demo={demo} index={day} />
+        <figcaption class="mt-3 px-1 text-[13px] text-muted">
+          Day {sheet.number} of the {demo.label} example, with local light times for {sheet.longDate}.
+        </figcaption>
+      </figure>
     </div>
 
     <figure class="m-0 mt-10 min-w-0 sm:mt-12">
