@@ -100,3 +100,102 @@
 @keyframes pr-fade { to { opacity: 1; } }
 @keyframes pr-spin { to { transform: rotate(360deg); } }
 @keyframes pr-blink { 50% { opacity: 0; } }
+
+/* The hero day card: the colour of the light follows the playing sun (dayplay.ts). */
+.lightday,
+.pr-header {
+  --sun-c: var(--day);
+}
+.lightday[data-phase='golden'],
+.pr-header[data-phase='golden'] { --sun-c: var(--golden); }
+.lightday[data-phase='blue'],
+.lightday[data-phase='night'],
+.pr-header[data-phase='blue'],
+.pr-header[data-phase='night'] { --sun-c: var(--night); }
+
+.lightday .ld-sky { fill: var(--sun-c); opacity: 0.035; transition: fill 0.8s, opacity 0.8s; }
+.lightday[data-phase='night'] .ld-sky { opacity: 0; }
+.lightday .ld-trail { stroke: var(--sun-c); transition: stroke 0.8s; }
+.lightday:not([data-playing]) .ld-sun { display: none; }
+.lightday .ld-sun circle { transition: fill 0.8s; }
+.lightday .ld-stop,
+.lightday .ld-row { transition: opacity 0.4s; }
+.lightday[data-playing] .ld-stop:not([data-lit]),
+.lightday[data-playing] .ld-row:not([data-lit]) { opacity: 0.3; }
+.lightday .ld-clock:empty { display: none; }
+
+/* The header: links at the top of the page, the day track once the visitor scrolls. */
+.pr-header {
+  background: color-mix(in oklab, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px);
+  transition: border-color 0.8s;
+}
+.pr-header[data-tracking] {
+  background: transparent;
+  border-color: transparent;
+  backdrop-filter: none;
+}
+.pr-header .pr-track-row {
+  background: color-mix(in oklab, var(--bg) 90%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid color-mix(in oklab, var(--sun-c) 40%, var(--line));
+  transition: border-color 0.8s;
+}
+.pr-header .pr-glow-golden { background: linear-gradient(to bottom, transparent, color-mix(in oklab, var(--golden) 30%, transparent)); }
+.pr-header .pr-glow-blue { background: linear-gradient(to bottom, transparent, color-mix(in oklab, var(--night) 28%, transparent)); }
+.pr-header .pr-nav-row,
+.pr-header .pr-track-row {
+  transition: opacity 0.3s ease, translate 0.3s ease, visibility 0s 0s;
+}
+.pr-header .pr-track-row,
+.pr-header[data-tracking] .pr-nav-row {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, translate 0.3s ease, visibility 0s 0.3s;
+}
+.pr-header .pr-track-row { translate: 0 6px; }
+.pr-header[data-tracking] .pr-nav-row { translate: 0 -6px; }
+.pr-header[data-tracking] .pr-track-row {
+  opacity: 1;
+  visibility: visible;
+  translate: 0 0;
+  transition: opacity 0.3s ease, translate 0.3s ease, visibility 0s 0s;
+}
+.pr-header .pt-night { background: var(--line); }
+.pr-header .pt-blue { background: var(--night); }
+.pr-header .pt-golden { background: var(--golden); }
+.pr-header .pt-day { background: var(--day); opacity: 0.75; }
+.pr-header .pr-tick { opacity: 0.35; transition: opacity 0.3s, scale 0.3s; }
+.pr-header .pr-tick[data-lit] { opacity: 1; }
+.pr-header .pr-sun {
+  background: var(--sun-c);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--sun-c) 25%, transparent), 0 0 18px var(--sun-c);
+  transition: background 0.8s, box-shadow 0.8s;
+}
+.pr-header .pr-phase { color: var(--sun-c); transition: color 0.8s; }
+
+/* The camera: one lens mounted at a time, sliding out and in on a switch, and a tripod. */
+.cam { overflow: visible; }
+.cam rect,
+.cam path,
+.cam circle { fill: var(--surface); stroke: var(--ink); stroke-width: 1.5; stroke-linejoin: round; }
+.cam .cam-leather { fill: var(--line); stroke: none; }
+.cam .cam-grip { fill: var(--line); }
+.cam .cam-dot { fill: var(--accent); stroke: none; }
+.cam .cam-tripod path { fill: none; stroke: var(--muted); stroke-linecap: round; }
+.cam .cam-tripod rect { fill: var(--line); stroke: var(--muted); }
+.cam .cam-lens,
+.cam .cam-tripod {
+  opacity: 0;
+  transition: opacity 0.3s ease, translate 0.35s cubic-bezier(0.3, 0.7, 0.2, 1);
+}
+.cam .cam-lens { translate: 18px 0; }
+.cam .cam-tripod { translate: 0 -8px; }
+.cam[data-lens='wide'] .cam-lens[data-kind='wide'],
+.cam[data-lens='standard'] .cam-lens[data-kind='standard'],
+.cam[data-lens='tele'] .cam-lens[data-kind='tele'],
+.cam[data-tripod] .cam-tripod {
+  opacity: 1;
+  translate: 0 0;
+  transition-delay: 0.15s;
+}

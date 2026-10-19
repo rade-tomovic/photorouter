@@ -1,0 +1,90 @@
+---
+// The header's day track: once the visitor scrolls, the page becomes one day of the hero
+// trip, from dawn at the top to night at the bottom. It overlays the page below the header
+// rather than growing it, so nothing shifts. dayplay.ts moves the sun, swaps the lens and
+// fills in the readout; without JavaScript the track never shows.
+import Camera from './Camera.astro';
+import Logo from './Logo.astro';
+import { APP_PATH } from './links';
+import { HERO_DAY, demoFor, lightDay } from './demoData';
+import { elevation, phases } from './daylight';
+import { hhmm } from '@/photorouter/lib/sun';
+
+const { sun, stops, start, end, play } = lightDay(demoFor(HERO_DAY.continent), HERO_DAY.index);
+
+// The arc is 64px tall: the horizon at 48px, noon 40px above it.
+const H = 64;
+const HORIZON = 48;
+const pct = (m: number) => ((m - start) / (end - start)) * 100;
+const top = (m: number) => HORIZON - 40 * elevation(m, sun);
+const arc = (a: number, b: number) =>
+  Array.from({ length: 61 }, (_, i) => a + ((b - a) * i) / 60)
+    .map((m, i) => `${i ? 'L' : 'M'}${pct(m).toFixed(2)} ${top(m).toFixed(2)}`)
+    .join(' ');
+const bands = phases(sun, start, end);
+const glows = bands.filter((p) => p.phase === 'golden' || p.phase === 'blue');
+---
+
+<div class="pr-track-row absolute inset-x-0 top-0" data-track-row>
+  <div class="mx-auto flex h-[92px] max-w-6xl items-center gap-3 px-4 sm:gap-5 sm:px-6" data-track data-day={JSON.stringify(play)}>
+    <a href="#main" class="hidden shrink-0 rounded-full xl:block" aria-label="Back to the top">
+      <Logo class="size-7" />
+    </a>
+
+    <div class="relative shrink-0" aria-hidden="true">
+      <Camera class="h-[66px] w-auto sm:h-[72px]" />
+    </div>
+
+    <div class="min-w-0 flex-1 md:w-64 md:flex-none lg:w-72" aria-hidden="true">
+      <p class="m-0 font-mono text-[10.5px] tracking-[0.08em] text-muted uppercase">
+        <span class="tabular-nums" data-time></span> · <span class="pr-phase" data-phase-label></span>
+      </p>
+      <p class="m-0 truncate text-[14px] font-semibold text-ink" data-what></p>
+      <p class="m-0 truncate text-[15px] font-bold" data-lens-label></p>
+      <p class="m-0 hidden truncate font-mono text-[11px] text-muted sm:block" data-kit></p>
+    </div>
+
+    <div class="relative hidden min-w-0 flex-1 md:block" style={`height:${H}px`} aria-hidden="true">
+      {
+        glows.map((g) => (
+          <span class={`pr-glow pr-glow-${g.phase} absolute`} style={`left:${pct(g.from)}%;width:${pct(g.to) - pct(g.from)}%;top:8px;height:${HORIZON - 8}px`} />
+        ))
+      }
+      <div class="absolute inset-x-0 flex h-[3px] overflow-hidden rounded-full" style={`top:${HORIZON - 1}px`}>
+        {bands.map((p) => <span class={`pt-${p.phase} h-full`} style={`width:${pct(p.to) - pct(p.from)}%`} />)}
+      </div>
+      <svg viewBox={`0 0 100 ${H}`} preserveAspectRatio="none" class="absolute inset-0 h-full w-full overflow-visible">
+        <path d={arc(start, end)} fill="none" stroke="var(--line)" stroke-width="1.5" stroke-dasharray="2 3" vector-effect="non-scaling-stroke"></path>
+        <path d={arc(sun.sunrise, sun.sunset)} fill="none" stroke="var(--muted)" stroke-width="1.5" opacity="0.5" vector-effect="non-scaling-stroke"></path>
+      </svg>
+      <span class="absolute -translate-x-1/2 font-mono text-[9.5px] whitespace-nowrap text-muted" style={`left:${pct(sun.sunrise)}%;top:${HORIZON + 4}px`}>↑ {hhmm(sun.sunrise)}</span>
+      <span class="absolute -translate-x-1/2 font-mono text-[9.5px] whitespace-nowrap text-muted" style={`left:${pct(sun.sunset)}%;top:${HORIZON + 4}px`}>↓ {hhmm(sun.sunset)}</span>
+      {
+        stops.map((s) => (
+          <span
+            class={`lt-${s.light} pr-tick absolute grid size-[18px] -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-(--c) text-[10px] font-bold text-surface`}
+            style={`left:${pct(s.t)}%;top:${top(s.t)}px`}
+            data-tick={s.n}
+          >
+            {s.n}
+          </span>
+        ))
+      }
+      <span class="pr-sun absolute size-4 -translate-x-1/2 -translate-y-1/2 rounded-full" data-track-sun data-arc></span>
+    </div>
+
+    <a
+      href={APP_PATH}
+      class="hidden h-9 shrink-0 items-center rounded-full bg-accent px-3.5 text-[13px] font-semibold whitespace-nowrap text-accent-ink no-underline hover:brightness-110 lg:inline-flex"
+    >
+      Plan my trip
+    </a>
+  </div>
+
+  <div class="absolute inset-x-0 bottom-0 h-[3px] md:hidden" aria-hidden="true">
+    <div class="flex h-full">
+      {bands.map((p) => <span class={`pt-${p.phase} h-full`} style={`width:${pct(p.to) - pct(p.from)}%`} />)}
+    </div>
+    <span class="pr-sun absolute top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full" data-track-sun></span>
+  </div>
+</div>

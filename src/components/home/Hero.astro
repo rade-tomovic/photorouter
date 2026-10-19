@@ -2,11 +2,11 @@
 import RouteMap from './RouteMap.astro';
 import LightDay from './LightDay.astro';
 import { APP_PATH } from './links';
-import { DEMOS, countWord, daySheet, demoFor } from './demoData';
+import { DEMOS, HERO_DAY, countWord, daySheet, demoFor } from './demoData';
 
 const steps = ['Describe your trip', 'Ask your AI assistant', 'Follow the route'];
-const demo = demoFor('europe');
-const day = 7;
+const demo = demoFor(HERO_DAY.continent);
+const day = HERO_DAY.index;
 const sheet = daySheet(demo, day);
 ---
 
@@ -69,8 +69,8 @@ const sheet = daySheet(demo, day);
       <figure class="m-0 min-w-0">
         <LightDay demo={demo} index={day} />
         <figcaption class="mt-3 px-1 text-[13px] text-muted">
-          A day of the {demo.label} example: the sun's path over {sheet.city} on {sheet.longDate}, with the golden light
-          shaded and each stop placed at the time it is planned.
+          A day of the {demo.label} example: the sun over {sheet.city} on {sheet.longDate}, each stop at its planned time.
+          Scroll down to follow the day.
         </figcaption>
       </figure>
     </div>

@@ -1,11 +1,12 @@
 ---
 import Logo from './Logo.astro';
 import GitHubIcon from './GitHubIcon.astro';
+import DayTrack from './DayTrack.astro';
 import { APP_PATH, REPO_URL } from './links';
 ---
 
-<header class="border-b border-line">
-  <div class="mx-auto flex h-16 max-w-6xl items-center gap-3 px-4 sm:px-6">
+<header class="pr-header sticky top-0 z-40 border-b border-line" data-header>
+  <div class="pr-nav-row mx-auto flex h-16 max-w-6xl items-center gap-3 px-4 sm:px-6">
     <a href="/" class="flex items-center gap-2.5 rounded-full text-ink no-underline">
       <Logo class="size-8" />
       <span class="font-display text-[23px] leading-none font-extrabold tracking-wide uppercase">PhotoRouter</span>
@@ -33,4 +34,5 @@ import { APP_PATH, REPO_URL } from './links';
       </a>
     </div>
   </div>
+  <DayTrack />
 </header>

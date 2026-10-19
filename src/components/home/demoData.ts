@@ -6,6 +6,8 @@ import { CONTINENT_LABEL, DEMOS, continentFromTimeZone, type Continent, type Dem
 import { importResponse, type PlanResponse } from '@/photorouter/lib/byoai';
 import { LIGHT_LABEL, dayLabel, monthName, dayNum } from '@/photorouter/lib/data';
 import type { Brief, Light, TravelMode } from '@/photorouter/lib/types';
+import { sunDay, tzOffset } from '@/photorouter/lib/sun';
+import type { PlayDay } from './daylight';
 
 export { CONTINENT_LABEL, DEMOS };
 export type { Continent, Demo };
@@ -103,6 +105,26 @@ export function daySheet(demo: Demo, index: number) {
       };
     }),
   };
+}
+
+/** The day the hero card plays and the header day track follows. */
+export const HERO_DAY = { continent: 'europe', index: 7 } as const;
+
+const minutesOf = (hhmm: string) => +hhmm.slice(0, 2) * 60 + +hhmm.slice(3, 5);
+
+/** A day sheet with the sun's times and each stop's planned time, for the light drawings. */
+export function lightDay(demo: Demo, index: number) {
+  const sheet = daySheet(demo, index);
+  const sun = sunDay(sheet.date, sheet.ll[1], sheet.ll[0], tzOffset(sheet.date, sheet.tz));
+  const stops = sheet.stops.map((s, i) => {
+    const [from = 0, to = from] = s.window.match(/\d\d:\d\d/g)?.map(minutesOf) ?? [];
+    return { ...s, n: i + 1, from, to, t: (from + to) / 2 };
+  });
+  const times = stops.map((s) => s.t);
+  const start = Math.min(sun.dawnBlue, ...times) - 30;
+  const end = Math.max(sun.blueEnd, ...times) + 30;
+  const play: PlayDay = { sun, start, end, stops: stops.map(({ n, name, from, to, t, kit }) => ({ n, name, from, to, t, kit })) };
+  return { sheet, sun, stops, start, end, play };
 }
 
 const norm = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
