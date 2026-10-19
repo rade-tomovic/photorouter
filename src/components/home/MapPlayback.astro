@@ -5,16 +5,16 @@ import { daySheet, demoFor } from './demoData';
 const features = [
   {
     title: '3D map',
-    text: 'MapLibre GL with OpenFreeMap vector tiles, extruded 3D buildings and optional terrain, in Detailed or Clean style, light or dark.',
+    text: 'Buildings and hills in 3D, in a detailed or a clean style, light or dark.',
   },
-  { title: 'Timeline', text: 'Scrub the trip day by day, or play it through from arrival to departure.' },
+  { title: 'Timeline', text: 'Jump to any day, or play the whole trip from arrival to departure.' },
   {
     title: 'Day sheets',
-    text: "Each stop's light window from sun times in the destination's time zone, the kit to pack from your gear and the local name to show a driver.",
+    text: 'When the light is best at each stop, worked out from local sunrise and sunset, what to pack and the local name to show a driver.',
   },
   {
     title: 'Spot cards',
-    text: 'Every spot opens a card with its light, a tip, the local name to copy and a link to the place on OpenStreetMap.',
+    text: 'Every spot opens a card with its best light, a tip, the local name to copy and a link to open it on a map.',
   },
 ];
 
@@ -26,10 +26,10 @@ const sheet = daySheet(demo, 1);
   <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
     <div class="grid gap-12 lg:grid-cols-[1fr_1fr] lg:items-start">
       <div class="min-w-0">
-        <SectionHead id="map-title" kicker="Map and playback" title="Play the route on a 3D map">
+        <SectionHead id="map-title" kicker="On the map" title="Watch your trip before you go">
           <p>
-            An imported plan becomes a route you can watch. Travel animations move the camera the way you will move on the
-            trip, and each day opens a sheet with what to shoot, when, and with what.
+            Your plan becomes a route you can watch. The camera travels the way you will, and each day opens a sheet with what
+            to shoot, when, and with what.
           </p>
         </SectionHead>
         <dl class="mt-10 grid gap-5 sm:grid-cols-2">
@@ -86,13 +86,13 @@ const sheet = daySheet(demo, 1);
           </ol>
         </div>
         <figcaption class="mt-3 px-1 text-[13px] text-muted">
-          Day {sheet.number} of the {demo.label} demo, simplified. Light windows come from sun times for {sheet.city} on {sheet.longDate},
-          in {sheet.tz} time.
+          Day {sheet.number} of the {demo.label} example, simplified. Times are local, from sunrise and sunset in {sheet.city} on
+          {sheet.longDate}.
         </figcaption>
       </figure>
     </div>
 
-    <h3 class="mt-16 mb-0 font-mono text-[11.5px] font-medium tracking-[0.1em] text-muted uppercase">Travel animations</h3>
+    <h3 class="mt-16 mb-0 font-mono text-[11.5px] font-medium tracking-[0.1em] text-muted uppercase">Travelling the route</h3>
     <ul class="mt-4 grid list-none gap-4 p-0 sm:grid-cols-3">
       <li class="rounded-[22px] border border-line bg-surface p-4">
         <svg viewBox="0 0 100 60" class="block h-auto w-full rounded-xl bg-surface-2" aria-hidden="true" focusable="false">
@@ -100,9 +100,9 @@ const sheet = daySheet(demo, 1);
           <path d="M8 48 C 30 46, 40 20, 62 18 S 88 12, 94 10" fill="none" stroke="var(--surface-2)" stroke-width="1" stroke-dasharray="2.5 2.5"></path>
           <path d="M8 48 C 30 46, 40 20, 62 18 S 88 12, 94 10" pathLength="1000" class="train" fill="none" stroke="var(--accent)" stroke-width="5" stroke-linecap="round"></path>
         </svg>
-        <p class="mt-3 mb-0 text-[15px] font-bold">Chase camera</p>
+        <p class="mt-3 mb-0 text-[15px] font-bold">Between cities</p>
         <p class="mt-1 mb-0 text-[14.5px] leading-relaxed text-muted">
-          Rides each travel leg between cities behind a marker that matches the mode: train, plane, boat or car.
+          The camera follows each train, flight, ferry or drive from one city to the next.
         </p>
       </li>
       <li class="rounded-[22px] border border-line bg-surface p-4">
@@ -114,8 +114,8 @@ const sheet = daySheet(demo, 1);
           <circle cx="58" cy="38" r="3.6" class="lt-golden" fill="var(--c)"></circle>
           <circle cx="84" cy="16" r="3.6" class="lt-night" fill="var(--c)"></circle>
         </svg>
-        <p class="mt-3 mb-0 text-[15px] font-bold">Walker</p>
-        <p class="mt-1 mb-0 text-[14.5px] leading-relaxed text-muted">Walks the route from one stop to the next within a city.</p>
+        <p class="mt-3 mb-0 text-[15px] font-bold">Between stops</p>
+        <p class="mt-1 mb-0 text-[14.5px] leading-relaxed text-muted">A walker follows your route from one stop to the next.</p>
       </li>
       <li class="rounded-[22px] border border-line bg-surface p-4">
         <svg viewBox="0 0 100 60" class="block h-auto w-full rounded-xl bg-surface-2" aria-hidden="true" focusable="false">
@@ -127,8 +127,8 @@ const sheet = daySheet(demo, 1);
             <circle cx="72" cy="30" r="4" fill="var(--accent)"></circle>
           </g>
         </svg>
-        <p class="mt-3 mb-0 text-[15px] font-bold">Arrive and orbit</p>
-        <p class="mt-1 mb-0 text-[14.5px] leading-relaxed text-muted">Flies in to each stop and circles it so you can read the setting.</p>
+        <p class="mt-3 mb-0 text-[15px] font-bold">At each stop</p>
+        <p class="mt-1 mb-0 text-[14.5px] leading-relaxed text-muted">The camera flies in and circles the spot so you can see the setting.</p>
       </li>
     </ul>
   </div>

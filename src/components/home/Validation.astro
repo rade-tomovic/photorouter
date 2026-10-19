@@ -3,34 +3,31 @@ import SectionHead from './SectionHead.astro';
 import { demoFor, importReport } from './demoData';
 
 const checks = [
+  { title: 'Every day covered', text: 'Each day of your trip is in the plan, in order and with no gaps.' },
   {
-    title: 'Every date, day by day',
-    text: 'The dates run with no gaps and one entry each, even a day with no slots. An answer for other dates than your brief loads as its own trip, with your brief\'s rules as warnings.',
+    title: 'A way to get there',
+    text: 'Whenever the plan moves to a new city, it includes the train, flight, ferry, bus or drive to get there.',
   },
   {
-    title: 'A consistent chain of cities',
-    text: "A day that changes city needs travel from the previous night's city. A day without travel stays put, or makes a day trip out and back.",
+    title: 'Spots where they should be',
+    text: 'Every spot is close to the city it belongs to, which catches places put in the wrong town.',
   },
   {
-    title: 'Spots near their city',
-    text: 'Every spot sits within 150 km of the city it is filed under, which catches wrong coordinates.',
+    title: 'The right time of day',
+    text: 'Sunrise spots are planned for the morning, sunset spots for the evening and night spots after dark.',
   },
   {
-    title: 'Light fits the slot',
-    text: 'Dawn spots go in early slots, golden and blue hour spots at sunset, night spots after dark.',
+    title: 'Days you can manage',
+    text: 'No day has more stops than your pace allows, and work days keep shooting to your free hours.',
   },
-  {
-    title: 'Slots and stops per day',
-    text: 'Each day uses only the slots it allows and stays within its stop limit, both set by your pace and working hours.',
-  },
-  { title: 'Tripod', text: 'A spot that needs a tripod is rejected when the kit has neither a tripod nor a clamp.' },
+  { title: 'Your gear', text: 'Spots that need a tripod are only planned when you bring a tripod or a clamp.' },
   {
     title: 'Crowds and walking',
-    text: 'The busiest spots are rejected when you avoid crowds, real hikes when you ask for easy walking.',
+    text: 'The busiest places stay out when you avoid crowds, and long hikes stay out when you want easy walking.',
   },
   {
     title: 'Must-see and skip',
-    text: 'Places on the skip list are never planned. Every must-see is planned or listed as left out with a reason.',
+    text: 'Places you skip never appear. Every must-see is planned, or listed with the reason it was left out.',
   },
 ];
 
@@ -42,11 +39,11 @@ const blocked = report.some((l) => l.level === 'error');
 <section id="validation" aria-labelledby="validation-title" class="scroll-mt-4 border-b border-line bg-surface-2/40">
   <div class="mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-[1.25fr_1fr] lg:items-start">
     <div class="min-w-0">
-      <SectionHead id="validation-title" kicker="Validation" title="Every answer is checked before it loads">
+      <SectionHead id="validation-title" kicker="Checked for you" title="Every plan is checked before it reaches the map">
         <p>
-          An AI can return a plan that reads well and still breaks the trip. PhotoRouter validates the pasted JSON against the
-          schema and against the same rules the prompt describes. Errors block the import and name the day, slot or spot to
-          fix. Warnings are shown, and the plan still loads.
+          An AI assistant can write a plan that reads well and still gets things wrong. PhotoRouter checks every reply against
+          your trip. A real problem names the day and spot to fix, so you can ask the assistant to correct it. Smaller notes
+          are shown next to the plan, which still opens.
         </p>
       </SectionHead>
       <ul class="mt-10 grid list-none gap-x-8 gap-y-6 p-0 sm:grid-cols-2">
@@ -70,9 +67,9 @@ const blocked = report.some((l) => l.level === 'error');
     <figure class="m-0 min-w-0 lg:sticky lg:top-6">
       <div class="rounded-[22px] border border-line bg-surface p-4 shadow-card sm:p-5">
         <div class="flex items-center justify-between gap-3 border-b border-line pb-3">
-          <p class="m-0 font-mono text-[11px] tracking-[0.08em] text-muted uppercase">Import report</p>
+          <p class="m-0 font-mono text-[11px] tracking-[0.08em] text-muted uppercase">What PhotoRouter found</p>
           <span class="inline-flex h-6 items-center rounded-full border border-line bg-surface-2 px-2.5 text-xs font-semibold">
-            {blocked ? 'Blocked' : 'Imported'}
+            {blocked ? 'Needs fixing' : 'Plan loaded'}
           </span>
         </div>
         <ul class="m-0 mt-4 flex list-none flex-col gap-3 p-0 text-[13.5px] leading-snug">
@@ -81,7 +78,7 @@ const blocked = report.some((l) => l.level === 'error');
               <li class={`${line.level === 'error' ? 'c-0' : 'lt-golden'} rounded-xl border border-line bg-surface-2 p-3`}>
                 <p class="m-0 flex items-center gap-1.5 font-mono text-[10.5px] font-semibold tracking-[0.08em] uppercase">
                   <span class="size-2 rounded-full bg-(--c)" aria-hidden="true" />
-                  {line.level}
+                  {line.level === 'error' ? 'Problem' : 'Note'}
                 </p>
                 <p class="mt-1 mb-0 break-words">{line.text}</p>
               </li>
@@ -90,8 +87,8 @@ const blocked = report.some((l) => l.level === 'error');
         </ul>
       </div>
       <figcaption class="mt-3 px-1 text-[13px] text-muted">
-        Importer messages for edited copies of the {demo.label} demo: a travel leg removed, a spot filed under the wrong
-        city, an evening spot put in a morning slot and a must-see left out.
+        Messages for a broken copy of the {demo.label} example: a train left out, a spot put in the wrong city, a sunset
+        spot planned for the morning and a must-see left out.
       </figcaption>
     </figure>
   </div>

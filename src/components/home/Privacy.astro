@@ -2,25 +2,25 @@
 import SectionHead from './SectionHead.astro';
 
 const points = [
-  { title: 'No account', text: 'Nothing to sign up for. Your last brief and plan are kept in this browser, so the planner reopens where you left off.' },
-  { title: 'No backend', text: 'The brief, the prompt, the validator and the map all run in the browser.' },
+  { title: 'No sign-up', text: 'Nothing to register for. Your last trip is kept in this browser, so the planner reopens where you left off.' },
+  { title: 'Nothing sent to us', text: 'Your trip details, the prompt, the checks and the map all stay on your device.' },
   {
-    title: 'No built-in agent',
-    text: 'You choose the AI. The prompt and the answer leave the browser only when you copy them there.',
+    title: 'You choose the assistant',
+    text: 'Use whichever AI chat assistant you like. Your trip only reaches it when you paste the prompt there yourself.',
   },
   {
-    title: 'Map tiles only',
-    text: 'Map tiles are the only network requests the planner makes. The demo trips ship with the page, and the default one comes from the time zone setting, not a location lookup.',
+    title: 'No location tracking',
+    text: 'The only thing the planner downloads while you use it is the map. It picks the nearest example trip from your time zone setting, not your location.',
   },
 ];
-const inBrowser = ['Brief', 'Prompt', 'Validator', 'Map', 'Day sheets', 'Demo trips'];
+const inBrowser = ['Your trip', 'Prompt', 'Checks', 'Map', 'Day sheets', 'Example trips'];
 ---
 
 <section id="privacy" aria-labelledby="privacy-title" class="scroll-mt-4 border-b border-line bg-surface-2/40">
   <div class="mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-[1fr_1.1fr] lg:items-center">
     <div class="min-w-0">
-      <SectionHead id="privacy-title" kicker="Privacy" title="Runs in your browser">
-        <p>The planner is a set of static files. Once loaded, it does its work in the browser tab.</p>
+      <SectionHead id="privacy-title" kicker="Privacy" title="Your trip stays with you">
+        <p>PhotoRouter has no accounts and no server that stores your plans. Everything happens in your browser.</p>
       </SectionHead>
       <dl class="mt-10 grid gap-5 sm:grid-cols-2">
         {
@@ -57,15 +57,15 @@ const inBrowser = ['Brief', 'Prompt', 'Validator', 'Map', 'Day sheets', 'Demo tr
         </div>
 
         <div class="rounded-[22px] border border-line bg-surface p-4 sm:p-5">
-          <p class="m-0 font-mono text-[11px] tracking-[0.08em] text-muted uppercase">Your own AI</p>
+          <p class="m-0 font-mono text-[11px] tracking-[0.08em] text-muted uppercase">Your AI assistant</p>
           <p class="mt-3 mb-0 text-sm leading-snug">
-            <span class="t-accent font-semibold">You copy the prompt</span> into a chat assistant or an API call.
+            <span class="t-accent font-semibold">You paste the prompt</span> into the chat.
           </p>
-          <p class="mt-2 mb-0 text-sm leading-snug"><span class="font-semibold">You paste the JSON</span> back.</p>
+          <p class="mt-2 mb-0 text-sm leading-snug"><span class="font-semibold">You copy the reply</span> back.</p>
         </div>
       </div>
       <figcaption class="mt-3 px-1 text-[13px] text-muted">
-        What crosses the browser boundary: the prompt and the answer, by your hand, and map tiles.
+        Only the prompt and the reply leave the page, and only when you copy them.
       </figcaption>
     </figure>
   </div>
