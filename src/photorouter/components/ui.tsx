@@ -17,8 +17,8 @@ export function Button({ variant = 'soft', size = 'md', className, ...rest }: Bt
       className={cx(
         'inline-flex items-center justify-center gap-1.5 rounded-full border font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-45',
         size === 'md' ? 'h-9 px-3.5 text-[13px]' : 'h-7 px-2.5 text-xs',
-        variant === 'primary' && 'border-transparent bg-accent text-accent-ink hover:brightness-110',
-        variant === 'soft' && 'border-line bg-surface-2 text-ink hover:border-muted',
+        variant === 'primary' && 'rt-btn border-transparent',
+        variant === 'soft' && 'rt-btn-quiet border-transparent',
         variant === 'ghost' && 'border-transparent bg-transparent text-muted hover:text-ink',
         className,
       )}
@@ -34,7 +34,7 @@ export function IconButton({ className, label, ...rest }: ButtonHTMLAttributes<H
       aria-label={label}
       title={label}
       className={cx(
-        'inline-grid size-9 shrink-0 place-items-center rounded-full border border-line bg-surface-2 text-ink transition-colors hover:border-muted disabled:opacity-40 [&_svg]:size-4',
+        'rt-btn-quiet inline-grid size-9 shrink-0 place-items-center rounded-full transition-colors disabled:opacity-40 [&_svg]:size-4',
         className,
       )}
       {...rest}
@@ -50,7 +50,7 @@ export function Toggle({ on, onClick, children, className, dot }: { on: boolean;
       onClick={onClick}
       className={cx(
         'inline-flex h-7 items-center gap-1.5 rounded-full border px-2.5 text-xs font-semibold transition-colors',
-        on ? 'border-ink bg-ink text-surface' : 'border-line bg-surface-2 text-muted hover:border-muted hover:text-ink',
+        on ? 'border-transparent bg-accent text-accent-ink' : 'border-line bg-surface-2 text-muted hover:border-muted hover:text-ink',
         className,
       )}
     >

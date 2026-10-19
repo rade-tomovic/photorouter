@@ -1,0 +1,351 @@
+---
+// "Light meter": the hero day as a rangefinder's top plate. A meter needle reads the
+// light from the sun's real altitude, the shutter dial and the aperture ring turn to the
+// exposure, a small window shows the sun or the moon, and the lens changes at each stop.
+// Without JavaScript it is a still drawing of the last stop; play.ts plays the day.
+import { lightDay, type Demo } from '../demoData';
+import { lensKind, mountedLens, needsSupport, phaseAt, PHASE_LABEL, type LensKind } from '../daylight';
+import { hhmm, tzOffset } from '@/photorouter/lib/sun';
+import ShutterDial from './ShutterDial.astro';
+import EvScale from './EvScale.astro';
+import DayScale from './DayScale.astro';
+import { F_STOPS, altitude, avOf, exposure, moonAge, moonPath, readingText, sceneEv, solarFor } from './meter';
+import { HERO_METER, altText, apertureShift, dialTurn, needleAngle, sunInWindow } from './plate';
+import './meter.css';
+
+interface Props {
+  demo: Demo;
+  index: number;
+}
+const { demo, index } = Astro.props;
+const { sheet, sun, stops, start, end, play } = lightDay(demo, index);
+const solar = solarFor(sheet.date, sheet.ll[1], sheet.ll[0], tzOffset(sheet.date, sheet.tz));
+
+// The still drawing shows the last stop at its planned time.
+const still = stops.at(-1)!;
+const m0 = still.t;
+const alt0 = altitude(m0, solar);
+const read0 = exposure(sceneEv(alt0));
+const lens0 = mountedLens(still, m0) ?? '';
+const kind0 = lensKind(lens0) ?? 'standard';
+const sun0 = sunInWindow((m0 - start) / (end - start), alt0);
+const phase0 = phaseAt(m0, sun);
+
+// One barrel per kind of lens the day carries, drawn from above as rings along its axis.
+type Band = { y: number; h: number; type: 'aperture' | 'ribs' | 'fine' | 'barrel' | 'chrome' | 'front' | 'hood'; w?: number };
+const SHAPES: Record<LensKind, { w: number; bands: Band[] }> = {
+  wide: {
+    w: 72,
+    bands: [
+      { y: 146, h: 16, type: 'aperture' },
+      { y: 164, h: 18, type: 'ribs' },
+      { y: 183, h: 12, type: 'front' },
+      { y: 195, h: 8, type: 'hood', w: 90 },
+    ],
+  },
+  standard: {
+    w: 78,
+    bands: [
+      { y: 146, h: 16, type: 'aperture' },
+      { y: 164, h: 22, type: 'ribs' },
+      { y: 188, h: 14, type: 'fine' },
+      { y: 203, h: 13, type: 'front' },
+    ],
+  },
+  tele: {
+    w: 84,
+    bands: [
+      { y: 146, h: 16, type: 'aperture' },
+      { y: 163, h: 11, type: 'barrel' },
+      { y: 175, h: 7, type: 'chrome' },
+      { y: 183, h: 21, type: 'ribs' },
+      { y: 206, h: 13, type: 'fine' },
+      { y: 220, h: 12, type: 'front' },
+      { y: 232, h: 11, type: 'hood', w: 94 },
+    ],
+  },
+};
+const CX = 230;
+const labels = [...new Set(stops.flatMap((s) => s.kit.filter((k) => lensKind(k))))];
+const lenses = (['wide', 'standard', 'tele'] as const).flatMap((kind) => {
+  const label = labels.find((l) => lensKind(l) === kind);
+  if (!label) return [];
+  const maxF = label.match(/f\/([\d.]+)/)?.[1] ?? '4';
+  const maxAv = Math.max(4, avOf(maxF));
+  const fs = F_STOPS.filter((f) => avOf(f) >= maxAv);
+  return [{ kind, label, maxAv, fs, ...SHAPES[kind] }];
+});
+const band = (cx: number, w: number, b: Band) =>
+  b.type === 'hood'
+    ? `M${cx - w / 2} ${b.y}H${cx + w / 2}L${cx + (b.w ?? w) / 2} ${b.y + b.h}H${cx - (b.w ?? w) / 2}Z`
+    : `M${cx - w / 2 + 1.5} ${b.y}H${cx + w / 2 - 1.5}Q${cx + w / 2} ${b.y} ${cx + w / 2} ${b.y + 1.5}V${b.y + b.h - 1.5}Q${cx + w / 2} ${b.y + b.h} ${cx + w / 2 - 1.5} ${b.y + b.h}H${cx - w / 2 + 1.5}Q${cx - w / 2} ${b.y + b.h} ${cx - w / 2} ${b.y + b.h - 1.5}V${b.y + 1.5}Q${cx - w / 2} ${b.y} ${cx - w / 2 + 1.5} ${b.y}Z`;
+
+const M = HERO_METER;
+const deg = (v: number, pos: string, neg: string) => {
+  const a = Math.abs(v);
+  return `${Math.floor(a)}°${String(Math.round((a % 1) * 60)).padStart(2, '0')}′${v >= 0 ? pos : neg}`;
+};
+const coords = `${deg(sheet.ll[1], 'N', 'S')} ${deg(sheet.ll[0], 'E', 'W')}`;
+const moon = moonPath(moonAge(sheet.date), 4.2);
+
+const stop0 = stops.find((s) => m0 >= s.from && m0 <= s.to) ?? still;
+---
+
+<div
+  class="th-meter rt-panel rounded-[22px] p-4 sm:p-5"
+  data-meter
+  data-phase={phase0}
+  data-day={JSON.stringify(play)}
+  data-solar={JSON.stringify(solar)}
+>
+  <div class="flex items-center justify-between gap-2">
+    <p class="m-0 font-mono text-[11px] tracking-[0.08em] text-muted uppercase">
+      Day {sheet.number} · {sheet.label} · <span class="tabular-nums" data-clock>{hhmm(m0)}</span>
+    </p>
+    <span class={`c-${sheet.cityColor} inline-flex h-6 items-center gap-1.5 rounded-full border border-line px-2.5 text-xs font-semibold`}>
+      <span class="size-2 rounded-full bg-(--c)" aria-hidden="true"></span>{sheet.city}
+    </span>
+  </div>
+
+  <div class="relative mt-3">
+  <svg viewBox="0 0 460 246" class="mt-plate block h-auto w-full overflow-visible" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="mth-paint" x1="0" x2="0" y1="0" y2="1">
+        <stop offset="0" stop-color="#39434d"></stop>
+        <stop offset="0.07" stop-color="#232a32"></stop>
+        <stop offset="0.6" stop-color="#171c22"></stop>
+        <stop offset="1" stop-color="#0d1115"></stop>
+      </linearGradient>
+      <linearGradient id="mth-chrome" x1="0" x2="0" y1="0" y2="1">
+        <stop offset="0" stop-color="#f4f6f8"></stop>
+        <stop offset="0.45" stop-color="#b8c0c7"></stop>
+        <stop offset="0.55" stop-color="#8a939c"></stop>
+        <stop offset="1" stop-color="#d9dee3"></stop>
+      </linearGradient>
+      <linearGradient id="mth-knurl" x1="0" x2="1" y1="0" y2="1">
+        <stop offset="0" stop-color="#eef1f4"></stop>
+        <stop offset="0.5" stop-color="#9aa3ab"></stop>
+        <stop offset="1" stop-color="#5d666f"></stop>
+      </linearGradient>
+      <radialGradient id="mth-cap" cx="0.36" cy="0.3" r="0.8">
+        <stop offset="0" stop-color="#ffffff"></stop>
+        <stop offset="0.45" stop-color="#d3d9de"></stop>
+        <stop offset="1" stop-color="#8b949c"></stop>
+      </radialGradient>
+      <radialGradient id="mth-face" cx="0.5" cy="1" r="1.1">
+        <stop offset="0" stop-color="#fbf5e6"></stop>
+        <stop offset="0.75" stop-color="#ece2c9"></stop>
+        <stop offset="1" stop-color="#d4c7a6"></stop>
+      </radialGradient>
+      <linearGradient id="mth-glare" x1="0" x2="1" y1="0" y2="1">
+        <stop offset="0" stop-color="#fff" stop-opacity="0.5"></stop>
+        <stop offset="0.5" stop-color="#fff" stop-opacity="0.08"></stop>
+        <stop offset="1" stop-color="#fff" stop-opacity="0"></stop>
+      </linearGradient>
+      <linearGradient id="mth-cyl" x1="0" x2="1" y1="0" y2="0">
+        <stop offset="0" stop-color="#000" stop-opacity="0.6"></stop>
+        <stop offset="0.22" stop-color="#000" stop-opacity="0"></stop>
+        <stop offset="0.4" stop-color="#fff" stop-opacity="0.16"></stop>
+        <stop offset="0.55" stop-color="#fff" stop-opacity="0"></stop>
+        <stop offset="0.85" stop-color="#000" stop-opacity="0.25"></stop>
+        <stop offset="1" stop-color="#000" stop-opacity="0.7"></stop>
+      </linearGradient>
+      <pattern id="mth-leather" width="5" height="5" patternUnits="userSpaceOnUse">
+        <rect width="5" height="5" fill="#101418"></rect>
+        <circle cx="1.3" cy="1.4" r="1" fill="#1d2329"></circle>
+        <circle cx="3.8" cy="3.6" r="1.1" fill="#1a1f25"></circle>
+      </pattern>
+      <pattern id="mth-ribs" width="3.2" height="4" patternUnits="userSpaceOnUse">
+        <rect width="3.2" height="4" fill="#0c0f12"></rect>
+        <rect width="1.4" height="4" fill="#2a3138"></rect>
+      </pattern>
+      <pattern id="mth-fine" width="2" height="4" patternUnits="userSpaceOnUse">
+        <rect width="2" height="4" fill="#111519"></rect>
+        <rect width="0.8" height="4" fill="#323a42"></rect>
+      </pattern>
+      <clipPath id="mth-meter-glass"><rect x="168" y="24" width="124" height="68" rx="5"></rect></clipPath>
+      <clipPath id="mth-sun-glass"><rect x="95" y="39" width="52" height="38" rx="4"></rect></clipPath>
+      {
+        lenses.map((l) => (
+          <clipPath id={`mth-ring-${l.kind}`}>
+            <rect x={CX - l.w / 2} y={l.bands[0]!.y} width={l.w} height={l.bands[0]!.h} />
+          </clipPath>
+        ))
+      }
+    </defs>
+
+    <rect x="18" y="26" width="424" height="128" rx="34" fill="#000" opacity="0.12"></rect>
+    <rect x="12" y="18" width="436" height="122" rx="32" fill="#000" opacity="0.18"></rect>
+
+    <g class="mt-lenses" data-lens={kind0}>
+      {
+        lenses.map((l) => (
+          <g class="mt-lens" data-kind={l.kind}>
+            <rect x={CX - l.w / 2 + 2} y="144" width={l.w - 4} height={l.bands.at(-1)!.y + l.bands.at(-1)!.h - 146} fill="#07090b" />
+            {l.bands.map((b) => (
+              <>
+                <path d={band(CX, l.w, b)} class={`mt-band-${b.type}`} />
+                {b.type === 'aperture' && (
+                  <>
+                    <path d={`M${CX - l.w / 2 + 2} ${b.y + 1.8}H${CX + l.w / 2 - 2}`} class="mt-grip" />
+                    <g clip-path={`url(#mth-ring-${l.kind})`}>
+                      <g class="mt-shift" data-ring={l.maxAv} style={`transform:translateX(${apertureShift(read0.av, l.maxAv)}px)`}>
+                        {l.fs.map((f) => (
+                          <text x={CX + (avOf(f) - l.maxAv) * 17} y={b.y + 11.6} class="mt-ring-num">
+                            {f}
+                          </text>
+                        ))}
+                      </g>
+                    </g>
+                  </>
+                )}
+                {b.type === 'front' && (
+                  <text x={CX} y={b.y + b.h / 2 + 0.4} class="mt-lens-name">
+                    {l.label}
+                  </text>
+                )}
+                <path d={band(CX, l.w, b)} fill="url(#mth-cyl)" />
+              </>
+            ))}
+            <path d={`M${CX - l.w / 2 - 4} 154H170M${CX + l.w / 2 + 4} 154H290`} class="mt-leader" />
+            <circle cx={CX - l.w / 2 - 4} cy="154" r="1.4" class="mt-leader-dot" />
+            <circle cx={CX + l.w / 2 + 4} cy="154" r="1.4" class="mt-leader-dot" />
+          </g>
+        ))
+      }
+    </g>
+
+    <rect x="16" y="100" width="428" height="44" rx="16" fill="url(#mth-leather)"></rect>
+    <path d="M30 143.5H430" stroke="#000" stroke-opacity="0.5"></path>
+    <rect x="186" y="134" width="88" height="11" rx="2.5" fill="url(#mth-chrome)"></rect>
+    <path d="M186 140H274" stroke="#000" stroke-opacity="0.18"></path>
+    <path d={`M${CX} 142.5l-2.4 3.2h4.8Z`} class="mt-index"></path>
+    <circle cx="195" cy="139.5" r="2.6" fill="url(#mth-cap)" stroke="#5b646d" stroke-width="0.5"></circle>
+
+    <rect x="6" y="8" width="448" height="118" rx="28" fill="url(#mth-paint)"></rect>
+    <rect x="6.5" y="8.5" width="447" height="117" rx="27.5" fill="none" stroke="#fff" stroke-opacity="0.07"></rect>
+    <path d="M36 9.6H424" stroke="#fff" stroke-opacity="0.28" stroke-linecap="round"></path>
+    <path d="M30 125H430" stroke="#000" stroke-opacity="0.6"></path>
+
+    <g class="mt-rewind">
+      <circle cx="52" cy="64" r="28" class="mt-collar"></circle>
+      <circle cx="52" cy="64" r="25" fill="none" stroke="url(#mth-knurl)" stroke-width="3.6" stroke-dasharray="1.15 1.45"></circle>
+      <circle cx="52" cy="64" r="22.6" fill="url(#mth-cap)"></circle>
+      <circle cx="52" cy="64" r="15" fill="none" stroke="#000" stroke-opacity="0.16"></circle>
+      <path d="M52 64 52 45" stroke="#2a3138" stroke-width="7" stroke-linecap="round"></path>
+      <path d="M52 64 52 45" stroke="#56606a" stroke-width="1" stroke-linecap="round"></path>
+      <circle cx="52" cy="64" r="4.4" fill="#20262c"></circle>
+      <circle cx="52" cy="45" r="2.4" fill="url(#mth-cap)"></circle>
+    </g>
+
+    <g class="mt-window">
+      <rect x="90" y="34" width="62" height="48" rx="8" fill="url(#mth-chrome)"></rect>
+      <rect x="94" y="38" width="54" height="40" rx="5" fill="#0a0d10"></rect>
+      <g clip-path="url(#mth-sun-glass)">
+        <rect x="95" y="39" width="52" height="38" class="mt-sky"></rect>
+        <g class="mt-stars">
+          <circle cx="103" cy="45" r="0.6"></circle>
+          <circle cx="118" cy="43" r="0.5"></circle>
+          <circle cx="137" cy="47" r="0.7"></circle>
+          <circle cx="127" cy="53" r="0.45"></circle>
+          <circle cx="143" cy="42" r="0.5"></circle>
+        </g>
+        <g class="mt-moon" transform="translate(108 49.5)">
+          <circle r="4.2" class="mt-moon-dark"></circle>
+          <path d={moon} class="mt-moon-lit"></path>
+        </g>
+        <g class="mt-sun" data-win-sun style={`transform:translate(${sun0.x.toFixed(2)}px,${sun0.y.toFixed(2)}px)`}>
+          <circle r="7.5" class="mt-sun-glow"></circle>
+          <circle r="3.6" class="mt-sun-disc"></circle>
+        </g>
+        <path
+          d="M95 77V67.5h5v-2h3.5v2h4v-3h3v3h3.2v-1.8h3v-6.2l1.2-2.6 1.2 2.6v8h3.6v-2.4h4.4v2.4h3.2v-1.5h4.2v1.5H147V77Z"
+          class="mt-ground"></path>
+        <path d="M95 72.6h52" class="mt-river"></path>
+        <rect x="95" y="39" width="52" height="38" fill="url(#mth-glare)" opacity="0.5"></rect>
+      </g>
+      <text x="121" y="93.5" class="mt-eng" data-alt>{altText(alt0)}</text>
+    </g>
+
+    <g class="mt-meter">
+      <rect x="196" y="112" width="68" height="12" rx="2" fill="url(#mth-chrome)" opacity="0.8"></rect>
+      <rect x="158" y="14" width="144" height="104" rx="12" fill="url(#mth-paint)" stroke="#000" stroke-opacity="0.5"></rect>
+      <path d="M170 14.8H290" stroke="#fff" stroke-opacity="0.22" stroke-linecap="round"></path>
+      <rect x="163.5" y="19.5" width="133" height="77" rx="8" fill="url(#mth-chrome)"></rect>
+      <rect x="168" y="24" width="124" height="68" rx="5" fill="url(#mth-face)"></rect>
+      <g clip-path="url(#mth-meter-glass)">
+        <EvScale cx={M.cx} cy={M.cy} r={60} sweep={M.sweep} font={7.6} />
+        <text x="230" y="84" class="mt-face-ev">EV</text>
+        <g class="mt-face-icon" transform="translate(178 84)">
+          <path d="M2.6-3.4A3.6 3.6 0 1 0 3 2.6 2.8 2.8 0 1 1 2.6-3.4Z"></path>
+        </g>
+        <g class="mt-face-icon" transform="translate(282 84)">
+          <circle r="2.1"></circle>
+          <path d="M0-4.2V-3.3M0 3.3V4.2M-4.2 0H-3.3M3.3 0H4.2M-3 -3-2.3-2.3M2.3 2.3 3 3M-3 3-2.3 2.3M2.3-2.3 3-3"></path>
+        </g>
+        <g class="mt-needle" data-needle style={`transform-origin:${M.cx}px ${M.cy}px;transform:rotate(${needleAngle(sceneEv(alt0), M.sweep).toFixed(2)}deg)`}>
+          <path d={`M${M.cx + 1.6} ${M.cy + 1}V${M.cy - 62}`} class="mt-needle-shadow"></path>
+          <path d={`M${M.cx} ${M.cy}V${M.cy - 62}`} class="mt-needle-line"></path>
+        </g>
+        <rect x="168" y="24" width="124" height="68" fill="url(#mth-glare)" opacity="0.35"></rect>
+      </g>
+      <rect x="168" y="24" width="124" height="68" rx="5" fill="none" stroke="#000" stroke-opacity="0.35"></rect>
+      <text x="230" y="108.5" class="mt-eng">EV · ISO 100</text>
+      <g class="mt-screw"><circle cx="171" cy="107" r="3"></circle><path d="M169 105.6 173 108.4"></path></g>
+      <g class="mt-screw"><circle cx="289" cy="107" r="3"></circle><path d="M287 108.4 291 105.6"></path></g>
+    </g>
+
+    <path d="M366 24.5l-3 -4.6h6Z" class="mt-index"></path>
+    <ShutterDial cx={366} cy={64} r={35.5} turn={dialTurn(read0.k)} ids="mth" />
+
+    <g class="mt-advance">
+      <circle cx="426" cy="64" r="15" class="mt-collar"></circle>
+      <circle cx="426" cy="64" r="12.5" fill="url(#mth-cap)"></circle>
+      <g class="mt-lever" data-lever>
+        <path d="M426 64 405 17" stroke="#0b0e11" stroke-width="8.5" stroke-linecap="round"></path>
+        <path d="M426 64 405 17" stroke="#2c343c" stroke-width="6" stroke-linecap="round"></path>
+        <path d="M423.6 60 406.2 21" stroke="#fff" stroke-opacity="0.25" stroke-width="0.9" stroke-linecap="round"></path>
+        <circle cx="404.2" cy="15.2" r="5.6" fill="#1a1f24" stroke="#0b0e11"></circle>
+      </g>
+      <circle cx="426" cy="64" r="6.6" fill="url(#mth-cap)" stroke="#5b646d" stroke-width="0.6"></circle>
+      <circle cx="426" cy="64" r="2.4" class="mt-release"></circle>
+    </g>
+
+    <text x="52" y="113.5" class="mt-eng mt-eng-wide">{sheet.city.toUpperCase()}</text>
+    <text x="366" y="113.5" class="mt-eng">{coords}</text>
+  </svg>
+    <div class="absolute left-0 w-[36%] pr-1 text-right" style="top:59%">
+      <p class="m-0 font-mono text-[10px] tracking-[0.08em] text-muted uppercase">Aperture</p>
+      <p class="m-0 font-mono text-[16px] leading-6 font-semibold text-ink" data-aperture>f/{read0.f}</p>
+      <p class="m-0 font-mono text-[11px] text-muted" data-shutter>{read0.shutter} on the dial</p>
+    </div>
+    <div class="absolute right-0 w-[36%] pl-1" style="top:59%">
+      <p class="m-0 font-mono text-[10px] tracking-[0.08em] text-muted uppercase">Lens</p>
+      <p class="m-0 truncate text-[15px] leading-6 font-bold text-ink" data-lens-name>{lens0}</p>
+      <p class="m-0 font-mono text-[11px] text-muted" data-support>{needsSupport(still.kit) ? 'On a tripod' : 'Handheld'}</p>
+    </div>
+  </div>
+
+  <DayScale sun={sun} start={start} end={end} stops={stops} at={m0} class="mt-2 h-[46px]" />
+
+  <div class="mt-readout mt-2 rounded-2xl border border-line bg-surface-2 px-3.5 pt-2.5 pb-3">
+    <p class="m-0 flex h-[22px] items-baseline justify-between gap-3 whitespace-nowrap">
+      <span class="font-mono text-[14.5px] font-semibold text-ink tabular-nums sm:text-[15.5px]" data-reading>{readingText(read0)}</span>
+      <span class="font-mono text-[11px] text-muted">at ISO 100</span>
+    </p>
+    <div class="mt-2 grid h-[36px] grid-cols-[minmax(0,1fr)_minmax(0,2.2fr)] gap-3">
+      <div class="min-w-0">
+        <p class="m-0 font-mono text-[10px] tracking-[0.08em] text-muted uppercase">Light</p>
+        <p class="mt-phase m-0 truncate text-[13px] font-semibold" data-phase-label>{PHASE_LABEL[phase0]}</p>
+      </div>
+      <div class="min-w-0">
+        <p class="m-0 font-mono text-[10px] tracking-[0.08em] text-muted uppercase" data-stop-tag>Stop {stop0.n} · now</p>
+        <p class="m-0 truncate text-[13px] font-semibold text-ink" data-stop-name>{stop0.name}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import './play';
+</script>

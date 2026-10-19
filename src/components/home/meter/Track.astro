@@ -1,0 +1,147 @@
+---
+// The "Light meter" header track: a slim camera plate across the header once the visitor
+// scrolls. The meter needle reads the light at the scroll's minute, the shutter dial and
+// the lens's aperture ring turn to the exposure, and the day scale shows where the stops
+// fall. It overlays the page, so nothing shifts; play.ts drives it from the scroll.
+import { APP_PATH } from '../links';
+import { HERO_DAY, demoFor, lightDay } from '../demoData';
+import { PHASE_LABEL, mountedLens, phaseAt } from '../daylight';
+import { hhmm, tzOffset } from '@/photorouter/lib/sun';
+import ShutterDial from './ShutterDial.astro';
+import EvScale from './EvScale.astro';
+import DayScale from './DayScale.astro';
+import { F_STOPS, altitude, exposure, readingText, sceneEv, solarFor } from './meter';
+import { dialTurn, irisScale, needleAngle, polar } from './plate';
+import './meter.css';
+
+const { sheet, sun, stops, start, end, play } = lightDay(demoFor(HERO_DAY.continent), HERO_DAY.index);
+const solar = solarFor(sheet.date, sheet.ll[1], sheet.ll[0], tzOffset(sheet.date, sheet.tz));
+
+// The track only shows after a scroll, when play.ts has set it; this is the top of the day.
+const m0 = start;
+const read0 = exposure(sceneEv(altitude(m0, solar)));
+const first = stops[0]!;
+const lens0 = mountedLens(first, m0) ?? '';
+
+const METER = { cx: 60, cy: 112, sweep: 32 };
+const hexagon = Array.from({ length: 6 }, (_, i) => polar(30, 34, 11, i * 60 + 30))
+  .map((p) => `${p.x.toFixed(2)},${p.y.toFixed(2)}`)
+  .join(' ');
+---
+
+<div class="pr-track-row absolute inset-x-0 top-0" data-track-row>
+  <div class="th-meter mt-track-plate absolute inset-0" aria-hidden="true"></div>
+  <div
+    class="th-meter relative mx-auto flex h-[92px] max-w-6xl items-center gap-3 px-4 sm:gap-4 sm:px-6"
+    data-mtrack
+    data-day={JSON.stringify(play)}
+    data-solar={JSON.stringify(solar)}
+  >
+    <svg viewBox="0 0 120 64" class="mt-plate h-[50px] w-auto shrink-0 sm:h-[62px]" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="mtt-chrome" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0" stop-color="#f4f6f8"></stop>
+          <stop offset="0.45" stop-color="#b8c0c7"></stop>
+          <stop offset="0.55" stop-color="#8a939c"></stop>
+          <stop offset="1" stop-color="#d9dee3"></stop>
+        </linearGradient>
+        <radialGradient id="mtt-face" cx="0.5" cy="1" r="1.1">
+          <stop offset="0" stop-color="#fbf5e6"></stop>
+          <stop offset="0.75" stop-color="#ece2c9"></stop>
+          <stop offset="1" stop-color="#d4c7a6"></stop>
+        </radialGradient>
+        <linearGradient id="mtt-glare" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="0" stop-color="#fff" stop-opacity="0.45"></stop>
+          <stop offset="0.5" stop-color="#fff" stop-opacity="0.06"></stop>
+          <stop offset="1" stop-color="#fff" stop-opacity="0"></stop>
+        </linearGradient>
+        <clipPath id="mtt-glass"><rect x="5" y="5" width="110" height="54" rx="5"></rect></clipPath>
+      </defs>
+      <rect x="0.5" y="0.5" width="119" height="63" rx="9" fill="#12171c"></rect>
+      <rect x="2" y="2" width="116" height="60" rx="7.5" fill="url(#mtt-chrome)"></rect>
+      <rect x="5" y="5" width="110" height="54" rx="5" fill="url(#mtt-face)"></rect>
+      <g clip-path="url(#mtt-glass)">
+        <EvScale cx={METER.cx} cy={METER.cy} r={88} sweep={METER.sweep} font={7.4} />
+        <text x="10" y="54.5" class="mt-face-ev mt-face-start">EV</text>
+        <text x="110" y="54.5" class="mt-face-ev mt-face-end">ISO 100</text>
+        <g class="mt-needle" data-needle data-sweep={METER.sweep} style={`transform-origin:${METER.cx}px ${METER.cy}px;transform:rotate(${needleAngle(sceneEv(altitude(m0, solar)), METER.sweep).toFixed(2)}deg)`}>
+          <path d={`M${METER.cx + 1.4} ${METER.cy}V${METER.cy - 92}`} class="mt-needle-shadow"></path>
+          <path d={`M${METER.cx} ${METER.cy}V${METER.cy - 92}`} class="mt-needle-line"></path>
+        </g>
+        <rect x="5" y="5" width="110" height="54" fill="url(#mtt-glare)" opacity="0.35"></rect>
+      </g>
+      <rect x="5" y="5" width="110" height="54" rx="5" fill="none" stroke="#000" stroke-opacity="0.3"></rect>
+    </svg>
+
+    <svg viewBox="0 0 60 62" class="mt-plate h-[42px] w-auto shrink-0 sm:h-[58px]" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="mtt-knurl" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="0" stop-color="#eef1f4"></stop>
+          <stop offset="0.5" stop-color="#9aa3ab"></stop>
+          <stop offset="1" stop-color="#5d666f"></stop>
+        </linearGradient>
+        <radialGradient id="mtt-cap" cx="0.36" cy="0.3" r="0.8">
+          <stop offset="0" stop-color="#ffffff"></stop>
+          <stop offset="0.45" stop-color="#d3d9de"></stop>
+          <stop offset="1" stop-color="#8b949c"></stop>
+        </radialGradient>
+      </defs>
+      <path d="M30 6.2l-2.6-4.2h5.2Z" class="mt-index"></path>
+      <ShutterDial cx={30} cy={34} r={25} turn={dialTurn(read0.k)} ids="mtt" />
+    </svg>
+
+    <svg viewBox="0 0 60 62" class="mt-plate hidden h-[58px] w-auto shrink-0 md:block" aria-hidden="true" focusable="false">
+      <defs>
+        <radialGradient id="mtt-glass" cx="0.4" cy="0.35" r="0.75">
+          <stop offset="0" stop-color="#3a4a62"></stop>
+          <stop offset="0.6" stop-color="#121a26"></stop>
+          <stop offset="1" stop-color="#05080c"></stop>
+        </radialGradient>
+      </defs>
+      <path d="M30 6.2l-2.6-4.2h5.2Z" class="mt-index"></path>
+      <circle cx="30" cy="34" r="27" class="mt-collar"></circle>
+      <circle cx="30" cy="34" r="25" fill="#171c21" stroke="#3a434c" stroke-width="0.8"></circle>
+      <g class="mt-turn" data-fring style={`transform-origin:30px 34px;transform:rotate(${-(read0.av - 4) * 36}deg)`}>
+        {
+          F_STOPS.slice(1).map((f, i) => {
+            const p = polar(30, 34, 20.5, i * 36);
+            return (
+              <text x={p.x.toFixed(2)} y={p.y.toFixed(2)} transform={`rotate(${i * 36} ${p.x.toFixed(2)} ${p.y.toFixed(2)})`} class="mt-ring-num mt-fring-num">
+                {f}
+              </text>
+            );
+          })
+        }
+      </g>
+      <circle cx="30" cy="34" r="15.5" fill="#0b0e12" stroke="#59626b" stroke-width="0.6"></circle>
+      <circle cx="30" cy="34" r="14" class="mt-blades"></circle>
+      <g class="mt-iris" data-iris style={`transform-origin:30px 34px;transform:scale(${irisScale(read0.av).toFixed(3)})`}>
+        <polygon points={hexagon} fill="url(#mtt-glass)"></polygon>
+        <polygon points={hexagon} class="mt-iris-light"></polygon>
+      </g>
+      <path d="M22 28a11 11 0 0 1 9-4.5" fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="1" stroke-linecap="round"></path>
+    </svg>
+
+    <div class="min-w-0 flex-1 md:w-[15.5rem] md:flex-none lg:w-[17.5rem]" aria-hidden="true">
+      <p class="m-0 truncate font-mono text-[10.5px] tracking-[0.08em] text-muted uppercase">
+        <span class="tabular-nums" data-clock>{hhmm(m0)}</span> · <span class="mt-phase" data-phase-label>{PHASE_LABEL[phaseAt(m0, sun)]}</span>
+      </p>
+      <p class="m-0 truncate font-mono text-[12.5px] font-semibold text-ink tabular-nums sm:text-[14px]">
+        <span data-reading>{readingText(read0)}</span>
+      </p>
+      <p class="m-0 truncate text-[12.5px] text-muted">
+        <span data-stop-tag>Next {hhmm(first.from)} · </span><span class="font-semibold text-ink" data-stop-name>{first.name}</span> · <span data-lens-name>{lens0}</span>
+      </p>
+    </div>
+
+    <DayScale sun={sun} start={start} end={end} stops={stops} at={m0} class="hidden h-[46px] min-w-0 flex-1 md:block" />
+
+    <a
+      href={APP_PATH}
+      class="rt-btn hidden h-9 shrink-0 items-center rounded-full px-3.5 text-[13px] font-semibold whitespace-nowrap no-underline lg:inline-flex"
+    >
+      Plan my trip
+    </a>
+  </div>
+  <DayScale sun={sun} start={start} end={end} stops={stops} at={m0} thin class="th-meter absolute! inset-x-0 bottom-0 h-[5px] md:hidden" />
+</div>

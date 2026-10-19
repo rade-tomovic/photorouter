@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { ArrowRight, Check, ClipboardCopy, Download, FileJson, Pause, Play, Route, Trash2, TriangleAlert, Upload } from 'lucide-react';
 import { STYLES, gearItem, tripDates } from '../lib/data';
 import { SCHEMA_PATH, planSchema, toResponse, type ImportResult } from '../lib/byoai';
-import { buildPrompt, estimateTokens } from '../lib/prompt';
+import { buildPrompt } from '../lib/prompt';
 import { clearPlan, importPlan, loadExample, useStore } from '../store';
 import { selectDay, stop, togglePlay } from '../map/player';
 import { BriefForm, DemoPicker } from './BriefForm';
@@ -47,9 +47,9 @@ export function PlanPanel() {
             <Route className="size-4" aria-hidden />
           </span>
           <div>
-            <h2 id="plan-h" className="m-0 text-[15px] leading-tight font-bold">Plan with your AI</h2>
+            <h2 id="plan-h" className="m-0 text-[15px] leading-tight font-bold">Plan your trip</h2>
             <p className="m-0 text-xs text-muted" aria-live="polite">
-              {plan ? `Route loaded · ${plan.stops} stops over ${plan.days.length} days` : 'Brief, prompt, answer, route'}
+              {plan ? `Route loaded · ${plan.stops} stops over ${plan.days.length} days` : 'Describe it, ask your AI assistant, see the route'}
             </p>
           </div>
         </div>
@@ -122,24 +122,24 @@ function PromptStep() {
   const brief = useStore((s) => s.brief);
   const cfg = useStore((s) => s.prompt);
   const prompt = useMemo(() => buildPrompt(brief, cfg), [brief, cfg]);
-  const tokens = Math.round(estimateTokens(prompt) / 100) / 10;
+  const size = Math.max(1, Math.round(prompt.length / 1000));
   const { state, copy } = useCopy();
   const cut = prompt.indexOf('## Request');
 
   return (
-    <Step n={2} title="Build the prompt and run it in your AI" id="step-prompt">
+    <Step n={2} title="Copy the prompt into your AI assistant" id="step-prompt">
       <p className="m-0 text-xs text-muted">
-        The prompt carries your brief, the trip dates and the rules, and asks your AI to pick the cities and photo spots and
-        return the plan as JSON in a fixed format. Paste it into any AI assistant, or send it through an API.
+        The prompt holds your trip, its dates and the rules, and asks the assistant to pick the cities and photo spots and to
+        reply in a format PhotoRouter can read. Paste it into a new chat in the AI assistant you use.
       </p>
       <PromptBuilder />
       <details className="group rounded-lg border border-line bg-surface">
         <summary className="flex cursor-pointer list-none items-center justify-between px-3 py-2 text-[13px] font-semibold text-ink [&::-webkit-details-marker]:hidden">
           Preview the prompt
-          <span className="font-mono text-[11px] font-normal text-muted">≈{tokens}k tokens</span>
+          <span className="font-mono text-[11px] font-normal text-muted">about {size}k characters</span>
         </summary>
         <pre className="scroll-thin m-0 max-h-72 overflow-auto border-t border-line px-3 py-2 font-mono text-[11px] leading-relaxed whitespace-pre-wrap break-words text-muted">
-          {prompt.length > 6000 && cut > 0 ? `${prompt.slice(0, cut)}## Request\n{ …${Math.round((prompt.length - cut) / 1000)}k characters of trip data and schema… }` : prompt}
+          {prompt.length > 6000 && cut > 0 ? `${prompt.slice(0, cut)}## Request\n{ …${Math.round((prompt.length - cut) / 1000)}k characters of trip data and format rules… }` : prompt}
         </pre>
       </details>
       <div className="flex flex-wrap gap-2">
@@ -153,16 +153,18 @@ function PromptStep() {
         {cfg.target === 'api' && (
           <Button onClick={() => void copy('schema', JSON.stringify(planSchema(tripDates(brief.start, brief.days)), null, 2))}>
             {state === 'schema' ? <Check className="size-3.5" aria-hidden /> : <FileJson className="size-3.5" aria-hidden />}
-            {state === 'schema' ? 'Copied' : 'Copy schema'}
+            {state === 'schema' ? 'Copied' : 'Copy reply format'}
           </Button>
         )}
       </div>
       {state?.endsWith(':blocked') && <p className="m-0 text-xs text-golden">The browser blocked the clipboard. Use Download instead.</p>}
-      <p className="m-0 text-xs text-muted">
-        Calling an API? Pass the{' '}
-        <a href={SCHEMA_PATH} target="_blank" rel="noopener" className="text-accent">response schema</a>{' '}
-        to the provider's structured-output option (a JSON Schema response format) and the answer is guaranteed to parse.
-      </p>
+      {cfg.target === 'api' && (
+        <p className="m-0 text-xs text-muted">
+          For developers: pass the{' '}
+          <a href={SCHEMA_PATH} target="_blank" rel="noopener" className="text-accent">reply format</a>{' '}
+          (a JSON Schema) to your provider's structured output option.
+        </p>
+      )}
     </Step>
   );
 }
@@ -171,15 +173,15 @@ function AnswerStep() {
   const answer = useStore((s) => s.answer);
   const result = useStore((s) => s.result);
   return (
-    <Step n={3} title="Paste the JSON answer" id="step-answer">
-      <label htmlFor="answer" className="sr-only">Your AI's answer as JSON</label>
+    <Step n={3} title="Paste the assistant's reply" id="step-answer">
+      <label htmlFor="answer" className="sr-only">The assistant's reply</label>
       <textarea
         id="answer"
         rows={8}
         spellCheck={false}
         value={answer}
         onChange={(e) => useStore.setState({ answer: e.target.value, result: null })}
-        placeholder='{ "version": "photorouter.plan/v1", "summary": "…", "days": [ … ] }'
+        placeholder="Paste the whole reply here"
         className="w-full resize-y rounded-lg border border-line bg-surface px-3 py-2 font-mono text-xs leading-relaxed text-ink outline-none placeholder:text-muted focus:border-accent"
       />
       <div className="flex flex-wrap gap-2">
@@ -191,7 +193,7 @@ function AnswerStep() {
         </Button>
       </div>
       <p className="m-0 text-xs text-muted">
-        Code fences and text around the JSON are fine. The example is the ready-made answer for the selected demo trip. If you changed the destination or dates, your brief stays as it is.
+        Paste the whole reply as it is; any text around the plan is ignored. The example is a finished plan for the selected demo trip. If you changed the destination or dates, your trip settings stay as they are.
       </p>
       {result && <ImportReport result={result} />}
     </Step>
@@ -207,10 +209,10 @@ function ImportReport({ result }: { result: ImportResult }) {
       <p className={cx('m-0 font-semibold', ok ? 'text-ink' : 'text-danger')}>
         {ok
           ? `Loaded ${result.plan!.stops} stops over ${result.plan!.days.length} days.`
-          : `Not loaded: ${result.errors.length} problem${result.errors.length > 1 ? 's' : ''} to fix. Send them back to your AI and paste its corrected answer.`}
+          : `Not loaded: ${result.errors.length} problem${result.errors.length > 1 ? 's' : ''} to fix. Send them back to the assistant and paste its corrected reply.`}
       </p>
       {ok && exampleOf && (
-        <p className="m-0 font-semibold text-ink">This is the {exampleOf} example. Your brief is unchanged; paste your AI's answer above to load your own trip.</p>
+        <p className="m-0 font-semibold text-ink">This is the {exampleOf} example. Your trip settings are unchanged; paste the assistant's reply above to load your own trip.</p>
       )}
       {ok && result.summary && <p className="m-0 text-muted">{result.summary}</p>}
       {[...result.errors.map((e) => ['e', e] as const), ...result.warnings.map((w) => ['w', w] as const)].slice(0, 12).map(([k, m]) => (
@@ -240,11 +242,11 @@ function ExportStep() {
   return (
     <section className="grid gap-2.5 rounded-xl border border-line p-3.5" aria-labelledby="step-export">
       <h3 id="step-export" className="m-0 text-sm font-bold">Take this plan elsewhere</h3>
-      <p className="m-0 text-xs text-muted">The loaded plan in the same format, to share, edit by hand or hand back to your AI for changes.</p>
+      <p className="m-0 text-xs text-muted">Keep the plan as a file, share it, or give it back to your AI assistant to change.</p>
       <div className="flex flex-wrap gap-2">
         <Button onClick={() => void copy('plan', json())}>
           {state === 'plan' ? <Check className="size-3.5" aria-hidden /> : <ClipboardCopy className="size-3.5" aria-hidden />}
-          {state === 'plan' ? 'Copied' : 'Copy plan JSON'}
+          {state === 'plan' ? 'Copied' : 'Copy the plan'}
         </Button>
         <Button onClick={() => download('photorouter-plan.json', json(), 'application/json')}>
           <Download className="size-3.5" aria-hidden /> Download

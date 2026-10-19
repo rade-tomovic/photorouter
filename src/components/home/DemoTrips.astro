@@ -1,28 +1,20 @@
 ---
 import SectionHead from './SectionHead.astro';
 import MiniRoute from './MiniRoute.astro';
-import { CONTINENT_LABEL, DEMOS, countWord, demoForZone, statsOf } from './demoData';
+import { CONTINENT_LABEL, DEMOS, countWord, statsOf } from './demoData';
 import { LIGHT_LABEL } from '@/photorouter/lib/data';
 import type { Light } from '@/photorouter/lib/types';
 
 const cards = DEMOS.map((demo, i) => ({ demo, color: `c-${i % 6}`, continent: CONTINENT_LABEL[demo.continent], stats: statsOf(demo) }));
-const zone = 'America/Sao_Paulo';
-const zoneDemo = demoForZone(zone);
-const fallback = demoForZone('UTC');
 const lights = Object.entries(LIGHT_LABEL) as [Light, string][];
 ---
 
-<section id="demos" aria-labelledby="demos-title" class="scroll-mt-4 border-b border-line bg-surface-2/40">
+<section id="demos" aria-labelledby="demos-title" class="scroll-mt-20 rt-rule bg-surface-2/40">
   <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
-    <SectionHead id="demos-title" kicker="Demo trips" title={`${countWord(DEMOS.length)} trips, one per continent`}>
+    <SectionHead id="demos-title" kicker="Example trips" title={`${countWord(DEMOS.length)} trips, one per continent`}>
       <p>
-        Each demo is a ready-made answer: a brief and the JSON plan returned for it. It goes through the same importer as a
-        pasted answer, so the map, the day sheets and playback work without running a prompt.
-      </p>
-      <p>
-        The planner opens on the demo for your part of the world, picked from your browser's time zone with no network
-        request. A time zone of {zone} opens {zoneDemo.label}; zones outside the six regions open {fallback.label}. A picker
-        switches between them.
+        Each example is a finished plan you can open, play and explore without planning anything yourself. The planner opens
+        on the one nearest to you, and you can switch between them.
       </p>
     </SectionHead>
 
@@ -46,7 +38,7 @@ const lights = Object.entries(LIGHT_LABEL) as [Light, string][];
           <li class="flex">
             <a
               href={`/app/?demo=${demo.id}`}
-              class="group flex w-full flex-col rounded-[22px] border border-line bg-surface p-4 text-ink no-underline shadow-card transition-colors hover:border-muted"
+              class="group flex w-full flex-col rt-panel rounded-[22px] p-4 text-ink no-underline transition-transform hover:-translate-y-0.5"
             >
             <MiniRoute demo={demo} color={color} />
             <p class={`${color} mt-4 mb-0 flex items-center gap-1.5 font-mono text-[10.5px] tracking-[0.08em] text-muted uppercase`}>

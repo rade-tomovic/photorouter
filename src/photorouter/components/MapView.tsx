@@ -132,7 +132,7 @@ function EmptyHint() {
           <FileJson className="size-3.5" aria-hidden /> Load the example
         </Button>
         <Button size="sm" variant="primary" onClick={() => useStore.setState({ tab: 'plan' })}>
-          <Route className="size-3.5" aria-hidden /> Plan with your AI
+          <Route className="size-3.5" aria-hidden /> Plan your trip
         </Button>
       </div>
     </div>

@@ -69,14 +69,15 @@ function NoPlan() {
   return (
     <div className="grid gap-3 p-5">
       <Kicker>No route yet</Kicker>
-      <h2 className="m-0 font-display text-3xl leading-none font-extrabold uppercase">Your AI plans the route</h2>
+      <h2 className="m-0 font-display text-3xl leading-none font-extrabold uppercase">Plan your trip to see it here</h2>
       <p className="m-0 text-sm text-muted">
         Describe where you're going, the gear you're bringing and what you like to shoot. PhotoRouter turns that into a
-        prompt. Your own AI picks the cities and photo spots and returns JSON; paste it here and the route plays on the map.
+        prompt for your AI assistant, which picks the cities and photo spots. Paste its reply back and the route plays on
+        the map.
       </p>
       <div className="flex flex-wrap gap-2">
         <Button variant="primary" onClick={() => set({ tab: 'plan' })}>
-          <Route className="size-4" aria-hidden /> Plan with your AI
+          <Route className="size-4" aria-hidden /> Plan your trip
         </Button>
         <Button onClick={() => loadExample()}>
           <FileJson className="size-4" aria-hidden /> Load the example
@@ -294,7 +295,7 @@ function SpotIndex() {
           <Toggle key={l} dot className={`lt-${l}`} on={lights.includes(l)} onClick={() => toggle('lights', l)}>{LIGHT_LABEL[l]}</Toggle>
         ))}
       </div>
-      {!SPOTS.length && <p className="m-0 text-sm text-muted">No spots yet. They come from your AI's answer.</p>}
+      {!SPOTS.length && <p className="m-0 text-sm text-muted">No spots yet. They come from your AI assistant's reply.</p>}
       {CITY_IDS.map((c) => {
         const list = SPOTS.filter((s) => s.city === c && s.lights.some((l) => lights.includes(l)))
           .sort((a, b) => (when.get(a.id) ?? 99) - (when.get(b.id) ?? 99));
@@ -390,7 +391,7 @@ function InfoView() {
         {!plan && (
           <p className="m-0 mt-1.5 text-sm text-muted">
             {custom
-              ? 'Build the prompt in the Plan panel, run it in your AI and paste its answer: the cities, spots and route appear here.'
+              ? 'Copy the prompt from the Plan panel into your AI assistant and paste its reply back: the cities, spots and route appear here.'
               : 'Its spots are on the map. Load the example to see the full route, or plan your own trip in the Plan panel.'}
           </p>
         )}
@@ -409,7 +410,7 @@ function InfoView() {
       )}
       <p className="m-0 text-xs text-muted">
         Light times are computed for each date and city in the destination's time zone ({TRIP.tz}). Spots, coordinates and travel times
-        come from the AI's answer: check them before you go. Travel lines on the map are arcs between bases, not real routes.
+        come from your AI assistant's reply: check them before you go. Travel lines on the map are arcs between bases, not real routes.
       </p>
     </div>
   );

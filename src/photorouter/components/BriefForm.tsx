@@ -83,7 +83,7 @@ export function BriefForm() {
           className={cx(field, 'resize-y py-2.5 leading-relaxed')}
           placeholder="Who you are, what you shoot, what to avoid…"
         />
-        <p className="m-0 text-xs text-muted">Your AI reads this as context. The settings below are the rules it has to follow.</p>
+        <p className="m-0 text-xs text-muted">Your AI assistant reads this as background. The settings below are the rules it has to follow.</p>
       </div>
 
       <fieldset className="m-0 grid gap-3 border-0 p-0">
@@ -130,7 +130,7 @@ export function BriefForm() {
         <Switch on={brief.avoidCrowds} onChange={(v) => setBrief({ avoidCrowds: v })} label="Avoid crowded spots" />
       </fieldset>
 
-      <PlaceList label="Must-see places" hint="Your AI plans these or explains why not." value={brief.must} onChange={(must) => setBrief({ must })} />
+      <PlaceList label="Must-see places" hint="Your AI assistant plans these or explains why not." value={brief.must} onChange={(must) => setBrief({ must })} />
       <PlaceList label="Places to skip" hint="Never planned." value={brief.avoid} onChange={(avoid) => setBrief({ avoid })} />
     </div>
   );

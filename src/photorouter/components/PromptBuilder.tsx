@@ -97,11 +97,11 @@ export function PromptBuilder() {
           <div className="grid gap-2.5">
             <Kicker>Delivery</Kicker>
             <Row
-              label="Paste into"
-              hint={cfg.target === 'api' ? 'Leaves the schema out of the prompt: send it as the structured-output format instead.' : undefined}
+              label="Where you use it"
+              hint={cfg.target === 'api' ? 'For developers: leaves the reply format out of the prompt, to send as structured output instead.' : undefined}
             >
-              <Seg label="Paste into" value={cfg.target} onChange={(v) => set({ target: v })}
-                options={[{ v: 'chat', label: 'Chat app' }, { v: 'api', label: 'API' }]} />
+              <Seg label="Where you use it" value={cfg.target} onChange={(v) => set({ target: v })}
+                options={[{ v: 'chat', label: 'Chat' }, { v: 'api', label: 'API' }]} />
             </Row>
             <Row label="Voice">
               <Seg label="Voice" value={cfg.persona} onChange={(v) => set({ persona: v })}

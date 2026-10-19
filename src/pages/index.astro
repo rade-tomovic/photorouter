@@ -7,18 +7,19 @@ import Validation from '@/components/home/Validation.astro';
 import MapPlayback from '@/components/home/MapPlayback.astro';
 import DemoTrips from '@/components/home/DemoTrips.astro';
 import Privacy from '@/components/home/Privacy.astro';
-import Developers from '@/components/home/Developers.astro';
 import Cta from '@/components/home/Cta.astro';
 import Footer from '@/components/home/Footer.astro';
 import { DEMOS, countWord } from '@/components/home/demoData';
+import FilmEdge from '@/components/home/FilmEdge.astro';
 import '@/styles/home.css';
 
-const description = `PhotoRouter builds a prompt from your destination, dates, gear and style for any AI assistant, validates the JSON plan it returns and plays the route on a 3D map. ${countWord(DEMOS.length)} demo trips, no account, no backend.`;
+const description = `Plan a photo trip anywhere: where to shoot, at what time of day and what to pack, played as a route on a 3D map. ${countWord(DEMOS.length)} example trips, free, no sign-up.`;
 ---
 
 <Base
-  title="PhotoRouter: plan a photo trip anywhere with your own AI"
+  title="PhotoRouter: plan a photo trip anywhere"
   description={description}
+  bodyClass="darkroom"
 >
   <div class="home min-h-full overflow-x-clip">
     <a
@@ -30,12 +31,13 @@ const description = `PhotoRouter builds a prompt from your destination, dates, g
     <Header />
     <main id="main" tabindex="-1" class="outline-none">
       <Hero />
+      <FilmEdge />
       <HowItWorks />
       <Validation />
       <MapPlayback />
       <DemoTrips />
       <Privacy />
-      <Developers />
+      <FilmEdge from={24} />
       <Cta />
     </main>
     <Footer />

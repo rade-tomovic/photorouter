@@ -1,0 +1,21 @@
+---
+// A strip of film stock between sections: sprocket holes and edge print with frame numbers.
+interface Props {
+  /** The first frame number printed on the edge. */
+  from?: number;
+}
+const { from = 1 } = Astro.props;
+const frames = Array.from({ length: 16 }, (_, i) => from + i);
+---
+
+<div class="rt-film" aria-hidden="true">
+  <div class="rt-film-print">
+    {
+      frames.map((n) => (
+        <span>
+          {n} ▸ {n}A&nbsp;&nbsp;&nbsp;PhotoRouter 400
+        </span>
+      ))
+    }
+  </div>
+</div>

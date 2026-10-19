@@ -1,0 +1,179 @@
+/* "Light meter" theme: a black paint rangefinder with chrome dials and a cream meter face.
+   The camera is a physical object, so its metals keep their colours in both site themes;
+   the light, the needle and the text come from the tokens. */
+.th-meter {
+  --sun-c: var(--day);
+  --mt-night: color-mix(in oklab, var(--night) 35%, #10151c);
+  --mt-eng: #d5dbe0;
+  --mt-sky: color-mix(in oklab, var(--night) 55%, #cfe6ff);
+}
+.th-meter[data-phase='golden'],
+.pr-header[data-phase='golden'] .th-meter {
+  --sun-c: var(--golden);
+  --mt-sky: color-mix(in oklab, var(--golden) 60%, #4b3550);
+}
+.th-meter[data-phase='blue'],
+.pr-header[data-phase='blue'] .th-meter {
+  --sun-c: var(--night);
+  --mt-sky: color-mix(in oklab, var(--night) 55%, #0d1530);
+}
+.th-meter[data-phase='night'],
+.pr-header[data-phase='night'] .th-meter {
+  --sun-c: var(--night);
+  --mt-sky: #0a1022;
+}
+
+.th-meter .mt-eng {
+  font-family: var(--font-mono);
+  font-size: 7.4px;
+  letter-spacing: 0.06em;
+  fill: var(--mt-eng);
+  fill-opacity: 0.78;
+  text-anchor: middle;
+  text-transform: uppercase;
+}
+.th-meter .mt-eng-wide { letter-spacing: 0.24em; }
+.th-meter .mt-collar { fill: #0a0d10; stroke: #000; stroke-opacity: 0.6; }
+.th-meter .mt-index { fill: var(--accent); }
+
+/* Shutter dial. */
+.th-meter .mt-turn { transition: transform 0.55s cubic-bezier(0.3, 0.8, 0.25, 1); }
+.th-meter .mt-dial-num {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  fill: #1b2127;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+.th-meter .mt-dial-slow { fill: #b4561c; }
+.th-meter .mt-dial-ring { stroke: #000; stroke-opacity: 0.18; }
+.th-meter .mt-dial-hub { stroke: #6f7882; stroke-width: 0.5; }
+.th-meter .mt-dial-tick { stroke: #2a3138; stroke-width: 1.2; stroke-linecap: round; }
+
+/* Meter face: zones by light, ticks and numerals, a warm needle. */
+.th-meter .mt-zone-night { stroke: var(--mt-night); }
+.th-meter .mt-zone-blue { stroke: var(--night); }
+.th-meter .mt-zone-golden { stroke: var(--golden); }
+.th-meter .mt-zone-day { stroke: var(--day); }
+.th-meter .mt-tick { stroke: #2a2620; }
+.th-meter .mt-scale-num {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  fill: #2a2620;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+.th-meter .mt-face-ev {
+  font-family: var(--font-mono);
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  fill: #2a2620;
+  fill-opacity: 0.7;
+  text-anchor: middle;
+}
+.th-meter .mt-face-icon { fill: none; stroke: #2a2620; stroke-opacity: 0.6; stroke-width: 0.8; stroke-linecap: round; }
+.th-meter .mt-needle { transition: transform 0.2s linear; }
+.th-meter .mt-needle-line { stroke: #d2551b; stroke-width: 1.5; stroke-linecap: round; }
+.th-meter .mt-needle-shadow { stroke: #000; stroke-opacity: 0.2; stroke-width: 1.6; stroke-linecap: round; }
+.th-meter .mt-screw circle { fill: url(#mth-cap); stroke: #000; stroke-opacity: 0.4; stroke-width: 0.5; }
+.th-meter .mt-screw path { stroke: #4a525b; stroke-width: 0.7; }
+
+/* Sun and moon window. */
+.th-meter .mt-sky { fill: var(--mt-sky); transition: fill 0.8s; }
+.th-meter .mt-stars circle { fill: #fff; }
+.th-meter .mt-stars,
+.th-meter .mt-moon { opacity: 0; transition: opacity 0.8s; }
+.th-meter[data-phase='night'] .mt-stars { opacity: 0.85; }
+.th-meter[data-phase='night'] .mt-moon { opacity: 1; }
+.th-meter[data-phase='blue'] .mt-moon { opacity: 0.55; }
+.th-meter .mt-moon-dark { fill: #000; fill-opacity: 0.3; }
+.th-meter .mt-moon-lit { fill: #f1ecdc; }
+.th-meter .mt-sun-disc { fill: color-mix(in oklab, var(--sun-c) 70%, #fff); transition: fill 0.8s; }
+.th-meter .mt-sun-glow { fill: var(--sun-c); opacity: 0.3; transition: fill 0.8s; }
+.th-meter .mt-ground { fill: #07090c; }
+.th-meter .mt-river { stroke: var(--sun-c); stroke-opacity: 0.35; stroke-width: 0.8; transition: stroke 0.8s; }
+
+/* Lenses: one mounted at a time, retracting into the mount and coming back on a change. */
+.th-meter .mt-band-aperture { fill: #14181d; }
+.th-meter .mt-band-ribs { fill: url(#mth-ribs); }
+.th-meter .mt-band-fine { fill: url(#mth-fine); }
+.th-meter .mt-band-barrel { fill: #1e242a; }
+.th-meter .mt-band-chrome { fill: url(#mth-chrome); }
+.th-meter .mt-band-front { fill: #191e23; }
+.th-meter .mt-band-hood { fill: #111418; }
+.th-meter .mt-grip { stroke: #59626b; stroke-width: 3.2; stroke-dasharray: 1 2; }
+.th-meter .mt-ring-num {
+  font-family: var(--font-mono);
+  font-size: 7.6px;
+  font-weight: 700;
+  fill: #e7ebee;
+  text-anchor: middle;
+}
+.th-meter .mt-shift { transition: transform 0.55s cubic-bezier(0.3, 0.8, 0.25, 1); }
+.th-meter .mt-lens-name {
+  font-family: var(--font-mono);
+  font-size: 6.6px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  fill: var(--mt-eng);
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+.th-meter .mt-lens {
+  opacity: 0;
+  transform: translateY(-16px);
+  transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.3, 0.7, 0.2, 1);
+}
+.th-meter .mt-lenses[data-lens='wide'] .mt-lens[data-kind='wide'],
+.th-meter .mt-lenses[data-lens='standard'] .mt-lens[data-kind='standard'],
+.th-meter .mt-lenses[data-lens='tele'] .mt-lens[data-kind='tele'] {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.2s;
+}
+
+/* Film advance: the lever swings out and back when a stop starts. */
+.th-meter .mt-lever { transform-origin: 426px 64px; }
+.th-meter .mt-release { fill: #20262c; transition: fill 0.2s; }
+.th-meter[data-wind='a'] .mt-lever { animation: mt-wind-a 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+.th-meter[data-wind='b'] .mt-lever { animation: mt-wind-b 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+.th-meter[data-wind] .mt-release { fill: var(--accent); }
+@keyframes mt-wind-a { 45% { transform: rotate(72deg); } }
+@keyframes mt-wind-b { 45% { transform: rotate(72deg); } }
+
+/* Day scale and readout. */
+.th-meter .mt-band { box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.2); }
+.th-meter .mt-hour { background: var(--muted); opacity: 0.6; }
+.th-meter .mt-win { background: var(--c); opacity: 0.35; }
+.th-meter .mt-notch {
+  background: var(--surface-2);
+  color: var(--c);
+  box-shadow: inset 0 0 0 1.5px var(--c);
+  transition: background 0.3s, color 0.3s;
+}
+.th-meter .mt-notch[data-lit] { background: var(--c); color: var(--surface); }
+.th-meter .mt-pointer { background: var(--accent); box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 25%, transparent); }
+.th-meter .mt-phase { color: var(--sun-c); transition: color 0.8s; }
+
+/* Header track: a slim plate across the header, the same parts at a smaller size. */
+.th-meter.mt-track-plate {
+  background:
+    linear-gradient(to bottom, rgb(255 255 255 / 0.06), transparent 30%, transparent 70%, rgb(0 0 0 / 0.18)),
+    radial-gradient(circle at 30% 40%, rgb(255 255 255 / 0.035) 0.8px, transparent 1.2px) 0 0 / 5px 5px;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
+}
+.th-meter .mt-fring-num { font-size: 4.6px; dominant-baseline: central; }
+.th-meter .mt-blades { fill: #20262c; stroke: #0b0e11; stroke-width: 0.6; }
+.th-meter .mt-iris { transition: transform 0.55s cubic-bezier(0.3, 0.8, 0.25, 1); }
+.th-meter .mt-iris-light { fill: var(--sun-c); fill-opacity: 0.22; transition: fill 0.8s; }
+.th-meter .mt-tick-stop { background: var(--c); box-shadow: 0 0 0 1px var(--surface); }
+.th-meter .mt-leader { fill: none; stroke: var(--muted); stroke-opacity: 0.55; stroke-width: 0.8; stroke-dasharray: 2 2; }
+.th-meter .mt-leader-dot { fill: var(--muted); }
+.th-meter .mt-face-start { text-anchor: start; font-size: 5.6px; }
+.th-meter .mt-face-end { text-anchor: end; font-size: 5.6px; letter-spacing: 0.04em; }
+/* Hour labels beside sunrise and sunset need the room of a wide scale. */
+.th-meter .mt-scale { container-type: inline-size; }
+@container (max-width: 400px) {
+  .th-meter .mt-wide-only { display: none; }
+}

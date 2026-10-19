@@ -100,3 +100,44 @@
 @keyframes pr-fade { to { opacity: 1; } }
 @keyframes pr-spin { to { transform: rotate(360deg); } }
 @keyframes pr-blink { 50% { opacity: 0; } }
+
+/* The header: links at the top of the page, the day track once the visitor scrolls.
+   --sun-c follows the light at the scroll minute (data-phase, set by dayclock.ts). */
+.pr-header { --sun-c: var(--day); }
+.pr-header[data-phase='golden'] { --sun-c: var(--golden); }
+.pr-header[data-phase='blue'],
+.pr-header[data-phase='night'] { --sun-c: var(--night); }
+.pr-header {
+  background: color-mix(in oklab, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px);
+  transition: border-color 0.8s;
+}
+.pr-header[data-tracking] {
+  background: transparent;
+  border-color: transparent;
+  backdrop-filter: none;
+}
+.pr-header .pr-track-row {
+  background: color-mix(in oklab, var(--bg) 90%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid color-mix(in oklab, var(--sun-c) 40%, var(--line));
+  transition: border-color 0.8s;
+}
+.pr-header .pr-nav-row,
+.pr-header .pr-track-row {
+  transition: opacity 0.3s ease, translate 0.3s ease, visibility 0s 0s;
+}
+.pr-header .pr-track-row,
+.pr-header[data-tracking] .pr-nav-row {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, translate 0.3s ease, visibility 0s 0.3s;
+}
+.pr-header .pr-track-row { translate: 0 6px; }
+.pr-header[data-tracking] .pr-nav-row { translate: 0 -6px; }
+.pr-header[data-tracking] .pr-track-row {
+  opacity: 1;
+  visibility: visible;
+  translate: 0 0;
+  transition: opacity 0.3s ease, translate 0.3s ease, visibility 0s 0s;
+}
