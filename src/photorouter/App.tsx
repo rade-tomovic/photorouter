@@ -85,7 +85,7 @@ function TopBar() {
         <h1 className="m-0 font-display text-[22px] leading-none font-extrabold tracking-wide uppercase">PhotoRouter</h1>
       </a>
       <span className="rt-plate hidden font-mono text-[10px] tracking-[0.14em] uppercase sm:inline-flex">
-        Bring your own AI · no backend
+        Photo trip planner
       </span>
       <div className="ml-auto flex items-center gap-1.5">
         <button

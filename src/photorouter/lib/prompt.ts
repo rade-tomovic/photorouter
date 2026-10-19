@@ -167,5 +167,3 @@ export function buildPrompt(brief: Brief, cfg: PromptConfig = DEFAULT_PROMPT): s
     '',
   ].join('\n');
 }
-
-export const estimateTokens = (text: string) => Math.round(text.length / 3.6);

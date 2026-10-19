@@ -33,7 +33,7 @@ export function Timeline() {
   const cols = { gridTemplateColumns: `repeat(${Math.max(1, TRIP.days.length)}, minmax(0, 1fr))` };
 
   const status = !plan
-    ? 'No route yet: load your AI\'s answer or the example'
+    ? 'No route yet: paste your AI assistant\'s reply or load the example'
     : day == null
       ? `${TRIP.days.length} days · pick a day or press play`
       : `Day ${day + 1} of ${TRIP.days.length} · ${dayLabel(TRIP.days[day]!.date)}${playing ? ' · playing' : ''}`;
