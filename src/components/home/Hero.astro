@@ -1,6 +1,6 @@
 ---
 import RouteMap from './RouteMap.astro';
-import DaySheet from './DaySheet.astro';
+import LightDay from './LightDay.astro';
 import { APP_PATH } from './links';
 import { DEMOS, countWord, daySheet, demoFor } from './demoData';
 
@@ -67,9 +67,10 @@ const sheet = daySheet(demo, day);
       </div>
 
       <figure class="m-0 min-w-0">
-        <DaySheet demo={demo} index={day} />
+        <LightDay demo={demo} index={day} />
         <figcaption class="mt-3 px-1 text-[13px] text-muted">
-          Day {sheet.number} of the {demo.label} example, with local light times for {sheet.longDate}.
+          A day of the {demo.label} example: the sun's path over {sheet.city} on {sheet.longDate}, with the golden light
+          shaded and each stop placed at the time it is planned.
         </figcaption>
       </figure>
     </div>

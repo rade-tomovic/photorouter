@@ -82,9 +82,11 @@ export function daySheet(demo: Demo, index: number) {
     number: day.index + 1,
     total: plan.days.length,
     label: dayLabel(day.date),
+    date: day.date,
     longDate: `${dayNum(day.date)} ${monthName(day.date)} ${day.date.slice(0, 4)}`,
     title: day.title,
     city: city.name,
+    ll: city.ll,
     cityColor: city.color % 6,
     tz: plan.trip.tz,
     stops: day.slots.map((slot) => {
