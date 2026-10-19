@@ -3,6 +3,7 @@
 // time. Without JavaScript it is a still drawing; dayplay.ts plays the sun across it.
 import { lightDay, type Demo } from './demoData';
 import Camera from './Camera.astro';
+import DayRail from './DayRail.astro';
 import { elevation, lensKind, needsSupport, phases } from './daylight';
 import { hhmm } from '@/photorouter/lib/sun';
 
@@ -20,6 +21,8 @@ const arc = (a: number, b: number) =>
   Array.from({ length: 41 }, (_, i) => a + ((b - a) * i) / 40)
     .map((m, i) => `${i ? 'L' : 'M'}${x(m).toFixed(1)} ${y(m).toFixed(1)}`)
     .join(' ');
+const inset = `${((14 / geo.W) * 100).toFixed(3)}%`;
+const at = (m: number) => `left:${((x(m) / geo.W) * 100).toFixed(2)}%`;
 const glows = phases(sun, start, end).filter((p) => p.phase === 'golden' || p.phase === 'blue');
 const first = stops[0]!;
 const firstLens = first.kit.find((k) => lensKind(k));
@@ -35,7 +38,7 @@ const firstLens = first.kit.find((k) => lensKind(k));
     </span>
   </div>
 
-  <svg viewBox={`0 0 ${geo.W} 150`} class="mt-3 block h-auto w-full" data-geo={JSON.stringify(geo)} aria-hidden="true" focusable="false">
+  <svg viewBox={`0 0 ${geo.W} ${geo.horizon}`} class="mt-3 block h-auto w-full overflow-visible" data-geo={JSON.stringify(geo)} aria-hidden="true" focusable="false">
     <defs>
       <linearGradient id="ld-golden" x1="0" x2="0" y1="0" y2="1">
         <stop offset="0" stop-color="var(--golden)" stop-opacity="0"></stop>
@@ -56,7 +59,6 @@ const firstLens = first.kit.find((k) => lensKind(k));
         <rect x={x(g.from)} y={geo.peak} width={x(g.to) - x(g.from)} height={geo.horizon - geo.peak} fill={`url(#ld-${g.phase})`} />
       ))
     }
-    <line x1="8" x2={geo.W - 8} y1={geo.horizon} y2={geo.horizon} stroke="var(--line)" stroke-width="1.5"></line>
     <path d={arc(start, sun.sunrise)} fill="none" stroke="var(--line)" stroke-width="1.5" stroke-dasharray="3 4"></path>
     <path d={arc(sun.sunset, end)} fill="none" stroke="var(--line)" stroke-width="1.5" stroke-dasharray="3 4"></path>
     <path d={arc(sun.sunrise, sun.sunset)} fill="none" stroke="var(--muted)" stroke-width="1.5" opacity="0.6"></path>
@@ -74,9 +76,14 @@ const firstLens = first.kit.find((k) => lensKind(k));
       <circle r="18" fill="url(#ld-sun)"></circle>
       <circle r="6" fill="var(--sun-c)"></circle>
     </g>
-    <text x={x(sun.sunrise)} y={geo.horizon + 18} text-anchor="middle" class="font-mono" font-size="9.5" fill="var(--muted)">↑ {hhmm(sun.sunrise)}</text>
-    <text x={x(sun.sunset)} y={geo.horizon + 18} text-anchor="middle" class="font-mono" font-size="9.5" fill="var(--muted)">↓ {hhmm(sun.sunset)}</text>
   </svg>
+  <div class="relative -mt-1" aria-hidden="true">
+    <DayRail sun={sun} start={start} end={end} class="h-2" style={`margin:0 ${inset}`} />
+    <div class="relative h-5 font-mono text-[10.5px] text-muted">
+      <span class="absolute top-1.5 -translate-x-1/2 whitespace-nowrap" style={at(sun.sunrise)}>↑ {hhmm(sun.sunrise)}</span>
+      <span class="absolute top-1.5 -translate-x-1/2 whitespace-nowrap" style={at(sun.sunset)}>↓ {hhmm(sun.sunset)}</span>
+    </div>
+  </div>
 
   <ol class="m-0 mt-2 flex list-none flex-col gap-1.5 p-0">
     {

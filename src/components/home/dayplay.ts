@@ -40,12 +40,14 @@ function playCard(card: HTMLElement) {
   const stops = [...svg.querySelectorAll<SVGElement>('[data-stop]')];
   const rows = [...card.querySelectorAll<HTMLElement>('[data-row]')];
   const camera = card.querySelector('[data-camera]');
+  const dims = [...card.querySelectorAll<HTMLElement>('[data-rail-dim]')];
   const bagTitle = card.querySelector('[data-bag-title]');
   const bagLens = card.querySelector('[data-bag-lens]');
   const bagKit = card.querySelector('[data-bag-kit]');
 
   const render = (m: number) => {
     card.dataset.phase = phaseAt(m, day.sun);
+    for (const dim of dims) dim.style.left = `${((m - day.start) / (day.end - day.start)) * 100}%`;
     const below = Math.min(0, elevation(m, day.sun));
     sun?.setAttribute('transform', `translate(${x(m).toFixed(1)} ${Math.min(y(m), geo.horizon + 6).toFixed(1)})`);
     sun?.setAttribute('opacity', String(Math.max(0, 1 + below * 8)));
@@ -111,6 +113,7 @@ function followScroll(header: HTMLElement) {
   const day = dayOf(track);
   const suns = [...header.querySelectorAll<HTMLElement>('[data-track-sun]')];
   const ticks = [...track.querySelectorAll<HTMLElement>('[data-tick]')];
+  const dims = [...header.querySelectorAll<HTMLElement>('[data-rail-dim]')];
   const camera = track.querySelector('[data-camera]');
   const time = header.querySelector('[data-time]');
   const phaseLabel = header.querySelector('[data-phase-label]');
@@ -132,6 +135,7 @@ function followScroll(header: HTMLElement) {
     const m = day.start + (day.end - day.start) * p;
     const phase = phaseAt(m, day.sun);
     header.dataset.phase = phase;
+    for (const dim of dims) dim.style.left = `${p * 100}%`;
     for (const sun of suns) {
       sun.style.left = `${p * 100}%`;
       if (sun.hasAttribute('data-arc')) sun.style.top = `${HORIZON - 40 * elevation(m, day.sun)}px`;
