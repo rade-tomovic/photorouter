@@ -9,6 +9,8 @@
 :root[data-theme='dark'] .maplibregl-canvas { filter: sepia(0.15); }
 .maplibregl-ctrl-attrib { font-size: 11px; background: color-mix(in oklab, var(--surface) 80%, transparent) !important; color: var(--muted); }
 .maplibregl-ctrl-attrib, .maplibregl-ctrl-attrib.maplibregl-compact, .maplibregl-ctrl-attrib a { color: var(--muted); }
+/* A panel over the bottom of the map (the phone sheet) sets --map-inset; the credits sit above it. */
+.maplibregl-ctrl-bottom-left, .maplibregl-ctrl-bottom-right { bottom: var(--map-inset, 0px); }
 .maplibregl-ctrl-attrib-button { filter: var(--attrib-filter, none); }
 :root[data-theme='dark'] { --attrib-filter: invert(1); }
 

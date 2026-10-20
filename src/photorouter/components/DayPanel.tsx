@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, type KeyboardEvent, type RefObject } from 'react';
-import { BedDouble, Bus, Car, FileJson, Footprints, MapPinned, Plane, Route, Ship, Sparkles, Sunrise, Sunset, TrainFront, TriangleAlert } from 'lucide-react';
+import { Bus, Car, FileJson, Footprints, MapPinned, Plane, Route, Ship, Sparkles, Sunrise, Sunset, TrainFront, TriangleAlert } from 'lucide-react';
 import { CITY_IDS, KIND_LABEL, LIGHT_LABEL, SPOT, SPOTS, TRIP, cityStyle, dayLabel, dayNum, gearItem, monthName, weekday } from '../lib/data';
 import { hhmm, sunDay, tzOffset } from '../lib/sun';
 import type { Light, Plan } from '../lib/types';
@@ -215,10 +215,11 @@ function Overview({ plan }: { plan: Plan }) {
         <p className="m-0 mt-1 font-mono text-xs text-muted">{plan.days.length} days, {stages.length} {stages.length === 1 ? 'city' : 'cities'}</p>
       </div>
       {TRIP.summary && <p className="m-0 text-[13.5px]">{TRIP.summary}</p>}
-      <dl className="m-0 grid grid-cols-3 gap-2">
+      <dl className={cx('m-0 grid gap-2', plan.spots === plan.stops ? 'grid-cols-2' : 'grid-cols-3')}>
         {[
           [plan.stops, 'stops'],
-          [plan.spots, 'spots'],
+          // Spots differ from stops only when a spot is visited twice.
+          ...(plan.spots === plan.stops ? [] : [[plan.spots, 'spots']]),
           [Math.round(plan.walkKm), 'km on foot'],
         ].map(([v, l]) => (
           <div key={l} className="rounded-xl bg-surface-2 p-3">
@@ -242,8 +243,7 @@ function Overview({ plan }: { plan: Plan }) {
         ))}
       </ul>
       <p className="m-0 text-[13.5px] text-muted">
-        Press <b className="text-ink">Play trip</b> to fly through it day by day: the camera rides each travel leg, and a walker
-        follows your route between stops. Or tap a date. Tap any dot for the spot, its light and its local name to show a driver.
+        Press <b className="text-ink">Play trip</b> to fly through it day by day, or tap a date. Tap any dot on the map for the spot.
       </p>
       {trips.length > 0 && (
         <div className="grid gap-1.5">
@@ -262,9 +262,12 @@ function Overview({ plan }: { plan: Plan }) {
         </div>
       )}
       {plan.skipped.length > 0 && (
-        <div className="grid gap-1.5">
-          <Kicker>Considered, left out</Kicker>
-          <ul className="m-0 grid list-none gap-1 p-0 text-[13px]">
+        <details className="group">
+          <summary className="cursor-pointer list-none font-mono text-[11px] tracking-[0.08em] text-muted uppercase hover:text-ink [&::-webkit-details-marker]:hidden">
+            <span aria-hidden className="mr-1.5 inline-block transition-transform group-open:rotate-90">›</span>
+            Considered, left out ({plan.skipped.length})
+          </summary>
+          <ul className="m-0 mt-1.5 grid list-none gap-1 p-0 text-[13px]">
             {plan.skipped.map((s) => (
               <li key={s.name}>
                 <b>{s.name}</b>
@@ -272,9 +275,8 @@ function Overview({ plan }: { plan: Plan }) {
               </li>
             ))}
           </ul>
-        </div>
+        </details>
       )}
-      <p className="m-0 flex items-center gap-1.5 font-mono text-[11.5px] text-muted"><BedDouble className="size-3.5" aria-hidden /> Bases: {stages.map(({ c }) => TRIP.cities[c]!.baseLabel).join(', ')}</p>
     </div>
   );
 }

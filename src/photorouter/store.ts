@@ -11,6 +11,16 @@ export type Basemap = 'detailed' | 'clean';
 export type Tab = 'day' | 'plan' | 'spots' | 'kit' | 'info';
 /** The plan panel's own column on wide screens: open beside the map, or folded to a slim rail. */
 export type PlanView = 'docked' | 'collapsed';
+/**
+ * How the app is arranged below the tablet breakpoint, offered side by side for comparison:
+ * the map above a scrolling page, the map under a bottom sheet, or a switch between map and details.
+ */
+export type MobileLayout = 'stack' | 'sheet' | 'switch';
+export const MOBILE_LAYOUTS: { id: MobileLayout; label: string }[] = [
+  { id: 'sheet', label: 'Sheet' },
+  { id: 'switch', label: 'Switch' },
+  { id: 'stack', label: 'Stack' },
+];
 
 interface State {
   brief: Brief;
@@ -44,6 +54,7 @@ interface State {
   lights: Light[];
   tab: Tab;
   planView: PlanView;
+  mobileLayout: MobileLayout;
   /** The full screen, step-by-step planner: whether it is open, the step shown and the furthest step reached. */
   stepper: { open: boolean; step: number; reached: number };
 
@@ -92,6 +103,20 @@ function initialPlanView(): PlanView {
     if (localStorage.getItem('photorouter:plan-view') === 'collapsed') return 'collapsed';
   } catch { /* storage blocked: start docked */ }
   return 'docked';
+}
+
+/** A layout named in the URL (`/app/?layout=switch`) wins over the one saved in this browser. */
+function initialMobileLayout(): MobileLayout {
+  const ok = (v: string | null): v is MobileLayout => MOBILE_LAYOUTS.some((l) => l.id === v);
+  if (typeof location !== 'undefined') {
+    const asked = new URLSearchParams(location.search).get('layout');
+    if (ok(asked)) return asked;
+  }
+  try {
+    const saved = localStorage.getItem('photorouter:mobile-layout');
+    if (ok(saved)) return saved;
+  } catch { /* storage blocked: use the default */ }
+  return 'sheet';
 }
 
 const EMPTY_BRIEF: Brief = {
@@ -198,6 +223,7 @@ export const useStore = create<State>((set) => ({
   lights: ['dawn', 'day', 'golden', 'night'],
   tab: 'plan',
   planView: initialPlanView(),
+  mobileLayout: initialMobileLayout(),
   stepper: { open: false, step: 0, reached: 0 },
   answer: saved?.answer ?? '',
   result: null,

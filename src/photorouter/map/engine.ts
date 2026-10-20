@@ -76,6 +76,11 @@ export class TripMap {
       attributionControl: { compact: true },
       dragRotate: true,
     });
+    // On a phone the open credits cover the bottom of the map. MapLibre folds them into
+    // the info button on the first drag; fold them a moment after load as well.
+    this.map.once('load', () => setTimeout(() => {
+      if (container.offsetWidth <= 640) container.querySelector('.maplibregl-ctrl-attrib.maplibregl-compact')?.classList.remove('maplibregl-compact-show');
+    }, 3000));
     this.map.on('dragstart', (e) => { if (e.originalEvent) this.on.onUserMove(); });
     this.map.on('wheel', () => this.on.onUserMove());
     this.map.on('error', (e) => {
@@ -331,10 +336,17 @@ export class TripMap {
 
   // ---------- camera ----------
 
+  /** How much of the bottom of the map a panel covers, from the `--map-inset` the layout sets around it. */
+  private inset(): number {
+    return parseFloat(getComputedStyle(this.map.getContainer()).getPropertyValue('--map-inset')) || 0;
+  }
+
   private padding(): PaddingOptions {
     const r = this.map.getContainer().getBoundingClientRect();
     const narrow = r.width < 560;
-    return { top: narrow ? 64 : 80, bottom: narrow ? 56 : 90, left: narrow ? 32 : 56, right: narrow ? 48 : 64 };
+    // A covering panel can leave little map; keep the padding inside what is left.
+    const inset = Math.min(this.inset(), r.height * 0.7);
+    return { top: narrow ? 64 : 80, bottom: inset ? inset + 24 : narrow ? 56 : 90, left: narrow ? 32 : 56, right: narrow ? 48 : 64 };
   }
 
   private allBounds(): [LngLat, LngLat] {
@@ -387,13 +399,14 @@ export class TripMap {
   focusSpot(id: string, duration = 800) {
     const s = SPOT[id]!;
     const r = this.map.getContainer().getBoundingClientRect();
-    // Sit the spot above the card, which covers the bottom of the map. Offset
-    // rather than padding: padding on a camera call sticks to the map.
-    const card = Math.min(r.height * 0.45, 250);
+    // Sit the spot above the card, which covers the bottom of the map, and above any
+    // panel under the card. Offset rather than padding: padding on a camera call sticks to the map.
+    const inset = Math.min(this.inset(), r.height * 0.7);
+    const card = Math.min((r.height - inset) * 0.45, 250);
     return this.camera('ease', {
       center: s.ll,
       zoom: Math.max(this.map.getZoom(), 14.2),
-      offset: [0, -card / 2],
+      offset: [0, -(card + inset) / 2],
       duration,
     });
   }
