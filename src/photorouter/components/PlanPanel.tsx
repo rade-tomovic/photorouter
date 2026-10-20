@@ -1,5 +1,5 @@
 import { useId } from 'react';
-import { Footprints, Maximize2, Route, Trash2 } from 'lucide-react';
+import { Footprints, Maximize2, PanelLeftClose, Route, Trash2 } from 'lucide-react';
 import { clearPlan, openStepper, useStore } from '../store';
 import { stop } from '../map/player';
 import { BriefChips, BriefForm, DemoPicker } from './BriefForm';
@@ -13,7 +13,7 @@ import { IconButton } from './ui';
  * turned into the route on the map. The step-by-step planner shows the same
  * sections full screen, one step at a time.
  */
-export function PlanPanel() {
+export function PlanPanel({ onCollapse }: { onCollapse?: () => void }) {
   const plan = useStore((s) => s.plan);
   return (
     <section aria-labelledby="plan-h" className="flex h-full min-h-0 flex-col">
@@ -35,6 +35,11 @@ export function PlanPanel() {
         <IconButton label="Plan step by step, full screen" onClick={() => openStepper()} className="size-8">
           <Maximize2 aria-hidden />
         </IconButton>
+        {onCollapse && (
+          <IconButton id="plan-collapse" label="Hide the plan panel" onClick={onCollapse} className="size-8">
+            <PanelLeftClose aria-hidden />
+          </IconButton>
+        )}
       </header>
       {/* relative: keeps absolutely positioned sr-only labels inside the scroll area, so they cannot stretch the page. */}
       <div className="scroll-thin relative min-h-0 flex-1 overflow-y-auto">

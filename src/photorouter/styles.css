@@ -170,3 +170,34 @@ html.pr-modal-open { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .pr-stepper[open], .pr-step-next, .pr-step-prev { animation: none; }
 }
+
+/* ---------- the folded plan panel ---------- */
+
+/* A brushed chrome edge down the rail, and a short chrome rule between its controls. */
+.pr-rail { border-right: 2px solid transparent; border-image: linear-gradient(180deg, transparent, #5f666d 8%, #e4e7ea 28%, #7f868d 50%, #e4e7ea 72%, #5f666d 92%, transparent) 1; }
+.pr-rail-rule { width: 22px; height: 2px; background: var(--chrome-rule); }
+.pr-rail-spine { writing-mode: vertical-rl; rotate: 180deg; }
+.pr-rail-spine:hover > span:first-child { color: #ffd4ad; }
+
+/* A label beside a rail control, on hover and on keyboard focus. */
+.pr-tip { position: relative; }
+.pr-tip::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 50%;
+  translate: -4px -50%;
+  z-index: 30;
+  padding: 5px 9px;
+  border-radius: 6px;
+  background: #110e0c;
+  box-shadow: 0 0 0 1px #4a4139, 0 6px 18px rgb(0 0 0 / 0.35);
+  color: #efe7d8;
+  font: 600 12px/1.2 var(--font-sans);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s, translate 0.15s;
+}
+.pr-tip:hover::after, .pr-tip:focus-visible::after { opacity: 1; translate: 0 -50%; }
+@media (prefers-reduced-motion: reduce) { .pr-tip::after { transition: none; } }

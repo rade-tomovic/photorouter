@@ -9,6 +9,8 @@ import type { Brief, Light, Plan, Trip } from './lib/types';
 export type Theme = 'light' | 'dark';
 export type Basemap = 'detailed' | 'clean';
 export type Tab = 'day' | 'plan' | 'spots' | 'kit' | 'info';
+/** The plan panel's own column on wide screens: open beside the map, or folded to a slim rail. */
+export type PlanView = 'docked' | 'collapsed';
 
 interface State {
   brief: Brief;
@@ -41,6 +43,7 @@ interface State {
   terrain: boolean;
   lights: Light[];
   tab: Tab;
+  planView: PlanView;
   /** The full screen, step-by-step planner: whether it is open, the step shown and the furthest step reached. */
   stepper: { open: boolean; step: number; reached: number };
 
@@ -82,6 +85,13 @@ function initialTheme(): Theme {
     if (saved === 'light' || saved === 'dark') return saved;
   } catch { /* storage blocked: fall back to the system preference */ }
   return typeof matchMedia !== 'undefined' && matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+}
+
+function initialPlanView(): PlanView {
+  try {
+    if (localStorage.getItem('photorouter:plan-view') === 'collapsed') return 'collapsed';
+  } catch { /* storage blocked: start docked */ }
+  return 'docked';
 }
 
 const EMPTY_BRIEF: Brief = {
@@ -187,6 +197,7 @@ export const useStore = create<State>((set) => ({
   terrain: false,
   lights: ['dawn', 'day', 'golden', 'night'],
   tab: 'plan',
+  planView: initialPlanView(),
   stepper: { open: false, step: 0, reached: 0 },
   answer: saved?.answer ?? '',
   result: null,

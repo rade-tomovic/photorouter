@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Mountain, Moon, Sun } from 'lucide-react';
 import { useStore } from './store';
-import { PlanPanel } from './components/PlanPanel';
+import { PlanColumn } from './components/PlanColumn';
 import { PlanStepper } from './components/PlanStepper';
 import { SidePanel } from './components/DayPanel';
 import { MapView } from './components/MapView';
@@ -21,6 +21,7 @@ function useMedia(query: string) {
 
 export default function App() {
   const theme = useStore((s) => s.theme);
+  const planView = useStore((s) => s.planView);
   const wide = useMedia('(min-width: 1280px)');
   const mid = useMedia('(min-width: 1024px)');
 
@@ -29,6 +30,10 @@ export default function App() {
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#0b0908' : '#ece4d2');
     try { localStorage.setItem('photorouter:theme', theme); } catch { /* private mode */ }
   }, [theme]);
+
+  useEffect(() => {
+    try { localStorage.setItem('photorouter:plan-view', planView); } catch { /* private mode */ }
+  }, [planView]);
 
   // The plan panel gets its own column when there's room; otherwise it is a tab.
   useEffect(() => {
@@ -53,14 +58,10 @@ export default function App() {
           'grid min-h-0 flex-1',
           // On wide screens the page is exactly one viewport tall: the single row is capped so each panel scrolls inside itself.
           mid && 'grid-rows-[minmax(0,1fr)] overflow-hidden',
-          wide ? 'grid-cols-[360px_minmax(0,1fr)_400px]' : mid ? 'grid-cols-[minmax(0,1fr)_390px]' : 'grid-cols-1',
+          wide ? 'grid-cols-[auto_minmax(0,1fr)_400px]' : mid ? 'grid-cols-[minmax(0,1fr)_390px]' : 'grid-cols-1',
         )}
       >
-        {wide && (
-          <aside className="min-h-0 border-r border-line bg-surface">
-            <PlanPanel />
-          </aside>
-        )}
+        {wide && <PlanColumn />}
         <div className="flex min-h-0 flex-col">
           <div className={cx('relative min-h-0', mid ? 'flex-1' : 'h-[58svh] min-h-[360px]')}>
             <MapView />
