@@ -12,10 +12,10 @@
   --bg: #ece4d2; --surface: #fbf6ea; --surface-2: #f3ecdc; --ink: #241f19; --muted: #6a5f50; --line: #d8cbb0;
   --accent: #b4561c; --accent-ink: #ffffff; --accent-soft: color-mix(in oklab, var(--accent) 14%, var(--surface));
   --route: #8a7f72;
-  /* One colour per city, assigned in visiting order. */
-  --city-0: #c23b2c; --city-1: #0d7c83; --city-2: #b12e70; --city-3: #5b55c8; --city-4: #2f7d32; --city-5: #9a6a00;
+  /* One colour per city, assigned in visiting order. City and light colours are kept softer than the accent, so the accent stays the strongest colour on screen. */
+  --city-0: #b54c3d; --city-1: #187c81; --city-2: #a14971; --city-3: #5e5fa9; --city-4: #427b43; --city-5: #966c1e;
   --danger: #b3261e;
-  --dawn: #c46a8b; --day: #9c7f10; --golden: #d06620; --night: #3a5cc2;
+  --dawn: #ba6f89; --day: #977e2a; --golden: #c8682e; --night: #4762aa;
   --shadow: 0 1px 2px rgb(60 40 20 / 0.08), 0 10px 28px rgb(60 40 20 / 0.1);
   color-scheme: light;
 }
@@ -23,9 +23,9 @@
   --bg: #0b0908; --surface: #15120f; --surface-2: #1d1915; --ink: #efe7d8; --muted: #a69a88; --line: #322a23;
   --accent: #f28a3c; --accent-ink: #1b0e04;
   --route: #8a7f72;
-  --city-0: #f2725e; --city-1: #3ec4c1; --city-2: #f06cab; --city-3: #a49cff; --city-4: #6fcf73; --city-5: #e2b23f;
+  --city-0: #da8375; --city-1: #69b4b1; --city-2: #cb81a2; --city-3: #9997d1; --city-4: #87ba88; --city-5: #d0b06b;
   --danger: #ff8a7a;
-  --dawn: #e89cb6; --day: #d8bd4b; --golden: #f49352; --night: #809ef6;
+  --dawn: #d99eb2; --day: #ceba6d; --golden: #eb975f; --night: #89a0da;
   --shadow: 0 1px 2px rgb(0 0 0 / 0.5), 0 14px 34px rgb(0 0 0 / 0.5);
   color-scheme: dark;
 }
