@@ -98,6 +98,8 @@ export class TripMap {
     this.buildTrip();
     void this.applyStyle();
     this.refresh();
+    // The opening bounds ignore a panel over the map; frame the trip clear of it.
+    if (this.inset()) void this.overview(0);
   }
 
   /** Markers, hotels and legs for the active trip. Called again whenever the trip changes. */
@@ -346,7 +348,7 @@ export class TripMap {
     const narrow = r.width < 560;
     // A covering panel can leave little map; keep the padding inside what is left.
     const inset = Math.min(this.inset(), r.height * 0.7);
-    return { top: narrow ? 64 : 80, bottom: inset ? inset + 24 : narrow ? 56 : 90, left: narrow ? 32 : 56, right: narrow ? 48 : 64 };
+    return { top: narrow ? 64 : 80, bottom: inset ? inset + 40 : narrow ? 56 : 90, left: narrow ? 32 : 56, right: narrow ? 48 : 64 };
   }
 
   private allBounds(): [LngLat, LngLat] {

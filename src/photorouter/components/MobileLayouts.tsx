@@ -212,7 +212,7 @@ export function SwitchLayout() {
     <div className="relative h-full min-h-0 overflow-hidden">
       <div className={cx('absolute inset-0 flex flex-col', view !== 'map' && 'invisible')} inert={view !== 'map'}>
         {/* The inset keeps the framed trip clear of the switch button. */}
-        <div className="relative min-h-0 flex-1" style={{ '--map-inset': '44px' } as CSSProperties}>
+        <div className="relative min-h-0 flex-1" style={{ '--map-inset': '56px' } as CSSProperties}>
           <MapView />
           {!spot && <div className="pointer-events-none absolute inset-x-0 bottom-3 z-10 flex justify-center">{toggle}</div>}
         </div>
