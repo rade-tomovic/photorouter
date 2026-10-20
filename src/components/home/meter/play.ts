@@ -1,11 +1,12 @@
 // The "Light meter" theme in the browser: the hero camera plays the day on a loop while it
-// is on screen, and the header track follows the page scroll. Both read the light at a
+// is on screen (on phones, as it scrolls through the screen), and once it has scrolled away
+// the header track follows the rest of the page. Both read the light at a
 // minute from the sun's altitude, set the exposure for the stop's lens and support, and
 // turn the same parts to it; the hero also swaps the lens on its mount when a stop with
 // another first lens begins.
 import { hhmm } from '@/photorouter/lib/sun';
 import { PHASE_LABEL, mountedLens, needsSupport, phaseAt, type PlayDay } from '../daylight';
-import { autoplay, focusStop, followScroll, lastStop, readDay } from '../dayclock';
+import { autoplay, focusStop, followScroll, lastStop, readDay, scrollPlay } from '../dayclock';
 import { altitude, exposure, readingText, sceneEv, setupFor, type Solar } from './meter';
 import { dialTurn, irisScale, isoTurn, needleAngle } from './plate';
 import { firstLens } from './lens';
@@ -116,14 +117,17 @@ function playHero(root: HTMLElement) {
       root.dataset.wind = root.dataset.wind === 'a' ? 'b' : 'a';
     }
   };
-  if (autoplay(root, day, render, { duration: 9000 })) root.toggleAttribute('data-playing', true);
+  // Stacked under the headline (below the lg breakpoint) the camera sits low on the first
+  // screen, so the scroll plays it; side by side it plays on its own.
+  const play = matchMedia('(max-width: 1023px)').matches ? scrollPlay(root, day, render) : autoplay(root, day, render, { duration: 9000 });
+  if (play) root.toggleAttribute('data-playing', true);
 }
 
 function followTrack(track: HTMLElement) {
   const day = readDay(track);
   const row = track.closest<HTMLElement>('[data-track-row]') ?? track;
   const draw = meter(row, day, readSolar(track), 'stop');
-  followScroll(day, (m) => draw(m));
+  followScroll(day, (m) => draw(m), document.querySelector('[data-meter]'));
 }
 
 document.querySelectorAll<HTMLElement>('[data-meter]').forEach(playHero);
