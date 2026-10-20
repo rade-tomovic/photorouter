@@ -193,6 +193,13 @@ function KitStrips({ plan, groups, shooting }: { plan: Plan; groups: { label: st
     return () => ro.disconnect();
   }, []);
 
+  // A new plan can arrive while the tab stays open (the plan column on wide screens):
+  // start at its first day and measure the edges for its columns, which the observer misses.
+  useLayoutEffect(() => {
+    scroller.current!.scrollLeft = 0;
+    measure();
+  }, [plan]);
+
   useEffect(() => {
     const el = scroller.current;
     const btn = day != null ? el?.querySelector<HTMLElement>(`[data-day="${day}"]`) : null;
