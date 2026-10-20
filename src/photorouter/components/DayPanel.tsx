@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, type KeyboardEvent, type RefObject } from 'react';
-import { Bus, Car, FileJson, Footprints, MapPinned, Plane, Route, Ship, Sparkles, Sunrise, Sunset, TrainFront, TriangleAlert } from 'lucide-react';
-import { CITY_IDS, KIND_LABEL, LIGHT_LABEL, SPOT, SPOTS, TRIP, cityStyle, dayLabel, dayNum, gearItem, monthName, weekday } from '../lib/data';
+import { Bus, Car, FileJson, Footprints, Plane, Route, Ship, Sparkles, Sunrise, Sunset, TrainFront, TriangleAlert } from 'lucide-react';
+import { CITY_IDS, KIND_LABEL, LIGHT_LABEL, SPOT, SPOTS, TRIP, cityStyle, dayLabel, dayNum, monthName, weekday } from '../lib/data';
 import { hhmm, sunDay, tzOffset } from '../lib/sun';
 import type { Light, Plan } from '../lib/types';
 import { loadExample, openStepper, useStore, type Tab } from '../store';
 import { selectDay, selectSpot } from '../map/player';
+import { KitView } from './KitView';
 import { PlanPanel } from './PlanPanel';
 import { Button, CityChip, Kicker, LightChip, Pill, Toggle, cx } from './ui';
 
@@ -59,7 +60,7 @@ export function SidePanel({ withPlan }: { withPlan: boolean }) {
         {active === 'plan' && <PlanPanel />}
         {active === 'day' && <DayView />}
         {active === 'spots' && <SpotIndex />}
-        {active === 'kit' && <KitView />}
+        {active === 'kit' && <KitTab />}
         {active === 'info' && <InfoView />}
       </div>
     </div>
@@ -329,57 +330,9 @@ function SpotIndex() {
   );
 }
 
-function KitView() {
+function KitTab() {
   const plan = useStore((s) => s.plan);
-  const brief = useStore((s) => s.brief);
-  if (!plan) return <NoPlan />;
-  const uses = new Map<string, number>();
-  plan.days.forEach((d) => d.slots.forEach((s) => s.kit.forEach((k) => uses.set(k.id, (uses.get(k.id) ?? 0) + 1))));
-  const owned = brief.gear.map((id) => gearItem(id)).filter((g): g is NonNullable<typeof g> => !!g && g.kind !== 'body');
-  const unused = owned.filter((g) => !uses.has(g.id));
-  const max = Math.max(1, ...uses.values());
-
-  return (
-    <div className="grid gap-5 p-5">
-      <div>
-        <Kicker>Kit, by how often you'll reach for it</Kicker>
-        <ul className="m-0 mt-2 grid list-none gap-2 p-0">
-          {[...uses.entries()].sort((a, b) => b[1] - a[1]).map(([id, n]) => (
-            <li key={id} className="grid grid-cols-[110px_minmax(0,1fr)_auto] items-center gap-3 text-sm">
-              <span className="truncate font-semibold">{gearItem(id)?.short}</span>
-              <span className="h-2 overflow-hidden rounded-full bg-surface-2"><span className="block h-full rounded-full bg-accent" style={{ width: `${(n / max) * 100}%` }} /></span>
-              <span className="font-mono text-xs text-muted">{n} stops</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-      {unused.length > 0 && (
-        <p className="m-0 rounded-xl bg-surface-2 p-3 text-[13.5px]">
-          <b>Could stay home:</b> {unused.map((g) => g.label).join(', ')}. No stop on this route calls for {unused.length > 1 ? 'them' : 'it'}.
-        </p>
-      )}
-      <div className="grid gap-2">
-        <Kicker>Daily bag</Kicker>
-        <ul className="m-0 grid list-none gap-1.5 p-0">
-          {plan.days.filter((d) => d.slots.length).map((d) => {
-            const bag = [...new Set(d.slots.flatMap((s) => s.kit.map((k) => k.label)))];
-            return (
-              <li key={d.date}>
-                <button type="button" onClick={() => void selectDay(d.index)} className="grid w-full grid-cols-[72px_minmax(0,1fr)] gap-2 border-0 bg-transparent p-0 text-left text-[13px] hover:underline">
-                  <span className="font-mono text-xs text-muted">{dayLabel(d.date)}</span>
-                  <span className={bag.length ? '' : 'text-muted'}>{bag.join(' · ') || 'No kit listed'}</span>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-      <p className="m-0 flex items-start gap-1.5 text-xs text-muted">
-        <MapPinned className="mt-0.5 size-3.5 shrink-0" aria-hidden />
-        Drone rules differ by country and city: check registration and no-fly zones before you pack one.
-      </p>
-    </div>
-  );
+  return plan ? <KitView plan={plan} /> : <NoPlan />;
 }
 
 function InfoView() {
