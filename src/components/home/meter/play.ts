@@ -1,13 +1,17 @@
 // The "Light meter" theme in the browser: the hero camera plays the day on a loop while it
 // is on screen, and the header track follows the page scroll. Both read the light at a
-// minute from the sun's altitude and turn the same parts to it.
+// minute from the sun's altitude and turn the same parts to it; the hero also swaps the
+// lens on its mount for the one each stop uses.
 import { hhmm } from '@/photorouter/lib/sun';
-import { PHASE_LABEL, lensKind, mountedLens, needsSupport, phaseAt, type PlayDay } from '../daylight';
+import { PHASE_LABEL, mountedLens, needsSupport, phaseAt, type PlayDay } from '../daylight';
 import { autoplay, focusStop, followScroll, lastStop, readDay } from '../dayclock';
 import { altitude, exposure, readingText, sceneEv, type Solar } from './meter';
-import { altText, apertureShift, dialTurn, irisScale, needleAngle, sunInWindow } from './plate';
+import { dialTurn, irisScale, needleAngle } from './plate';
 
 const readSolar = (el: HTMLElement): Solar => JSON.parse(el.dataset.solar ?? '{}');
+
+/** How long a lens swap takes on the hero camera, in ms (see the .cam-lens transitions). */
+const SWAP_MS = 1100;
 
 const setText = (el: Element | null, text: string) => {
   if (el && el.textContent !== text) el.textContent = text;
@@ -29,12 +33,10 @@ function meter(root: HTMLElement, day: PlayDay, solar: Solar, lensOf: 'camera' |
   const fring = q('[data-fring]');
   const iris = q('[data-iris]');
   const rings = all('[data-ring]');
-  const lenses = q('[data-lens]');
-  const winSun = q('[data-win-sun]');
+  const lenses = all('[data-lens-label]');
   const follow = all('[data-follow]');
   const notches = all('[data-notch]');
   const clock = q('[data-clock]');
-  const alt = q('[data-alt]');
   const reading = q('[data-reading]');
   const phaseLabel = q('[data-phase-label]');
   const stopTag = q('[data-stop-tag]');
@@ -43,6 +45,9 @@ function meter(root: HTMLElement, day: PlayDay, solar: Solar, lensOf: 'camera' |
   const shutter = q('[data-shutter]');
   const support = q('[data-support]');
   const lensName = q('[data-lens-name]');
+  const lcd = q('[data-lcd]');
+  let mounted: string | undefined;
+  let swapEnds = 0;
 
   return (m: number) => {
     const a = altitude(m, solar);
@@ -53,11 +58,7 @@ function meter(root: HTMLElement, day: PlayDay, solar: Solar, lensOf: 'camera' |
     setStyle(dial, 'transform', `rotate(${dialTurn(r.k)}deg)`);
     setStyle(fring, 'transform', `rotate(${-(r.av - 4) * 36}deg)`);
     setStyle(iris, 'transform', `scale(${irisScale(r.av).toFixed(3)})`);
-    for (const ring of rings) setStyle(ring, 'transform', `translateX(${apertureShift(r.av, Number(ring.dataset.ring))}px)`);
-    if (winSun) {
-      const s = sunInWindow(p, a);
-      setStyle(winSun, 'transform', `translate(${s.x.toFixed(2)}px,${s.y.toFixed(2)}px)`);
-    }
+    for (const ring of rings) setStyle(ring, 'transform', `translateX(${(-r.av * Number(ring.dataset.ring)).toFixed(2)}px)`);
     for (const f of follow) setStyle(f, 'transform', `translateX(${(p * 100).toFixed(2)}%)`);
     notches.forEach((n, i) => n.toggleAttribute('data-lit', (day.stops[i]?.t ?? Infinity) <= m));
 
@@ -67,21 +68,27 @@ function meter(root: HTMLElement, day: PlayDay, solar: Solar, lensOf: 'camera' |
     const { now, shown } = focusStop(day, m);
     const named = now ?? shown ?? day.stops.at(-1);
     const stop = lensOf === 'camera' ? (lastStop(day, m) ?? day.stops[0]) : named;
+    // A drawn lens finishes its swap before the next one starts, so a quick change of lens
+    // shows a little late rather than as two lenses crossing on the mount.
     const lens = stop && mountedLens(stop, m);
-    const kind = lens && lensKind(lens);
-    if (lenses && kind) lenses.dataset.lens = kind;
+    const t = performance.now();
+    if (lenses.length && lens !== mounted && t >= swapEnds) {
+      if (mounted !== undefined) swapEnds = t + SWAP_MS;
+      mounted = lens;
+      for (const el of lenses) el.toggleAttribute('data-on', el.dataset.lensLabel === lens);
+    }
 
     setText(clock, hhmm(m));
-    setText(alt, altText(a));
     setText(reading, readingText(r));
     setText(phaseLabel, PHASE_LABEL[phaseAt(m, day.sun)]);
     if (lensOf === 'camera') setText(stopTag, named ? `Stop ${named.n} · ${now ? 'now' : shown ? `at ${hhmm(shown.from)}` : 'done'}` : '');
     else setText(stopTag, now ? 'Now · ' : shown ? `Next ${hhmm(shown.from)} · ` : 'Done · ');
     setText(stopName, named?.name ?? '');
     setText(aperture, `f/${r.f}`);
-    setText(shutter, `${r.shutter} on the dial`);
+    setText(shutter, r.shutter);
+    setText(lcd, `F${r.f}`);
     setText(support, stop && needsSupport(stop.kit) ? 'On a tripod' : 'Handheld');
-    setText(lensName, lens ?? '');
+    setText(lensName, (lenses.length ? mounted : lens) ?? '');
     return now;
   };
 }
@@ -102,7 +109,7 @@ function playHero(root: HTMLElement) {
       root.dataset.wind = root.dataset.wind === 'a' ? 'b' : 'a';
     }
   };
-  if (autoplay(root, day, render)) root.toggleAttribute('data-playing', true);
+  if (autoplay(root, day, render, { duration: 9000 })) root.toggleAttribute('data-playing', true);
 }
 
 function followTrack(track: HTMLElement) {

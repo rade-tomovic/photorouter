@@ -1,0 +1,75 @@
+---
+// A dial on the hero camera's top plate seen from above: a knurled chrome rim around a black
+// face with cream numbers, and a chrome hub. With `turn` set, the face turns (data-dial)
+// so the set value faces the index mark behind it.
+import { polar } from './plate';
+
+interface Props {
+  cx: number;
+  cy: number;
+  r: number;
+  /** Numbers clockwise from the index, with their angle in degrees and an optional class. */
+  marks: { text: string; at: number; class?: string }[];
+  /** The face's starting turn in degrees; a turning dial when set. */
+  turn?: number;
+  font: number;
+  /** Where the numbers sit, as a share of the radius. */
+  at?: number;
+}
+const { cx, cy, r, marks, turn, font, at = 0.62 } = Astro.props;
+const teeth = Math.round(r * 5.2);
+const pitch = (2 * Math.PI * r) / teeth;
+const ticks = marks.flatMap((m, i) => {
+  const next = marks[i + 1];
+  return next && next.at - m.at <= 45 ? [(m.at + next.at) / 2] : [];
+});
+---
+
+<g aria-hidden="true">
+  <circle cx={cx} cy={cy + 0.9} r={r + 0.5} fill="#000" opacity="0.32"></circle>
+  <circle cx={cx} cy={cy} r={r} fill="url(#cam-knurl)"></circle>
+  <circle
+    cx={cx}
+    cy={cy}
+    r={r - 0.55}
+    fill="none"
+    stroke="#2a3036"
+    stroke-width="1.1"
+    stroke-dasharray={`${(pitch * 0.42).toFixed(2)} ${(pitch * 0.58).toFixed(2)}`}
+    opacity="0.55"
+  ></circle>
+  <circle cx={cx} cy={cy} r={r * 0.86} fill="url(#cam-black)"></circle>
+  <g
+    class:list={[turn !== undefined && 'mt-turn']}
+    data-dial={turn !== undefined ? '' : undefined}
+    style={turn !== undefined ? `transform-origin:${cx}px ${cy}px;transform:rotate(${turn}deg)` : undefined}
+  >
+    {
+      ticks.map((a) => {
+        const p = polar(cx, cy, r * 0.8, a);
+        const q = polar(cx, cy, r * 0.72, a);
+        return <path d={`M${p.x.toFixed(2)} ${p.y.toFixed(2)}L${q.x.toFixed(2)} ${q.y.toFixed(2)}`} class="cam-dial-tick" />;
+      })
+    }
+    {
+      marks.map((m) => {
+        const p = polar(cx, cy, r * at, m.at);
+        return (
+          <text
+            x={p.x.toFixed(2)}
+            y={p.y.toFixed(2)}
+            transform={`rotate(${m.at} ${p.x.toFixed(2)} ${p.y.toFixed(2)})`}
+            class:list={['cam-dial-num', m.class]}
+            font-size={font}
+          >
+            {m.text}
+          </text>
+        );
+      })
+    }
+  </g>
+  <circle cx={cx} cy={cy} r={r * 0.36} fill="none" stroke="#000" stroke-opacity="0.5" stroke-width="0.35"></circle>
+  <circle cx={cx} cy={cy} r={r * 0.3} fill="url(#cam-cap)"></circle>
+  <circle cx={cx} cy={cy} r={r * 0.3} fill="none" stroke="#4a525a" stroke-width="0.3"></circle>
+  <circle cx={cx - r * 0.08} cy={cy - r * 0.08} r={r * 0.1} fill="#fff" opacity="0.35"></circle>
+</g>

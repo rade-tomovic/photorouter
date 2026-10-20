@@ -86,7 +86,6 @@ export function sceneEv(alt: number): number {
 
 /** Apertures by their APEX value (Av = log2 N²): f/2.8 is 3, f/4 is 4, and so on. */
 export const F_STOPS = ['2.8', '4', '5.6', '8', '11', '16', '22'] as const;
-export const avOf = (f: string) => 3 + F_STOPS.indexOf(f as (typeof F_STOPS)[number]);
 
 /** The shutter dial, clockwise from the top: bulb, the full seconds, then fractions of a second. */
 export const DIAL = ['B', '2s', '1s', '2', '4', '8', '15', '30', '60', '125', '250', '500'] as const;
@@ -115,25 +114,3 @@ export function exposure(evRaw: number): Reading {
 }
 
 export const readingText = (r: Reading) => `about EV ${r.ev} · f/${r.f} · ${r.shutter}`;
-
-/**
- * The moon's age in days on a date (0 new, about 14.8 full), from the mean synodic month
- * counted from the new moon of 6 Jan 2000 18:14 UTC. Good to about half a day, enough to draw it.
- */
-export function moonAge(iso: string, hourUtc = 21): number {
-  const P = 29.530588853;
-  const days = (Date.parse(`${iso}T00:00:00Z`) + hourUtc * 3600000 - Date.UTC(2000, 0, 6, 18, 14)) / 86400000;
-  return ((days % P) + P) % P;
-}
-
-/** The lit part of a moon of radius r at the origin for its age, as an SVG path (waxing lit on the right). */
-export function moonPath(age: number, r: number): string {
-  const P = 29.530588853;
-  const phase = age / P;
-  const waxing = phase < 0.5;
-  const k = Math.cos(2 * Math.PI * phase);
-  const rx = Math.abs(k * r).toFixed(2);
-  const outer = waxing ? 1 : 0;
-  const inner = (k > 0) === waxing ? 0 : 1;
-  return `M0 ${-r}A${r} ${r} 0 0 ${outer} 0 ${r}A${rx} ${r} 0 0 ${inner} 0 ${-r}Z`;
-}

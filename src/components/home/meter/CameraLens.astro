@@ -1,0 +1,132 @@
+---
+// One lens of the hero camera seen from above, hanging from the mount at (cx, y0) and drawn
+// at its real size in mm: mount collar, aperture ring, focus ring, engraved front barrel and
+// filter ring. The marks on the barrel sit in a group (cam-twist) that slides sideways when
+// the lens is twisted on or off; play.ts shows one lens at a time (data-on) and turns the
+// aperture ring (data-ring) to the exposure. A lens longer than `cap` is drawn broken.
+import { MOUNT_DOT, engraving, lensSize, ringStops, type LensSpec } from './lens';
+
+interface Props {
+  label: string;
+  spec: LensSpec;
+  cx: number;
+  y0: number;
+  /** Aperture value set on the ring at first. */
+  av: number;
+  /** The longest lens drawn, in mm. */
+  cap: number;
+  on: boolean;
+  /** Unique id prefix for this lens's clip paths. */
+  id: string;
+}
+const { label, spec, cx, y0, av, cap, on, id } = Astro.props;
+const size = lensSize(spec);
+const zoom = spec.max > spec.min;
+const broken = size.length > cap;
+const L = Math.min(size.length, cap);
+const D = size.dia;
+const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+
+// Bands from the mount forward, each a slice of the barrel with its own width.
+type Band = { y: number; h: number; w: number; kind: string };
+const front = size.filter ? size.filter + 4 : D + 1.6;
+const parts: [number, number, string][] = [
+  [2.4, Math.min(D - 2, 61), 'collar'],
+  [clamp(L * 0.09, 4.5, 9), D, 'rear'],
+  [clamp(L * 0.1, 6.5, 9), D + 0.8, 'aperture'],
+  [1, D - 0.8, 'chrome'],
+  ...(zoom
+    ? ([
+        [clamp(L * 0.28, 12, 46), D + 0.8, 'zoom'],
+        [2, D, 'barrel'],
+        [clamp(L * 0.12, 6, 18), D + 0.4, 'focus-fine'],
+      ] as [number, number, string][])
+    : ([[clamp(L * 0.3, 11, 40), D + 0.8, 'focus']] as [number, number, string][])),
+];
+const fixed = parts.reduce((s, p) => s + p[0], 0) + 3.2;
+const barrel = Math.max(9, L - fixed);
+parts.push([barrel, D, 'front'], [3.2, front, size.filter ? 'filter' : 'hood']);
+let y = y0;
+const bands: Band[] = parts.map(([h, w, kind]) => {
+  const b = { y, h, w, kind };
+  y += h;
+  return b;
+});
+const end = y;
+const band = (b: Band) => {
+  const r = Math.min(0.9, b.h / 3);
+  const [x0, x1, y1] = [cx - b.w / 2, cx + b.w / 2, b.y + b.h];
+  return `M${x0 + r} ${b.y}H${x1 - r}Q${x1} ${b.y} ${x1} ${b.y + r}V${y1 - r}Q${x1} ${y1} ${x1 - r} ${y1}H${x0 + r}Q${x0} ${y1} ${x0} ${y1 - r}V${b.y + r}Q${x0} ${b.y} ${x0 + r} ${b.y}Z`;
+};
+const of = (kind: string) => bands.find((b) => b.kind === kind)!;
+const ap = of('aperture');
+const rear = of('rear');
+const fb = of('front');
+// The front barrel tapers to the filter ring when the thread is narrower than the barrel.
+const taper = size.filter && front < D - 2
+  ? `M${cx - D / 2} ${fb.y + fb.h - 5}L${cx - front / 2} ${fb.y + fb.h}H${cx + front / 2}L${cx + D / 2} ${fb.y + fb.h - 5}Z`
+  : '';
+const STEP = 6.2;
+const stops = ringStops(spec);
+const text = engraving(spec);
+const engraveSize = clamp(D * 0.05, 3.1, 4.2);
+const ribbed = bands.filter((b) => ['focus', 'zoom', 'focus-fine', 'filter'].includes(b.kind));
+const breakY = fb.y + fb.h * 0.62;
+---
+
+<g class="cam-lens" data-lens-label={label} data-on={on ? '' : undefined}>
+  <defs>
+    <clipPath id={`${id}-body`}>
+      {bands.map((b) => <path d={band(b)} />)}
+    </clipPath>
+    <clipPath id={`${id}-ring`}>
+      <rect x={cx - ap.w / 2} y={ap.y} width={ap.w} height={ap.h}></rect>
+    </clipPath>
+  </defs>
+  <rect x={cx - D / 2 + 1} y={y0 + 2} width={D - 2} height={end - y0 - 2} fill="#000" opacity="0.35" transform="translate(1.2 1.6)"></rect>
+  {
+    bands.map((b) => (
+      <path d={band(b)} class={`cam-band-${b.kind}`} />
+    ))
+  }
+  {taper && <path d={taper} class="cam-band-taper" />}
+  <g clip-path={`url(#${id}-body)`}>
+    <g class="cam-twist">
+      {ribbed.map((b) => (
+        <rect x={cx - D / 2 - 20} y={b.y + 0.5} width={D + 40} height={b.h - 1} fill={b.kind === 'focus' || b.kind === 'zoom' ? 'url(#cam-ribs)' : 'url(#cam-fine)'} />
+      ))}
+      <path d={`M${cx - D / 2 - 20} ${ap.y + 0.9}H${cx + D / 2 + 20}M${cx - D / 2 - 20} ${ap.y + ap.h - 0.9}H${cx + D / 2 + 20}`} class="cam-ring-grip" />
+      <g clip-path={`url(#${id}-ring)`}>
+        <g class="mt-shift" data-ring={STEP} style={`transform:translateX(${(-av * STEP).toFixed(2)}px)`}>
+          {stops.map((s, i) => (
+            <text x={(cx + s.av * STEP).toFixed(2)} y={ap.y + ap.h / 2} class:list={['cam-ring-num', i === 0 && 'cam-ring-open']}>
+              {s.label}
+            </text>
+          ))}
+        </g>
+      </g>
+      <circle cx={cx + MOUNT_DOT} cy={rear.y + rear.h / 2} r="1.15" class="cam-mount-dot" />
+      <text x={cx} y={fb.y + Math.min(fb.h * 0.45, 7)} class="cam-lens-name" font-size={engraveSize}>{text}</text>
+      {size.filter > 0 && fb.h >= 15 && (
+        <text x={cx} y={fb.y + Math.min(fb.h * 0.45, 7) + engraveSize * 1.35} class="cam-lens-sub" font-size={engraveSize * 0.62}>
+          {`Ø${Math.round(size.filter)}`}
+        </text>
+      )}
+      {spec.special && (
+        <text x={cx} y={fb.y + fb.h - 6.5} class="cam-lens-sub" font-size={engraveSize * 0.7}>{spec.special.toUpperCase()}</text>
+      )}
+    </g>
+  </g>
+  <path d={`M${cx} ${rear.y + rear.h - 1.9}V${rear.y + rear.h}`} class="cam-ring-index" />
+  {bands.map((b) => <path d={band(b)} fill="url(#cam-cyl)" />)}
+  <path d={`M${cx - D / 2 + 0.6} ${fb.y + 0.35}H${cx + D / 2 - 0.6}M${cx - front / 2 + 0.6} ${fb.y + fb.h - 0.3}H${cx + front / 2 - 0.6}`} class="cam-edge" />
+  {taper && <path d={taper} fill="url(#cam-cyl)" />}
+  {
+    broken && (
+      <g class="cam-break">
+        <path d={`M${cx - D / 2} ${breakY + 2.4}L${cx + D / 2} ${breakY - 2.4}V${breakY + 0.6}L${cx - D / 2} ${breakY + 5.4}Z`} class="cam-break-gap" />
+        <path d={`M${cx - D / 2} ${breakY + 2.4}L${cx + D / 2} ${breakY - 2.4}M${cx - D / 2} ${breakY + 5.4}L${cx + D / 2} ${breakY + 0.6}`} />
+      </g>
+    )
+  }
+</g>
