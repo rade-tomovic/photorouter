@@ -1,0 +1,14 @@
+---
+// The page's scrollbar as a strip of film: the stock advances past the right edge as the page
+// scrolls and a lit frame marks the part on screen. The script swaps it in for the browser's
+// own scrollbar, so without JavaScript the default one stays.
+---
+
+<div class="pr-reel" data-reel hidden aria-hidden="true">
+  <div class="pr-reel-film" data-reel-film></div>
+  <div class="pr-reel-gate" data-reel-gate></div>
+</div>
+
+<script>
+  import './reel';
+</script>
