@@ -92,7 +92,7 @@ export function Seg<T extends string>({ value, options, onChange, label, disable
           onClick={() => onChange(o.v)}
           className={cx(
             'h-7 rounded-full px-3 text-xs font-semibold transition-colors disabled:cursor-not-allowed',
-            value === o.v ? 'bg-ink text-surface' : 'text-muted hover:text-ink',
+            value === o.v ? 'bg-accent text-accent-ink' : 'text-muted hover:text-ink',
           )}
         >
           {o.label}
