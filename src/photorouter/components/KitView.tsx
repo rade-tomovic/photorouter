@@ -1,4 +1,5 @@
-import { Backpack, MapPinned } from 'lucide-react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { Backpack, ChevronLeft, ChevronRight, MapPinned } from 'lucide-react';
 import { GEAR_GROUPS, cityStyle, dayLabel, dayNum, gearItem, weekday } from '../lib/data';
 import type { Plan } from '../lib/types';
 import { useStore } from '../store';
@@ -57,7 +58,6 @@ export function KitView({ plan }: { plan: Plan }) {
   const listed = core.length ? shooting.filter((d) => used.some((u) => u.days.has(d.index) && !coreIds.has(u.id))) : shooting;
   const plain = shooting.length - listed.length;
   const picked = day != null ? plan.days[day] : undefined;
-  const cols = { gridTemplateColumns: `repeat(${plan.days.length}, minmax(0, 1fr))` };
 
   return (
     <div className="grid gap-6 p-5">
@@ -85,56 +85,7 @@ export function KitView({ plan }: { plan: Plan }) {
             {used.length} {used.length === 1 ? 'item' : 'items'} for {shooting.length} shooting {shooting.length === 1 ? 'day' : 'days'}. Each strip is the trip, one mark per day the item comes out. Tap a date for that day's bag.
           </p>
         </div>
-        {/* The dates above the strips; tap one to open that day. */}
-        <div className="grid gap-0.5" style={cols}>
-          {plan.days.map((d) => (
-            <button
-              key={d.date}
-              type="button"
-              disabled={!d.slots.length}
-              onClick={() => void selectDay(d.index)}
-              aria-label={`Open ${dayLabel(d.date)}`}
-              aria-current={day === d.index ? 'date' : undefined}
-              className={cx(
-                'grid justify-items-center rounded-md border-0 bg-transparent py-0.5 leading-none disabled:cursor-default disabled:opacity-40',
-                day === d.index ? 'bg-surface-2 text-accent' : 'text-muted hover:text-ink',
-              )}
-            >
-              <span className="font-mono text-[9px] uppercase">{weekday(d.date).slice(0, 2)}</span>
-              <span className="font-display text-[15px] font-extrabold">{dayNum(d.date)}</span>
-            </button>
-          ))}
-        </div>
-        {groups.map((g) => (
-          <div key={g.label} className="grid gap-2">
-            <h3 className="m-0 font-mono text-[11px] font-medium tracking-[0.08em] text-muted uppercase">{g.label}</h3>
-            <ul className="m-0 grid list-none gap-3 p-0">
-              {g.items.map((u) => (
-                <li key={u.id} className="grid gap-1.5">
-                  <div className="flex items-baseline justify-between gap-3">
-                    <span className="min-w-0 text-sm font-semibold">{u.label}</span>
-                    <span className="shrink-0 font-mono text-[11px] text-muted">
-                      {u.days.size === shooting.length ? 'Every day' : `${u.days.size} of ${shooting.length} days`}
-                    </span>
-                  </div>
-                  <div className="grid gap-0.5" style={cols} aria-hidden>
-                    {plan.days.map((d) => (
-                      <span
-                        key={d.date}
-                        style={cityStyle(d.city)}
-                        className={cx(
-                          'h-2 rounded-full',
-                          u.days.has(d.index) ? 'bg-(--c)' : d.slots.length ? 'bg-surface-2' : 'bg-transparent',
-                          day === d.index && 'outline-2 outline-offset-1 outline-ink',
-                        )}
-                      />
-                    ))}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+        <KitStrips plan={plan} groups={groups} shooting={shooting.length} />
       </section>
 
       {unused.length > 0 && (
@@ -210,6 +161,121 @@ export function KitView({ plan }: { plan: Plan }) {
           <MapPinned className="mt-0.5 size-3.5 shrink-0" aria-hidden />
           Drone rules differ by country and city: check registration and no-fly zones before you pack one.
         </p>
+      )}
+    </div>
+  );
+}
+
+/** A day column's narrowest width: room for a date big enough to tap. */
+const COL = 48;
+const GAP = 4;
+
+/**
+ * The trip's dates over one strip per item. Columns keep a tap-sized width, so a long
+ * trip scrolls sideways; the item names stay put, and arrows and faded edges show
+ * when there are more days either way. Opening a day scrolls it into view.
+ */
+function KitStrips({ plan, groups, shooting }: { plan: Plan; groups: { label: string; items: Use[] }[]; shooting: number }) {
+  const day = useStore((s) => s.day);
+  const scroller = useRef<HTMLDivElement>(null);
+  const [edges, setEdges] = useState({ left: false, right: false });
+  const cols = { gridTemplateColumns: `repeat(${plan.days.length}, minmax(${COL}px, 1fr))`, gap: GAP };
+
+  const measure = () => {
+    const el = scroller.current;
+    if (!el) return;
+    setEdges({ left: el.scrollLeft > 2, right: el.scrollLeft + el.clientWidth < el.scrollWidth - 2 });
+  };
+  useLayoutEffect(() => {
+    const el = scroller.current!;
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const el = scroller.current;
+    const btn = day != null ? el?.querySelector<HTMLElement>(`[data-day="${day}"]`) : null;
+    if (!el || !btn) return;
+    const left = btn.offsetLeft - (el.clientWidth - btn.offsetWidth) / 2;
+    el.scrollTo({ left, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  }, [day]);
+
+  const page = (dir: 1 | -1) => {
+    const el = scroller.current!;
+    el.scrollBy({ left: dir * (el.clientWidth - COL * 2), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  };
+
+  return (
+    <div className="relative -mx-5">
+      <div ref={scroller} onScroll={measure} className="@container overflow-x-auto px-5 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {/* As wide as the days need, so the sticky names have room to stay put. */}
+        <div className="grid w-max min-w-full gap-3">
+          <div className="grid" style={cols}>
+            {plan.days.map((d) => (
+              <button
+                key={d.date}
+                type="button"
+                data-day={d.index}
+                disabled={!d.slots.length}
+                onClick={() => void selectDay(d.index)}
+                aria-label={`Open ${dayLabel(d.date)}`}
+                aria-current={day === d.index ? 'date' : undefined}
+                className={cx(
+                  'grid justify-items-center gap-0.5 rounded-lg border py-1.5 leading-none transition-colors disabled:cursor-default disabled:opacity-40',
+                  day === d.index ? 'border-ink bg-surface-2 text-ink' : 'border-transparent text-ink hover:bg-surface-2',
+                )}
+              >
+                <span className="font-mono text-[10px] text-muted uppercase">{weekday(d.date).slice(0, 2)}</span>
+                <span className="font-display text-2xl font-extrabold">{dayNum(d.date)}</span>
+              </button>
+            ))}
+          </div>
+          {groups.map((g) => (
+            <div key={g.label} className="grid gap-2">
+              {/* Names stay in view while the strips scroll under them. */}
+              <h3 className="sticky left-0 m-0 w-[100cqw] font-mono text-[11px] font-medium tracking-[0.08em] text-muted uppercase">{g.label}</h3>
+              <ul className="m-0 grid list-none gap-3 p-0">
+                {g.items.map((u) => (
+                  <li key={u.id} className="grid gap-1.5">
+                    <div className="sticky left-0 flex w-[100cqw] items-baseline justify-between gap-3">
+                      <span className="min-w-0 text-sm font-semibold">{u.label}</span>
+                      <span className="shrink-0 font-mono text-[11px] text-muted">
+                        {u.days.size === shooting ? 'Every day' : `${u.days.size} of ${shooting} days`}
+                      </span>
+                    </div>
+                    <div className="grid" style={cols} aria-hidden>
+                      {plan.days.map((d) => (
+                        <span
+                          key={d.date}
+                          style={cityStyle(d.city)}
+                          className={cx(
+                            'h-2 rounded-full',
+                            u.days.has(d.index) ? 'bg-(--c)' : d.slots.length ? 'bg-surface-2' : 'bg-transparent',
+                            day === d.index && 'outline-2 outline-offset-1 outline-ink',
+                          )}
+                        />
+                      ))}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* Faded edges and arrows when there are more days off screen. */}
+      <div aria-hidden className={cx('pointer-events-none absolute inset-y-0 left-0 w-5 bg-linear-to-r from-surface to-transparent transition-opacity', edges.left ? 'opacity-100' : 'opacity-0')} />
+      <div aria-hidden className={cx('pointer-events-none absolute inset-y-0 right-0 w-5 bg-linear-to-l from-surface to-transparent transition-opacity', edges.right ? 'opacity-100' : 'opacity-0')} />
+      {edges.left && (
+        <button type="button" aria-label="Earlier days" onClick={() => page(-1)} className="rt-btn-quiet absolute top-3 left-1 grid size-8 place-items-center rounded-full shadow-card [&_svg]:size-4">
+          <ChevronLeft aria-hidden />
+        </button>
+      )}
+      {edges.right && (
+        <button type="button" aria-label="Later days" onClick={() => page(1)} className="rt-btn-quiet absolute top-3 right-1 grid size-8 place-items-center rounded-full shadow-card [&_svg]:size-4">
+          <ChevronRight aria-hidden />
+        </button>
       )}
     </div>
   );
