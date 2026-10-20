@@ -36,6 +36,8 @@ interface State {
   basemap: Basemap;
   /** Prompt builder settings. */
   prompt: PromptConfig;
+  /** The prompt settings saved in this browser as "My template", if any. */
+  template: PromptConfig | null;
   terrain: boolean;
   lights: Light[];
   tab: Tab;
@@ -65,6 +67,7 @@ export function savedTemplate(): PromptConfig | null {
 export function saveTemplate(cfg: PromptConfig): boolean {
   try {
     localStorage.setItem(TEMPLATE_KEY, JSON.stringify(cfg));
+    useStore.setState({ template: cfg });
     return true;
   } catch {
     return false;
@@ -178,6 +181,7 @@ export const useStore = create<State>((set) => ({
   theme: initialTheme(),
   basemap: 'detailed',
   prompt: (typeof localStorage !== 'undefined' && savedTemplate()) || DEFAULT_PROMPT,
+  template: typeof localStorage !== 'undefined' ? savedTemplate() : null,
   terrain: false,
   lights: ['dawn', 'day', 'golden', 'night'],
   tab: 'plan',
