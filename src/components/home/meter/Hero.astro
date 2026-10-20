@@ -5,14 +5,14 @@
 // calls for, swapped when the stop changes. Without JavaScript it is a still drawing of the
 // last stop; play.ts plays the day.
 import { lightDay, type Demo } from '../demoData';
-import { mountedLens, needsSupport, phaseAt, PHASE_LABEL } from '../daylight';
+import { needsSupport, phaseAt, PHASE_LABEL } from '../daylight';
 import { hhmm, tzOffset } from '@/photorouter/lib/sun';
 import DayScale from './DayScale.astro';
 import TopDial from './TopDial.astro';
 import CameraLens from './CameraLens.astro';
-import { DIAL, altitude, exposure, readingText, sceneEv, solarFor } from './meter';
-import { dialTurn, polar } from './plate';
-import { MOUNT_DOT, lensSize, parseLens } from './lens';
+import { DIAL, altitude, exposure, readingText, sceneEv, setupFor, solarFor } from './meter';
+import { dialTurn, isoTurn, polar } from './plate';
+import { MOUNT_DOT, firstLens, lensSize, parseLens } from './lens';
 import './meter.css';
 
 interface Props {
@@ -26,8 +26,9 @@ const solar = solarFor(sheet.date, sheet.ll[1], sheet.ll[0], tzOffset(sheet.date
 // The still drawing shows the last stop at its planned time.
 const still = stops.at(-1)!;
 const m0 = still.t;
-const read0 = exposure(sceneEv(altitude(m0, solar)));
-const lens0 = mountedLens(still, m0) ?? '';
+// The camera mounts each stop's first lens and keeps it until the next stop.
+const lens0 = firstLens(still.kit) ?? '';
+const read0 = exposure(sceneEv(altitude(m0, solar)), setupFor(still.kit, lens0));
 const phase0 = phaseAt(m0, sun);
 const stop0 = stops.find((s) => m0 >= s.from && m0 <= s.to) ?? still;
 
@@ -37,7 +38,7 @@ const lenses = [...new Set(stops.flatMap((s) => s.kit))].flatMap((label) => {
   return spec ? [{ label, spec, size: lensSize(spec) }] : [];
 });
 const CAP = 150;
-const longest = Math.min(CAP, Math.max(60, ...lenses.map((l) => l.size.length)));
+const longest = Math.min(CAP, Math.max(46, ...lenses.map((l) => l.size.length)));
 const widest = Math.max(66, ...lenses.map((l) => l.size.dia));
 
 // The body is 144 mm wide; the mount face sits at Y0 and the lens hangs from it.
@@ -169,12 +170,12 @@ const pts = (ps: { x: number; y: number }[]) => ps.map((p) => `${p.x.toFixed(2)}
           <circle cx="1.5" cy="1.5" r="0.46" fill="#1b2025"></circle>
         </pattern>
         <pattern id="cam-ribs" width="1.7" height="4" patternUnits="userSpaceOnUse">
-          <rect width="1.7" height="4" fill="#0b0e11"></rect>
-          <rect width="0.8" height="4" fill="#2b3239"></rect>
+          <rect width="1.7" height="4" fill="#565d64"></rect>
+          <rect width="0.8" height="4" fill="#a9b0b5"></rect>
         </pattern>
         <pattern id="cam-fine" width="0.9" height="4" patternUnits="userSpaceOnUse">
-          <rect width="0.9" height="4" fill="#101418"></rect>
-          <rect width="0.4" height="4" fill="#323a42"></rect>
+          <rect width="0.9" height="4" fill="#666d73"></rect>
+          <rect width="0.4" height="4" fill="#bcc2c6"></rect>
         </pattern>
         <pattern id="cam-knurl-edge" width="0.9" height="2" patternUnits="userSpaceOnUse">
           <rect width="0.9" height="2" fill="#15191d"></rect>
@@ -279,7 +280,7 @@ const pts = (ps: { x: number; y: number }[]) => ps.map((p) => `${p.x.toFixed(2)}
 
         <path d="M138.5 15.7l-1.4-2h2.8Z" class="mt-index"></path>
         <polygon points={pts(isoLever)} fill="url(#cam-chrome)" stroke="#4d565e" stroke-width="0.3"></polygon>
-        <TopDial cx={138.5} cy={28.6} r={11.6} marks={ISO} font={1.6} />
+        <TopDial cx={138.5} cy={28.6} r={11.6} marks={ISO} turn={isoTurn(read0.sv)} iso font={1.6} />
         <text x="138.5" y="45.9" class="cam-eng cam-eng-wide" font-size="2.2">ISO</text>
         <text x="157.5" y="45.9" class="cam-eng" font-size="1.75">{coords}</text>
 
@@ -308,7 +309,7 @@ const pts = (ps: { x: number; y: number }[]) => ps.map((p) => `${p.x.toFixed(2)}
   <div class="mt-readout mt-2 rounded-2xl border border-line bg-surface-2 px-3.5 pt-2.5 pb-3">
     <p class="m-0 flex h-[22px] items-baseline justify-between gap-3 whitespace-nowrap">
       <span class="font-mono text-[14.5px] font-semibold text-ink tabular-nums sm:text-[15.5px]" data-reading>{readingText(read0)}</span>
-      <span class="font-mono text-[11px] text-muted">at ISO 100</span>
+      <span class="font-mono text-[11px] text-muted">at ISO <span data-iso>{read0.iso}</span></span>
     </p>
     <div class="mt-2 grid h-[36px] grid-cols-[minmax(0,1fr)_minmax(0,2.2fr)] gap-3">
       <div class="min-w-0">

@@ -15,8 +15,11 @@ interface Props {
   font: number;
   /** Where the numbers sit, as a share of the radius. */
   at?: number;
+  /** The ISO dial (data-iso-dial) rather than the shutter dial (data-dial). */
+  iso?: boolean;
 }
-const { cx, cy, r, marks, turn, font, at = 0.62 } = Astro.props;
+const { cx, cy, r, marks, turn, font, at = 0.62, iso = false } = Astro.props;
+const hook = turn === undefined ? {} : iso ? { 'data-iso-dial': '' } : { 'data-dial': '' };
 const teeth = Math.round(r * 5.2);
 const pitch = (2 * Math.PI * r) / teeth;
 const ticks = marks.flatMap((m, i) => {
@@ -41,7 +44,7 @@ const ticks = marks.flatMap((m, i) => {
   <circle cx={cx} cy={cy} r={r * 0.86} fill="url(#cam-black)"></circle>
   <g
     class:list={[turn !== undefined && 'mt-turn']}
-    data-dial={turn !== undefined ? '' : undefined}
+    {...hook}
     style={turn !== undefined ? `transform-origin:${cx}px ${cy}px;transform:rotate(${turn}deg)` : undefined}
   >
     {

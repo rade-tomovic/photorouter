@@ -48,6 +48,9 @@ export function parseLens(label: string): LensSpec | null {
 
 const num = (n: number) => String(Math.round(n * 10) / 10);
 
+/** The first lens a kit lists, which the hero camera mounts for the stop. */
+export const firstLens = (kit: string[]) => kit.find((k) => parseLens(k));
+
 /** How far right of the lens axis the mounting index dots sit, on the lens and on the mount, in mm. */
 export const MOUNT_DOT = 19;
 
@@ -68,10 +71,11 @@ const PRIMES: Ref[] = [
   [24, 24, 1.8, 66, 68, 55],
   [24, 24, 2.8, 45, 68, 49],
   [28, 28, 2, 60, 64, 49],
+  [28, 28, 2.8, 43, 70, 52],
   [35, 35, 1.2, 131, 88, 82],
   [35, 35, 1.4, 96, 76, 67],
   [35, 35, 1.8, 73, 66, 55],
-  [40, 40, 2, 46, 70, 52],
+  [40, 40, 2, 45, 70, 52],
   [50, 50, 1.2, 108, 87, 72],
   [50, 50, 1.4, 96, 81, 67],
   [50, 50, 1.8, 60, 68, 49],

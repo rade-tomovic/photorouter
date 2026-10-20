@@ -93,36 +93,37 @@
 .th-meter .cam-socket { fill: #1a1f24; transition: fill 0.2s; }
 .th-meter .cam-mount-dot { fill: var(--accent); }
 
-/* Lenses: bands of the barrel, ribbed rings, cream engraving. */
-.th-meter .cam-band-collar { fill: #0d1013; }
+/* Lenses: a brushed silver barrel to match the top plate, knurled rings in darker
+   silver, a black accent ring and black engraving. */
+.th-meter .cam-band-collar { fill: #1a1e22; }
 .th-meter .cam-band-rear,
 .th-meter .cam-band-front,
-.th-meter .cam-band-taper { fill: #1b2025; }
-.th-meter .cam-band-aperture { fill: #14181c; }
-.th-meter .cam-band-chrome { fill: url(#cam-chrome); }
+.th-meter .cam-band-taper,
+.th-meter .cam-band-barrel { fill: #c6cbcf; }
+.th-meter .cam-band-aperture { fill: #b4babf; }
+.th-meter .cam-band-chrome { fill: #15191c; }
 .th-meter .cam-band-focus,
 .th-meter .cam-band-zoom,
-.th-meter .cam-band-focus-fine { fill: #0b0e11; }
-.th-meter .cam-band-barrel { fill: #20262b; }
-.th-meter .cam-band-filter { fill: #15191d; stroke: #3a434b; stroke-width: 0.3; }
-.th-meter .cam-band-hood { fill: #101316; }
-.th-meter .cam-ring-grip { stroke: #4c555d; stroke-width: 1; stroke-dasharray: 0.45 0.55; }
+.th-meter .cam-band-focus-fine { fill: #6a7177; }
+.th-meter .cam-band-filter { fill: #9aa1a7; stroke: #5b6268; stroke-width: 0.3; }
+.th-meter .cam-band-hood { fill: #2a2f33; }
+.th-meter .cam-ring-grip { stroke: #5a6167; stroke-width: 1; stroke-dasharray: 0.45 0.55; }
 .th-meter .cam-ring-num {
   font-family: var(--font-mono);
   font-size: 2.6px;
   font-weight: 700;
-  fill: var(--cam-cream);
+  fill: var(--cam-eng);
   text-anchor: middle;
   dominant-baseline: central;
 }
-.th-meter .cam-ring-open { fill: #e39a52; }
-.th-meter .cam-ring-index { stroke: var(--cam-cream); stroke-width: 0.5; }
-.th-meter .cam-edge { stroke: #fff; stroke-opacity: 0.12; stroke-width: 0.35; }
+.th-meter .cam-ring-open { fill: #a8481a; }
+.th-meter .cam-ring-index { stroke: var(--cam-eng); stroke-width: 0.5; }
+.th-meter .cam-edge { stroke: #fff; stroke-opacity: 0.4; stroke-width: 0.35; }
 .th-meter .cam-lens-name {
   font-family: var(--font-mono);
   font-weight: 600;
   letter-spacing: 0.06em;
-  fill: var(--cam-cream);
+  fill: var(--cam-eng);
   text-anchor: middle;
   dominant-baseline: central;
 }
@@ -130,12 +131,12 @@
   font-family: var(--font-mono);
   font-weight: 600;
   letter-spacing: 0.08em;
-  fill: var(--cam-cream);
-  fill-opacity: 0.6;
+  fill: var(--cam-eng);
+  fill-opacity: 0.65;
   text-anchor: middle;
   dominant-baseline: central;
 }
-.th-meter .cam-break path { stroke: var(--cam-cream); stroke-opacity: 0.55; stroke-width: 0.4; }
+.th-meter .cam-break path { stroke: var(--cam-eng); stroke-opacity: 0.6; stroke-width: 0.4; }
 .th-meter .cam-break .cam-break-gap { fill: #050607; stroke: none; }
 .th-meter .mt-shift { transition: transform 0.55s cubic-bezier(0.3, 0.8, 0.25, 1); }
 

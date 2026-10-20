@@ -1,6 +1,9 @@
 // The light meter's model, shared by the build and the browser: the sun's true altitude
 // from the date and the place, an approximate scene brightness from it (EV at ISO 100)
 // and the exposure the camera's dials turn to for that brightness.
+import { needsSupport } from '../daylight';
+import { avOfF, firstLens, parseLens } from './lens';
+
 const R = Math.PI / 180;
 
 /** What the browser needs to place the sun: solar noon in local minutes, latitude and declination in degrees. */
@@ -84,33 +87,76 @@ export function sceneEv(alt: number): number {
   );
 }
 
-/** Apertures by their APEX value (Av = log2 N²): f/2.8 is 3, f/4 is 4, and so on. */
-export const F_STOPS = ['2.8', '4', '5.6', '8', '11', '16', '22'] as const;
+/** Apertures by their APEX value (Av = log2 N²): f/1 is 0, f/2.8 is 3, f/4 is 4, and so on. */
+export const F_STOPS = ['1', '1.4', '2', '2.8', '4', '5.6', '8', '11', '16', '22'] as const;
 
 /** The shutter dial, clockwise from the top: bulb, the full seconds, then fractions of a second. */
 export const DIAL = ['B', '2s', '1s', '2', '4', '8', '15', '30', '60', '125', '250', '500'] as const;
-/** A shutter time 2^k seconds as its dial position. */
-export const dialIndex = (k: number) => 2 - k;
+/** A shutter time 2^k seconds as its dial position; anything from 4 seconds up is on bulb. */
+export const dialIndex = (k: number) => 2 - Math.min(k, 2);
+
+/** The ISO dial's full stops from 100, as Sv = log2(ISO / 100): 0 to 6, ISO 100 to 6400. */
+export const ISO_MAX_SV = 6;
+
+/** What the exposure program needs to know about the camera at a stop. */
+export interface Setup {
+  /** On a tripod or clamp, so the shutter may run long. */
+  tripod: boolean;
+  /** Focal length of the mounted lens in mm, for the handheld shutter limit. */
+  focal: number;
+  /** The lens's widest aperture as Av, and as marked. */
+  open: number;
+  openF: string;
+}
+
+/** A camera with no lens in the kit: a standard f/2.8 lens, handheld. */
+export const DEFAULT_SETUP: Setup = { tripod: false, focal: 50, open: 3, openF: '2.8' };
+
+/** The setup for a stop's kit with a lens on the camera, by default the first lens it lists. */
+export function setupFor(kit: string[], lens?: string): Setup {
+  const spec = parseLens(lens ?? firstLens(kit) ?? '');
+  const tripod = needsSupport(kit);
+  if (!spec) return { ...DEFAULT_SETUP, tripod };
+  return { tripod, focal: spec.min, open: avOfF(spec.f), openF: String(Math.round(spec.f * 10) / 10) };
+}
 
 export interface Reading {
   ev: number;
   f: string;
   av: number;
+  /** Shutter time as 2^k seconds. */
   k: number;
   shutter: string;
+  /** ISO as full stops from 100. */
+  sv: number;
+  iso: number;
 }
 
 /**
- * The exposure for a brightness, read in whole stops: stop down to f/11 in bright sun, f/8
- * through most of the day, open up as the light falls, then let the shutter run long on a
- * tripod. The shutter time follows from EV = Av + Tv, so it always lands on a full stop.
+ * The exposure program for a brightness, in whole stops, from EV + Sv = Av + Tv. On a tripod
+ * it keeps ISO 100 and f/8, or f/11 in bright sun, for depth through a scene, and lets the
+ * shutter run long. Handheld it takes f/11 in bright sun, f/8 through most of the day and
+ * f/5.6 to f/4 as the light falls; when the shutter would drop below the handheld limit,
+ * 1/(2 x focal length) but never slower than 1/60, it opens up to the lens's widest aperture
+ * and then raises ISO a stop at a time up to 6400.
  */
-export function exposure(evRaw: number): Reading {
+export function exposure(evRaw: number, setup: Setup = DEFAULT_SETUP): Reading {
   const ev = Math.round(evRaw);
-  const av = ev >= 14 ? 7 : ev >= 11 ? 6 : ev >= 8 ? 5 : 4;
-  const k = Math.max(-9, Math.min(1, av - ev));
+  const bright = ev >= 14 ? 7 : 6;
+  let av = Math.max(setup.open, setup.tripod ? bright : ev >= 11 ? bright : ev >= 8 ? 5 : 4);
+  let sv = 0;
+  if (!setup.tripod) {
+    const slowest = -Math.ceil(Math.log2(Math.max(60, 2 * setup.focal)));
+    const over = Math.round(av - ev) - slowest;
+    if (over > 0) {
+      av = Math.max(setup.open, av - over);
+      sv = Math.min(ISO_MAX_SV, Math.max(0, Math.round(av - ev) - slowest));
+    }
+  }
+  const k = Math.max(-9, Math.min(5, Math.round(av - ev) - sv));
   const shutter = k >= 0 ? `${2 ** k}s` : `1/${DIAL[dialIndex(k)]}`;
-  return { ev, f: F_STOPS[av - 3]!, av, k, shutter };
+  const f = Number.isInteger(av) ? F_STOPS[av]! : setup.openF;
+  return { ev, f, av, k, shutter, sv, iso: 100 * 2 ** sv };
 }
 
 export const readingText = (r: Reading) => `about EV ${r.ev} · f/${r.f} · ${r.shutter}`;

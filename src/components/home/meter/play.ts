@@ -1,12 +1,14 @@
 // The "Light meter" theme in the browser: the hero camera plays the day on a loop while it
 // is on screen, and the header track follows the page scroll. Both read the light at a
-// minute from the sun's altitude and turn the same parts to it; the hero also swaps the
-// lens on its mount for the one each stop uses.
+// minute from the sun's altitude, set the exposure for the stop's lens and support, and
+// turn the same parts to it; the hero also swaps the lens on its mount when a stop with
+// another first lens begins.
 import { hhmm } from '@/photorouter/lib/sun';
 import { PHASE_LABEL, mountedLens, needsSupport, phaseAt, type PlayDay } from '../daylight';
 import { autoplay, focusStop, followScroll, lastStop, readDay } from '../dayclock';
-import { altitude, exposure, readingText, sceneEv, type Solar } from './meter';
-import { dialTurn, irisScale, needleAngle } from './plate';
+import { altitude, exposure, readingText, sceneEv, setupFor, type Solar } from './meter';
+import { dialTurn, irisScale, isoTurn, needleAngle } from './plate';
+import { firstLens } from './lens';
 
 const readSolar = (el: HTMLElement): Solar => JSON.parse(el.dataset.solar ?? '{}');
 
@@ -30,6 +32,8 @@ function meter(root: HTMLElement, day: PlayDay, solar: Solar, lensOf: 'camera' |
   const needle = q('[data-needle]');
   const sweep = Number(needle?.dataset.sweep ?? 45);
   const dial = q('[data-dial]');
+  const isoDial = q('[data-iso-dial]');
+  const iso = q('[data-iso]');
   const fring = q('[data-fring]');
   const iris = q('[data-iris]');
   const rings = all('[data-ring]');
@@ -50,27 +54,29 @@ function meter(root: HTMLElement, day: PlayDay, solar: Solar, lensOf: 'camera' |
   let swapEnds = 0;
 
   return (m: number) => {
+    // The stop named is the one being shot, else the next, else the last. The camera keeps
+    // the first lens of the last stop it reached until the next stop starts; the track lists
+    // the lens the named stop calls for at this minute.
+    const { now, shown } = focusStop(day, m);
+    const named = now ?? shown ?? day.stops.at(-1);
+    const stop = lensOf === 'camera' ? (lastStop(day, m) ?? day.stops[0]) : named;
+    const lens = stop && (lensOf === 'camera' ? firstLens(stop.kit) : mountedLens(stop, m));
+
     const a = altitude(m, solar);
     const ev = sceneEv(a);
-    const r = exposure(ev);
+    const r = exposure(ev, setupFor(stop?.kit ?? [], lens));
     const p = (m - day.start) / (day.end - day.start);
     setStyle(needle, 'transform', `rotate(${needleAngle(ev, sweep).toFixed(2)}deg)`);
     setStyle(dial, 'transform', `rotate(${dialTurn(r.k)}deg)`);
+    setStyle(isoDial, 'transform', `rotate(${isoTurn(r.sv)}deg)`);
     setStyle(fring, 'transform', `rotate(${-(r.av - 4) * 36}deg)`);
     setStyle(iris, 'transform', `scale(${irisScale(r.av).toFixed(3)})`);
     for (const ring of rings) setStyle(ring, 'transform', `translateX(${(-r.av * Number(ring.dataset.ring)).toFixed(2)}px)`);
     for (const f of follow) setStyle(f, 'transform', `translateX(${(p * 100).toFixed(2)}%)`);
     notches.forEach((n, i) => n.toggleAttribute('data-lit', (day.stops[i]?.t ?? Infinity) <= m));
 
-    // The stop named is the one being shot, else the next, else the last. The camera keeps
-    // the lens of the last stop it reached until the next stop starts; the track lists the
-    // lens the named stop calls for.
-    const { now, shown } = focusStop(day, m);
-    const named = now ?? shown ?? day.stops.at(-1);
-    const stop = lensOf === 'camera' ? (lastStop(day, m) ?? day.stops[0]) : named;
     // A drawn lens finishes its swap before the next one starts, so a quick change of lens
     // shows a little late rather than as two lenses crossing on the mount.
-    const lens = stop && mountedLens(stop, m);
     const t = performance.now();
     if (lenses.length && lens !== mounted && t >= swapEnds) {
       if (mounted !== undefined) swapEnds = t + SWAP_MS;
@@ -87,6 +93,7 @@ function meter(root: HTMLElement, day: PlayDay, solar: Solar, lensOf: 'camera' |
     setText(aperture, `f/${r.f}`);
     setText(shutter, r.shutter);
     setText(lcd, `F${r.f}`);
+    setText(iso, String(r.iso));
     setText(support, stop && needsSupport(stop.kit) ? 'On a tripod' : 'Handheld');
     setText(lensName, (lenses.length ? mounted : lens) ?? '');
     return now;

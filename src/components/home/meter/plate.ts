@@ -21,5 +21,8 @@ export const polar = (cx: number, cy: number, r: number, deg: number) => ({
 /** The shutter dial turns 30 degrees per stop, so the set speed faces the index mark. */
 export const dialTurn = (k: number) => -dialIndex(k) * 30;
 
+/** The ISO dial turns 40 degrees per stop from ISO 100. */
+export const isoTurn = (sv: number) => -sv * 40;
+
 /** The iris opening against f/4: its diameter is the focal length over N, and N = 2^(Av/2). */
 export const irisScale = (av: number) => 2 ** ((4 - av) / 2);

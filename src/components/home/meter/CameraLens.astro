@@ -52,7 +52,6 @@ const bands: Band[] = parts.map(([h, w, kind]) => {
   y += h;
   return b;
 });
-const end = y;
 const band = (b: Band) => {
   const r = Math.min(0.9, b.h / 3);
   const [x0, x1, y1] = [cx - b.w / 2, cx + b.w / 2, b.y + b.h];
@@ -72,6 +71,7 @@ const text = engraving(spec);
 const engraveSize = clamp(D * 0.05, 3.1, 4.2);
 const ribbed = bands.filter((b) => ['focus', 'zoom', 'focus-fine', 'filter'].includes(b.kind));
 const breakY = fb.y + fb.h * 0.62;
+const SILVER = new Set(['rear', 'aperture', 'barrel', 'front']);
 ---
 
 <g class="cam-lens" data-lens-label={label} data-on={on ? '' : undefined}>
@@ -83,13 +83,17 @@ const breakY = fb.y + fb.h * 0.62;
       <rect x={cx - ap.w / 2} y={ap.y} width={ap.w} height={ap.h}></rect>
     </clipPath>
   </defs>
-  <rect x={cx - D / 2 + 1} y={y0 + 2} width={D - 2} height={end - y0 - 2} fill="#000" opacity="0.35" transform="translate(1.2 1.6)"></rect>
+  <g fill="#000" opacity="0.35" transform="translate(1.2 1.6)">
+    {bands.slice(1).map((b) => <path d={band(b)} />)}
+    {taper && <path d={taper} />}
+  </g>
   {
     bands.map((b) => (
       <path d={band(b)} class={`cam-band-${b.kind}`} />
     ))
   }
   {taper && <path d={taper} class="cam-band-taper" />}
+  {bands.filter((b) => SILVER.has(b.kind)).map((b) => <path d={band(b)} fill="url(#cam-brush)" />)}
   <g clip-path={`url(#${id}-body)`}>
     <g class="cam-twist">
       {ribbed.map((b) => (
