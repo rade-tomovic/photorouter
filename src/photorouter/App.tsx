@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Mountain, Moon, Smartphone, Sun } from 'lucide-react';
-import { MOBILE_LAYOUTS, useStore, type MobileLayout } from './store';
+import { Mountain, Moon, Sun } from 'lucide-react';
+import { useStore } from './store';
 import { PlanColumn } from './components/PlanColumn';
 import { PlanStepper } from './components/PlanStepper';
 import { SidePanel } from './components/DayPanel';
 import { MapView } from './components/MapView';
-import { SheetLayout, StackLayout, SwitchLayout } from './components/MobileLayouts';
+import { PhoneLayout } from './components/PhoneLayout';
 import { Timeline } from './components/Timeline';
 import { cx } from './components/ui';
 
@@ -23,7 +23,6 @@ function useMedia(query: string) {
 export default function App() {
   const theme = useStore((s) => s.theme);
   const planView = useStore((s) => s.planView);
-  const layout = useStore((s) => s.mobileLayout);
   const wide = useMedia('(min-width: 1280px)');
   const mid = useMedia('(min-width: 1024px)');
 
@@ -37,13 +36,6 @@ export default function App() {
     try { localStorage.setItem('photorouter:plan-view', planView); } catch { /* private mode */ }
   }, [planView]);
 
-  useEffect(() => {
-    try { localStorage.setItem('photorouter:mobile-layout', layout); } catch { /* private mode */ }
-  }, [layout]);
-
-  // Only the stacked phone layout scrolls as a page; the others fit the screen like the desktop.
-  const fixed = mid || layout !== 'stack';
-
   // The plan panel gets its own column when there's room; otherwise it is a tab.
   useEffect(() => {
     const { tab, set } = useStore.getState();
@@ -51,22 +43,22 @@ export default function App() {
   }, [wide]);
 
   return (
-    <div className={cx('flex flex-col bg-bg text-ink', fixed ? 'h-dvh' : 'min-h-dvh')}>
+    <div className="flex h-dvh flex-col bg-bg text-ink">
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-full focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-accent-ink"
       >
         Skip to content
       </a>
-      <TopBar phone={!mid} />
+      <TopBar />
       <main
         id="main"
         tabIndex={-1}
         className={cx(
           'outline-none',
           'grid min-h-0 flex-1',
-          // On wide screens the page is exactly one viewport tall: the single row is capped so each panel scrolls inside itself.
-          fixed && 'grid-rows-[minmax(0,1fr)] overflow-hidden',
+          // The page is exactly one viewport tall: the single row is capped so each panel scrolls inside itself.
+          'grid-rows-[minmax(0,1fr)] overflow-hidden',
           wide ? 'grid-cols-[auto_minmax(0,1fr)_400px]' : mid ? 'grid-cols-[minmax(0,1fr)_390px]' : 'grid-cols-1',
         )}
       >
@@ -83,12 +75,8 @@ export default function App() {
               <SidePanel withPlan={!wide} />
             </aside>
           </>
-        ) : layout === 'sheet' ? (
-          <SheetLayout />
-        ) : layout === 'switch' ? (
-          <SwitchLayout />
         ) : (
-          <StackLayout />
+          <PhoneLayout />
         )}
       </main>
       <PlanStepper />
@@ -96,7 +84,7 @@ export default function App() {
   );
 }
 
-function TopBar({ phone }: { phone: boolean }) {
+function TopBar() {
   const theme = useStore((s) => s.theme);
   const terrain = useStore((s) => s.terrain);
   const set = useStore((s) => s.set);
@@ -110,7 +98,6 @@ function TopBar({ phone }: { phone: boolean }) {
         Photo trip planner
       </span>
       <div className="ml-auto flex items-center gap-1.5">
-        {phone && <LayoutPicker />}
         <button
           type="button"
           aria-pressed={terrain}
@@ -134,24 +121,6 @@ function TopBar({ phone }: { phone: boolean }) {
         <a href="https://ampq.dev/" className="ml-1 hidden font-mono text-xs text-muted no-underline hover:text-ink md:inline">by AMPQ</a>
       </div>
     </header>
-  );
-}
-
-/** Switches between the phone layouts, to compare them on a real device. */
-function LayoutPicker() {
-  const layout = useStore((s) => s.mobileLayout);
-  return (
-    <label className="relative inline-flex items-center">
-      <span className="sr-only">Phone layout</span>
-      <Smartphone className="pointer-events-none absolute left-2.5 size-3.5 text-muted" aria-hidden />
-      <select
-        value={layout}
-        onChange={(e) => useStore.setState({ mobileLayout: e.target.value as MobileLayout })}
-        className="rt-btn-quiet h-8 appearance-none rounded-full border-0 pr-3 pl-7 text-xs font-semibold text-ink"
-      >
-        {MOBILE_LAYOUTS.map((l) => <option key={l.id} value={l.id}>{l.label}</option>)}
-      </select>
-    </label>
   );
 }
 
