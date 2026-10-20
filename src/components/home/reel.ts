@@ -18,6 +18,7 @@ if (reel && film && gate) {
   let range = 0;
   let pending = false;
   let idle = 0;
+  const still = reduceMotion();
 
   const measure = () => {
     const track = reel.clientHeight;
@@ -32,7 +33,8 @@ if (reel && film && gate) {
     pending = false;
     const p = range ? Math.min(1, Math.max(0, scrollY / range)) : 0;
     gate.style.transform = `translateY(${p * travel}px)`;
-    film.style.backgroundPositionY = `${-scrollY * 0.35}px`;
+    // The holes advance with the page; with reduced motion only the frame moves.
+    if (!still) film.style.backgroundPositionY = `${-scrollY * 0.35}px`;
   };
 
   const wake = () => {
@@ -84,7 +86,7 @@ if (reel && film && gate) {
     scrollTo({ top: p * range, behavior: reduceMotion() ? 'auto' : 'smooth' });
   });
 
-  root.dataset.reel = '';
+  root.dataset.filmScroll = '';
   addEventListener('scroll', schedule, { passive: true });
   addEventListener('resize', refresh);
   // The body is held at the viewport height, so watch the page content for growth instead.

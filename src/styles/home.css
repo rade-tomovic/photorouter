@@ -143,9 +143,15 @@
 }
 
 /* The film strip scrollbar (FilmReel.astro). The browser's own scrollbar hides only once the
-   script has put the strip in place. The holes advance with the page (reel.ts moves them). */
-:root[data-reel] { scrollbar-width: none; }
-:root[data-reel]::-webkit-scrollbar { display: none; }
+   script has put the strip in place, and stays in forced colours, where the strip's gradients
+   would not show. The holes advance with the page (reel.ts moves them). */
+@media (forced-colors: none) {
+  :root[data-film-scroll] { scrollbar-width: none; }
+  :root[data-film-scroll]::-webkit-scrollbar { display: none; }
+}
+@media (forced-colors: active) {
+  .pr-reel { display: none; }
+}
 .pr-reel {
   position: fixed;
   inset-block: 0;
@@ -180,11 +186,13 @@
   touch-action: none;
   will-change: transform;
 }
-/* A wider grip than the strip itself, so the frame is easy to catch with a finger. */
+/* A wider grip than the strip itself, so the frame is easy to catch. It reaches no further
+   into the page than the header's side padding (16px on phones, 24px from 640px), so it never
+   covers the header's buttons. */
 .pr-reel-gate::before {
   content: '';
   position: absolute;
-  inset: -6px 0 -6px -14px;
+  inset: -6px 0 -6px -6px;
 }
 .pr-reel[data-dragging] .pr-reel-gate { cursor: grabbing; }
 @media (pointer: coarse) {
@@ -198,7 +206,7 @@
       linear-gradient(#0b0908 0 4px, transparent 4px),
       linear-gradient(#0b0908 0 4px, transparent 4px);
   }
-  .pr-reel-gate::before { inset: -10px 0 -10px -22px; }
+  .pr-reel-gate::before { inset: -10px 0 -10px -6px; }
 }
 @media print {
   .pr-reel { display: none; }
