@@ -61,7 +61,7 @@ export function MapView() {
       <EmptyHint />
       <SpotCard />
       {error && (
-        <p role="alert" className="absolute top-14 left-1/2 z-10 m-0 -translate-x-1/2 rounded-full bg-ink px-4 py-2 text-xs font-semibold text-surface shadow-card">
+        <p role="alert" className="absolute top-14 left-1/2 z-10 m-0 -translate-x-1/2 rounded-full border border-line bg-surface-2 px-4 py-2 text-xs font-semibold text-ink shadow-card">
           {error}
         </p>
       )}
@@ -103,7 +103,7 @@ function MapTools() {
             aria-checked={basemap === b}
             tabIndex={basemap === b ? 0 : -1}
             onClick={() => useStore.setState({ basemap: b })}
-            className={basemap === b ? 'h-7 rounded-md bg-ink px-2.5 text-xs font-semibold text-surface' : 'h-7 rounded-md px-2.5 text-xs font-semibold text-muted hover:text-ink'}
+            className={basemap === b ? 'h-7 rounded-md bg-accent px-2.5 text-xs font-semibold text-accent-ink' : 'h-7 rounded-md px-2.5 text-xs font-semibold text-muted hover:text-ink'}
           >
             {b === 'detailed' ? 'Detailed' : 'Clean'}
           </button>
