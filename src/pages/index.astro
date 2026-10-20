@@ -11,6 +11,7 @@ import Cta from '@/components/home/Cta.astro';
 import Footer from '@/components/home/Footer.astro';
 import { DEMOS, countWord } from '@/components/home/demoData';
 import FilmEdge from '@/components/home/FilmEdge.astro';
+import FilmReel from '@/components/home/FilmReel.astro';
 import '@/styles/home.css';
 
 const description = `Plan a photo trip anywhere: where to shoot, at what time of day and what to pack, played as a route on a 3D map. ${countWord(DEMOS.length)} example trips, free, no sign-up.`;
@@ -42,4 +43,5 @@ const description = `Plan a photo trip anywhere: where to shoot, at what time of
     </main>
     <Footer />
   </div>
+  <FilmReel />
 </Base>

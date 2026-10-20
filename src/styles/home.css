@@ -141,3 +141,73 @@
   translate: 0 0;
   transition: opacity 0.3s ease, translate 0.3s ease, visibility 0s 0s;
 }
+
+/* The film strip scrollbar (FilmReel.astro). The browser's own scrollbar hides only once the
+   script has put the strip in place, and stays in forced colours, where the strip's gradients
+   would not show. The holes advance with the page (reel.ts moves them). */
+@media (forced-colors: none) {
+  :root[data-film-scroll] { scrollbar-width: none; }
+  :root[data-film-scroll]::-webkit-scrollbar { display: none; }
+}
+@media (forced-colors: active) {
+  .pr-reel { display: none; }
+}
+.pr-reel {
+  position: fixed;
+  inset-block: 0;
+  right: 0;
+  z-index: 50;
+  width: 16px;
+  background: linear-gradient(90deg, #1f1408, #3a2610 50%, #1f1408);
+  box-shadow: inset 1px 0 0 rgb(0 0 0 / 0.7), -1px 0 0 rgb(255 255 255 / 0.04);
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+}
+.pr-reel:hover,
+.pr-reel[data-dragging] { opacity: 1; }
+.pr-reel-film {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  background-image:
+    linear-gradient(#0b0908 0 6px, transparent 6px),
+    linear-gradient(#0b0908 0 6px, transparent 6px);
+  background-size: 3px 13px;
+  background-repeat: repeat-y;
+  background-position-x: 2px, calc(100% - 2px);
+}
+.pr-reel-gate {
+  position: absolute;
+  inset: 0 1px auto;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgb(242 138 60 / 0.5), rgb(255 196 128 / 0.78) 50%, rgb(242 138 60 / 0.5));
+  box-shadow: 0 0 0 1px rgb(255 204 150 / 0.75), 0 0 14px rgb(242 138 60 / 0.5);
+  cursor: grab;
+  touch-action: none;
+  will-change: transform;
+}
+/* A wider grip than the strip itself, so the frame is easy to catch. It reaches no further
+   into the page than the header's side padding (16px on phones, 24px from 640px), so it never
+   covers the header's buttons. */
+.pr-reel-gate::before {
+  content: '';
+  position: absolute;
+  inset: -6px 0 -6px -6px;
+}
+.pr-reel[data-dragging] .pr-reel-gate { cursor: grabbing; }
+@media (pointer: coarse) {
+  .pr-reel { width: 9px; opacity: 0.45; }
+  .pr-reel[data-active],
+  .pr-reel[data-dragging] { opacity: 1; }
+  .pr-reel-film {
+    background-size: 2px 10px;
+    background-position-x: 1px, calc(100% - 1px);
+    background-image:
+      linear-gradient(#0b0908 0 4px, transparent 4px),
+      linear-gradient(#0b0908 0 4px, transparent 4px);
+  }
+  .pr-reel-gate::before { inset: -10px 0 -10px -6px; }
+}
+@media print {
+  .pr-reel { display: none; }
+}
