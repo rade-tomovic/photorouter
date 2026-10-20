@@ -76,7 +76,7 @@ function Step({ n, title, children, id }: { n: number; title: string; children: 
   return (
     <section className="grid gap-2.5 rounded-xl border border-line bg-surface-2 p-3.5" aria-labelledby={id}>
       <h3 id={id} className="m-0 flex items-center gap-2 text-sm font-bold">
-        <span className="grid size-5 place-items-center rounded-full bg-ink font-mono text-[11px] text-surface">{n}</span>
+        <span className="grid size-5 place-items-center rounded-full bg-accent font-mono text-[11px] text-accent-ink">{n}</span>
         {title}
       </h3>
       {children}

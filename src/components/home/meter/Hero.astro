@@ -1,16 +1,18 @@
 ---
-// "Light meter": the hero day as a rangefinder's top plate. A meter needle reads the
-// light from the sun's real altitude, the shutter dial and the aperture ring turn to the
-// exposure, a small window shows the sun or the moon, and the lens changes at each stop.
-// Without JavaScript it is a still drawing of the last stop; play.ts plays the day.
+// "Light meter": the hero day on a retro full-frame mirrorless body seen from above, drawn
+// to scale in mm. The shutter dial, the top display and the lens's aperture ring follow the
+// exposure for the sun's real altitude, and the lens on the mount is the one each stop's kit
+// calls for, swapped when the stop changes. Without JavaScript it is a still drawing of the
+// last stop; play.ts plays the day.
 import { lightDay, type Demo } from '../demoData';
-import { lensKind, mountedLens, needsSupport, phaseAt, PHASE_LABEL, type LensKind } from '../daylight';
+import { needsSupport, phaseAt, PHASE_LABEL } from '../daylight';
 import { hhmm, tzOffset } from '@/photorouter/lib/sun';
-import ShutterDial from './ShutterDial.astro';
-import EvScale from './EvScale.astro';
 import DayScale from './DayScale.astro';
-import { F_STOPS, altitude, avOf, exposure, moonAge, moonPath, readingText, sceneEv, solarFor } from './meter';
-import { HERO_METER, altText, apertureShift, dialTurn, needleAngle, sunInWindow } from './plate';
+import TopDial from './TopDial.astro';
+import CameraLens from './CameraLens.astro';
+import { DIAL, altitude, exposure, readingText, sceneEv, setupFor, solarFor } from './meter';
+import { dialTurn, isoTurn, polar } from './plate';
+import { MOUNT_DOT, firstLens, lensSize, parseLens } from './lens';
 import './meter.css';
 
 interface Props {
@@ -24,71 +26,59 @@ const solar = solarFor(sheet.date, sheet.ll[1], sheet.ll[0], tzOffset(sheet.date
 // The still drawing shows the last stop at its planned time.
 const still = stops.at(-1)!;
 const m0 = still.t;
-const alt0 = altitude(m0, solar);
-const read0 = exposure(sceneEv(alt0));
-const lens0 = mountedLens(still, m0) ?? '';
-const kind0 = lensKind(lens0) ?? 'standard';
-const sun0 = sunInWindow((m0 - start) / (end - start), alt0);
+// The camera mounts each stop's first lens and keeps it until the next stop.
+const lens0 = firstLens(still.kit) ?? '';
+const read0 = exposure(sceneEv(altitude(m0, solar)), setupFor(still.kit, lens0));
 const phase0 = phaseAt(m0, sun);
+const stop0 = stops.find((s) => m0 >= s.from && m0 <= s.to) ?? still;
 
-// One barrel per kind of lens the day carries, drawn from above as rings along its axis.
-type Band = { y: number; h: number; type: 'aperture' | 'ribs' | 'fine' | 'barrel' | 'chrome' | 'front' | 'hood'; w?: number };
-const SHAPES: Record<LensKind, { w: number; bands: Band[] }> = {
-  wide: {
-    w: 72,
-    bands: [
-      { y: 146, h: 16, type: 'aperture' },
-      { y: 164, h: 18, type: 'ribs' },
-      { y: 183, h: 12, type: 'front' },
-      { y: 195, h: 8, type: 'hood', w: 90 },
-    ],
-  },
-  standard: {
-    w: 78,
-    bands: [
-      { y: 146, h: 16, type: 'aperture' },
-      { y: 164, h: 22, type: 'ribs' },
-      { y: 188, h: 14, type: 'fine' },
-      { y: 203, h: 13, type: 'front' },
-    ],
-  },
-  tele: {
-    w: 84,
-    bands: [
-      { y: 146, h: 16, type: 'aperture' },
-      { y: 163, h: 11, type: 'barrel' },
-      { y: 175, h: 7, type: 'chrome' },
-      { y: 183, h: 21, type: 'ribs' },
-      { y: 206, h: 13, type: 'fine' },
-      { y: 220, h: 12, type: 'front' },
-      { y: 232, h: 11, type: 'hood', w: 94 },
-    ],
-  },
-};
-const CX = 230;
-const labels = [...new Set(stops.flatMap((s) => s.kit.filter((k) => lensKind(k))))];
-const lenses = (['wide', 'standard', 'tele'] as const).flatMap((kind) => {
-  const label = labels.find((l) => lensKind(l) === kind);
-  if (!label) return [];
-  const maxF = label.match(/f\/([\d.]+)/)?.[1] ?? '4';
-  const maxAv = Math.max(4, avOf(maxF));
-  const fs = F_STOPS.filter((f) => avOf(f) >= maxAv);
-  return [{ kind, label, maxAv, fs, ...SHAPES[kind] }];
+// Every lens the day's kit lists, drawn once each; the view is tall enough for the longest.
+const lenses = [...new Set(stops.flatMap((s) => s.kit))].flatMap((label) => {
+  const spec = parseLens(label);
+  return spec ? [{ label, spec, size: lensSize(spec) }] : [];
 });
-const band = (cx: number, w: number, b: Band) =>
-  b.type === 'hood'
-    ? `M${cx - w / 2} ${b.y}H${cx + w / 2}L${cx + (b.w ?? w) / 2} ${b.y + b.h}H${cx - (b.w ?? w) / 2}Z`
-    : `M${cx - w / 2 + 1.5} ${b.y}H${cx + w / 2 - 1.5}Q${cx + w / 2} ${b.y} ${cx + w / 2} ${b.y + 1.5}V${b.y + b.h - 1.5}Q${cx + w / 2} ${b.y + b.h} ${cx + w / 2 - 1.5} ${b.y + b.h}H${cx - w / 2 + 1.5}Q${cx - w / 2} ${b.y + b.h} ${cx - w / 2} ${b.y + b.h - 1.5}V${b.y + 1.5}Q${cx - w / 2} ${b.y} ${cx - w / 2 + 1.5} ${b.y}Z`;
+const CAP = 150;
+const longest = Math.min(CAP, Math.max(46, ...lenses.map((l) => l.size.length)));
+const widest = Math.max(66, ...lenses.map((l) => l.size.dia));
 
-const M = HERO_METER;
+// The body is 144 mm wide; the mount face sits at Y0 and the lens hangs from it.
+const W = 200;
+const CX = W / 2;
+const Y0 = 58.6;
+const H = Math.ceil(Y0 + longest + 4);
+const pct = (v: number, of: number) => `${((v / of) * 100).toFixed(2)}%`;
+const side = pct(CX - widest / 2 - 4, W);
+
 const deg = (v: number, pos: string, neg: string) => {
   const a = Math.abs(v);
   return `${Math.floor(a)}°${String(Math.round((a % 1) * 60)).padStart(2, '0')}′${v >= 0 ? pos : neg}`;
 };
 const coords = `${deg(sheet.ll[1], 'N', 'S')} ${deg(sheet.ll[0], 'E', 'W')}`;
-const moon = moonPath(moonAge(sheet.date), 4.2);
 
-const stop0 = stops.find((s) => m0 >= s.from && m0 <= s.to) ?? still;
+const SHUTTER = DIAL.map((s, i) => ({ text: s.replace('s', '″'), at: i * 30, ...(/s|B/.test(s) ? { class: 'cam-dial-slow' } : {}) }));
+const ISO = [
+  { text: 'L', at: -40 },
+  ...['100', '200', '400', '800', '1600', '3200', '6400'].map((text, i) => ({ text, at: i * 40 })),
+  { text: 'H', at: 280 },
+];
+const COMP = [
+  { text: '-3', at: -90 },
+  { text: '-2', at: -60 },
+  { text: '-1', at: -30 },
+  { text: '0', at: 0, class: 'cam-dial-zero' },
+  { text: '+1', at: 30 },
+  { text: '+2', at: 60 },
+  { text: '+3', at: 90 },
+];
+
+// Shutter release with its power lever, set to on.
+const REL = { x: 40.4, y: 47.4 };
+const at = (r: number, a: number) => polar(REL.x, REL.y, r, a);
+const lever = [at(6, 194), at(9.4, 197), at(9.4, 203), at(6, 206)];
+const on = at(11.4, 200);
+const off = at(11.4, 158);
+const isoLever = [polar(138.5, 28.6, 11, 128), polar(138.5, 28.6, 15.4, 131), polar(138.5, 28.6, 15.4, 139), polar(138.5, 28.6, 11, 142)];
+const pts = (ps: { x: number; y: number }[]) => ps.map((p) => `${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(' ');
 ---
 
 <div
@@ -108,220 +98,208 @@ const stop0 = stops.find((s) => m0 >= s.from && m0 <= s.to) ?? still;
   </div>
 
   <div class="relative mt-3">
-  <svg viewBox="0 0 460 246" class="mt-plate block h-auto w-full overflow-visible" aria-hidden="true" focusable="false">
-    <defs>
-      <linearGradient id="mth-paint" x1="0" x2="0" y1="0" y2="1">
-        <stop offset="0" stop-color="#39434d"></stop>
-        <stop offset="0.07" stop-color="#232a32"></stop>
-        <stop offset="0.6" stop-color="#171c22"></stop>
-        <stop offset="1" stop-color="#0d1115"></stop>
-      </linearGradient>
-      <linearGradient id="mth-chrome" x1="0" x2="0" y1="0" y2="1">
-        <stop offset="0" stop-color="#f4f6f8"></stop>
-        <stop offset="0.45" stop-color="#b8c0c7"></stop>
-        <stop offset="0.55" stop-color="#8a939c"></stop>
-        <stop offset="1" stop-color="#d9dee3"></stop>
-      </linearGradient>
-      <linearGradient id="mth-knurl" x1="0" x2="1" y1="0" y2="1">
-        <stop offset="0" stop-color="#eef1f4"></stop>
-        <stop offset="0.5" stop-color="#9aa3ab"></stop>
-        <stop offset="1" stop-color="#5d666f"></stop>
-      </linearGradient>
-      <radialGradient id="mth-cap" cx="0.36" cy="0.3" r="0.8">
-        <stop offset="0" stop-color="#ffffff"></stop>
-        <stop offset="0.45" stop-color="#d3d9de"></stop>
-        <stop offset="1" stop-color="#8b949c"></stop>
-      </radialGradient>
-      <radialGradient id="mth-face" cx="0.5" cy="1" r="1.1">
-        <stop offset="0" stop-color="#fbf5e6"></stop>
-        <stop offset="0.75" stop-color="#ece2c9"></stop>
-        <stop offset="1" stop-color="#d4c7a6"></stop>
-      </radialGradient>
-      <linearGradient id="mth-glare" x1="0" x2="1" y1="0" y2="1">
-        <stop offset="0" stop-color="#fff" stop-opacity="0.5"></stop>
-        <stop offset="0.5" stop-color="#fff" stop-opacity="0.08"></stop>
-        <stop offset="1" stop-color="#fff" stop-opacity="0"></stop>
-      </linearGradient>
-      <linearGradient id="mth-cyl" x1="0" x2="1" y1="0" y2="0">
-        <stop offset="0" stop-color="#000" stop-opacity="0.6"></stop>
-        <stop offset="0.22" stop-color="#000" stop-opacity="0"></stop>
-        <stop offset="0.4" stop-color="#fff" stop-opacity="0.16"></stop>
-        <stop offset="0.55" stop-color="#fff" stop-opacity="0"></stop>
-        <stop offset="0.85" stop-color="#000" stop-opacity="0.25"></stop>
-        <stop offset="1" stop-color="#000" stop-opacity="0.7"></stop>
-      </linearGradient>
-      <pattern id="mth-leather" width="5" height="5" patternUnits="userSpaceOnUse">
-        <rect width="5" height="5" fill="#101418"></rect>
-        <circle cx="1.3" cy="1.4" r="1" fill="#1d2329"></circle>
-        <circle cx="3.8" cy="3.6" r="1.1" fill="#1a1f25"></circle>
-      </pattern>
-      <pattern id="mth-ribs" width="3.2" height="4" patternUnits="userSpaceOnUse">
-        <rect width="3.2" height="4" fill="#0c0f12"></rect>
-        <rect width="1.4" height="4" fill="#2a3138"></rect>
-      </pattern>
-      <pattern id="mth-fine" width="2" height="4" patternUnits="userSpaceOnUse">
-        <rect width="2" height="4" fill="#111519"></rect>
-        <rect width="0.8" height="4" fill="#323a42"></rect>
-      </pattern>
-      <clipPath id="mth-meter-glass"><rect x="168" y="24" width="124" height="68" rx="5"></rect></clipPath>
-      <clipPath id="mth-sun-glass"><rect x="95" y="39" width="52" height="38" rx="4"></rect></clipPath>
-      {
-        lenses.map((l) => (
-          <clipPath id={`mth-ring-${l.kind}`}>
-            <rect x={CX - l.w / 2} y={l.bands[0]!.y} width={l.w} height={l.bands[0]!.h} />
-          </clipPath>
-        ))
-      }
-    </defs>
+    <svg viewBox={`0 0 ${W} ${H}`} class="cam block h-auto w-full" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="cam-plate" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0" stop-color="#e6e9eb"></stop>
+          <stop offset="0.1" stop-color="#cdd2d6"></stop>
+          <stop offset="0.6" stop-color="#b2b8bd"></stop>
+          <stop offset="1" stop-color="#8f969c"></stop>
+        </linearGradient>
+        <pattern id="cam-brush" width="7" height="0.7" patternUnits="userSpaceOnUse">
+          <rect width="7" height="0.32" fill="#fff" opacity="0.12"></rect>
+          <rect y="0.35" width="4" height="0.18" fill="#000" opacity="0.05"></rect>
+        </pattern>
+        <linearGradient id="cam-facet-l" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0" stop-color="#f6f7f8"></stop>
+          <stop offset="1" stop-color="#c9ced2"></stop>
+        </linearGradient>
+        <linearGradient id="cam-facet-r" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0" stop-color="#9aa1a7"></stop>
+          <stop offset="1" stop-color="#737a80"></stop>
+        </linearGradient>
+        <linearGradient id="cam-facet-f" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0" stop-color="#c7ccd0"></stop>
+          <stop offset="1" stop-color="#9ba2a8"></stop>
+        </linearGradient>
+        <linearGradient id="cam-facet-b" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0" stop-color="#7f868c"></stop>
+          <stop offset="1" stop-color="#aab0b5"></stop>
+        </linearGradient>
+        <linearGradient id="cam-chrome" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0" stop-color="#f4f6f8"></stop>
+          <stop offset="0.45" stop-color="#b8c0c7"></stop>
+          <stop offset="0.55" stop-color="#8a939c"></stop>
+          <stop offset="1" stop-color="#d9dee3"></stop>
+        </linearGradient>
+        <linearGradient id="cam-knurl" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="0" stop-color="#f2f4f6"></stop>
+          <stop offset="0.5" stop-color="#a3abb2"></stop>
+          <stop offset="1" stop-color="#5d666f"></stop>
+        </linearGradient>
+        <radialGradient id="cam-cap" cx="0.36" cy="0.3" r="0.8">
+          <stop offset="0" stop-color="#ffffff"></stop>
+          <stop offset="0.45" stop-color="#d3d9de"></stop>
+          <stop offset="1" stop-color="#8b949c"></stop>
+        </radialGradient>
+        <radialGradient id="cam-black" cx="0.4" cy="0.32" r="0.8">
+          <stop offset="0" stop-color="#2e353c"></stop>
+          <stop offset="0.7" stop-color="#191e23"></stop>
+          <stop offset="1" stop-color="#0e1114"></stop>
+        </radialGradient>
+        <linearGradient id="cam-lcd" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="0" stop-color="#1d2329"></stop>
+          <stop offset="1" stop-color="#07090b"></stop>
+        </linearGradient>
+        <linearGradient id="cam-glare" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="0" stop-color="#fff" stop-opacity="0.22"></stop>
+          <stop offset="0.45" stop-color="#fff" stop-opacity="0.04"></stop>
+          <stop offset="1" stop-color="#fff" stop-opacity="0"></stop>
+        </linearGradient>
+        <linearGradient id="cam-cyl" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0" stop-color="#000" stop-opacity="0.65"></stop>
+          <stop offset="0.16" stop-color="#000" stop-opacity="0.1"></stop>
+          <stop offset="0.34" stop-color="#fff" stop-opacity="0.13"></stop>
+          <stop offset="0.5" stop-color="#fff" stop-opacity="0.02"></stop>
+          <stop offset="0.8" stop-color="#000" stop-opacity="0.22"></stop>
+          <stop offset="1" stop-color="#000" stop-opacity="0.72"></stop>
+        </linearGradient>
+        <pattern id="cam-leather" width="2" height="2" patternUnits="userSpaceOnUse">
+          <rect width="2" height="2" fill="#121619"></rect>
+          <circle cx="0.5" cy="0.6" r="0.42" fill="#20262b"></circle>
+          <circle cx="1.5" cy="1.5" r="0.46" fill="#1b2025"></circle>
+        </pattern>
+        <pattern id="cam-ribs" width="1.7" height="4" patternUnits="userSpaceOnUse">
+          <rect width="1.7" height="4" fill="#565d64"></rect>
+          <rect width="0.8" height="4" fill="#a9b0b5"></rect>
+        </pattern>
+        <pattern id="cam-fine" width="0.9" height="4" patternUnits="userSpaceOnUse">
+          <rect width="0.9" height="4" fill="#666d73"></rect>
+          <rect width="0.4" height="4" fill="#bcc2c6"></rect>
+        </pattern>
+        <pattern id="cam-knurl-edge" width="0.9" height="2" patternUnits="userSpaceOnUse">
+          <rect width="0.9" height="2" fill="#15191d"></rect>
+          <rect width="0.4" height="2" fill="#4a535b"></rect>
+        </pattern>
+        <linearGradient id="cam-cast" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0" stop-color="#000" stop-opacity="0.2"></stop>
+          <stop offset="1" stop-color="#000" stop-opacity="0"></stop>
+        </linearGradient>
+        <filter id="cam-soft" x="-10%" y="-10%" width="120%" height="140%">
+          <feGaussianBlur stdDeviation="1.4"></feGaussianBlur>
+        </filter>
+      </defs>
 
-    <rect x="18" y="26" width="424" height="128" rx="34" fill="#000" opacity="0.12"></rect>
-    <rect x="12" y="18" width="436" height="122" rx="32" fill="#000" opacity="0.18"></rect>
+      <g class="cam-lenses">
+        {
+          lenses.map((l, i) => (
+            <CameraLens label={l.label} spec={l.spec} cx={CX} y0={Y0} av={read0.av} cap={CAP} on={l.label === lens0} id={`cam-lens-${i}`} />
+          ))
+        }
+      </g>
 
-    <g class="mt-lenses" data-lens={kind0}>
-      {
-        lenses.map((l) => (
-          <g class="mt-lens" data-kind={l.kind}>
-            <rect x={CX - l.w / 2 + 2} y="144" width={l.w - 4} height={l.bands.at(-1)!.y + l.bands.at(-1)!.h - 146} fill="#07090b" />
-            {l.bands.map((b) => (
-              <>
-                <path d={band(CX, l.w, b)} class={`mt-band-${b.type}`} />
-                {b.type === 'aperture' && (
-                  <>
-                    <path d={`M${CX - l.w / 2 + 2} ${b.y + 1.8}H${CX + l.w / 2 - 2}`} class="mt-grip" />
-                    <g clip-path={`url(#mth-ring-${l.kind})`}>
-                      <g class="mt-shift" data-ring={l.maxAv} style={`transform:translateX(${apertureShift(read0.av, l.maxAv)}px)`}>
-                        {l.fs.map((f) => (
-                          <text x={CX + (avOf(f) - l.maxAv) * 17} y={b.y + 11.6} class="mt-ring-num">
-                            {f}
-                          </text>
-                        ))}
-                      </g>
-                    </g>
-                  </>
-                )}
-                {b.type === 'front' && (
-                  <text x={CX} y={b.y + b.h / 2 + 0.4} class="mt-lens-name">
-                    {l.label}
-                  </text>
-                )}
-                <path d={band(CX, l.w, b)} fill="url(#mth-cyl)" />
-              </>
-            ))}
-            <path d={`M${CX - l.w / 2 - 4} 154H170M${CX + l.w / 2 + 4} 154H290`} class="mt-leader" />
-            <circle cx={CX - l.w / 2 - 4} cy="154" r="1.4" class="mt-leader-dot" />
-            <circle cx={CX + l.w / 2 + 4} cy="154" r="1.4" class="mt-leader-dot" />
-          </g>
-        ))
-      }
-    </g>
+      <path
+        d="M33 13.2H167Q172 13.2 172 18.2V50.2Q172 55.6 167 55.6H66C61 55.6 60 62 53 62H36Q28 62 28 54V18.2Q28 13.2 33 13.2Z"
+        fill="#000"
+        opacity="0.55"
+        filter="url(#cam-soft)"
+      ></path>
 
-    <rect x="16" y="100" width="428" height="44" rx="16" fill="url(#mth-leather)"></rect>
-    <path d="M30 143.5H430" stroke="#000" stroke-opacity="0.5"></path>
-    <rect x="186" y="134" width="88" height="11" rx="2.5" fill="url(#mth-chrome)"></rect>
-    <path d="M186 140H274" stroke="#000" stroke-opacity="0.18"></path>
-    <path d={`M${CX} 142.5l-2.4 3.2h4.8Z`} class="mt-index"></path>
-    <circle cx="195" cy="139.5" r="2.6" fill="url(#mth-cap)" stroke="#5b646d" stroke-width="0.5"></circle>
-
-    <rect x="6" y="8" width="448" height="118" rx="28" fill="url(#mth-paint)"></rect>
-    <rect x="6.5" y="8.5" width="447" height="117" rx="27.5" fill="none" stroke="#fff" stroke-opacity="0.07"></rect>
-    <path d="M36 9.6H424" stroke="#fff" stroke-opacity="0.28" stroke-linecap="round"></path>
-    <path d="M30 125H430" stroke="#000" stroke-opacity="0.6"></path>
-
-    <g class="mt-rewind">
-      <circle cx="52" cy="64" r="28" class="mt-collar"></circle>
-      <circle cx="52" cy="64" r="25" fill="none" stroke="url(#mth-knurl)" stroke-width="3.6" stroke-dasharray="1.15 1.45"></circle>
-      <circle cx="52" cy="64" r="22.6" fill="url(#mth-cap)"></circle>
-      <circle cx="52" cy="64" r="15" fill="none" stroke="#000" stroke-opacity="0.16"></circle>
-      <path d="M52 64 52 45" stroke="#2a3138" stroke-width="7" stroke-linecap="round"></path>
-      <path d="M52 64 52 45" stroke="#56606a" stroke-width="1" stroke-linecap="round"></path>
-      <circle cx="52" cy="64" r="4.4" fill="#20262c"></circle>
-      <circle cx="52" cy="45" r="2.4" fill="url(#mth-cap)"></circle>
-    </g>
-
-    <g class="mt-window">
-      <rect x="90" y="34" width="62" height="48" rx="8" fill="url(#mth-chrome)"></rect>
-      <rect x="94" y="38" width="54" height="40" rx="5" fill="#0a0d10"></rect>
-      <g clip-path="url(#mth-sun-glass)">
-        <rect x="95" y="39" width="52" height="38" class="mt-sky"></rect>
-        <g class="mt-stars">
-          <circle cx="103" cy="45" r="0.6"></circle>
-          <circle cx="118" cy="43" r="0.5"></circle>
-          <circle cx="137" cy="47" r="0.7"></circle>
-          <circle cx="127" cy="53" r="0.45"></circle>
-          <circle cx="143" cy="42" r="0.5"></circle>
+      <g class="cam-body">
+        <rect x="31" y="10.6" width="14" height="2" rx="0.6" fill="url(#cam-knurl-edge)"></rect>
+        <g class="cam-lug">
+          <rect x="25.6" y="20.4" width="2.8" height="6" rx="0.8" fill="url(#cam-chrome)"></rect>
+          <path d="M26.2 21.3C21.4 21.3 20.4 25.5 26.2 25.5" class="cam-ring"></path>
+          <rect x="171.6" y="20.4" width="2.8" height="6" rx="0.8" fill="url(#cam-chrome)"></rect>
+          <path d="M173.8 21.3C178.6 21.3 179.6 25.5 173.8 25.5" class="cam-ring"></path>
         </g>
-        <g class="mt-moon" transform="translate(108 49.5)">
-          <circle r="4.2" class="mt-moon-dark"></circle>
-          <path d={moon} class="mt-moon-lit"></path>
-        </g>
-        <g class="mt-sun" data-win-sun style={`transform:translate(${sun0.x.toFixed(2)}px,${sun0.y.toFixed(2)}px)`}>
-          <circle r="7.5" class="mt-sun-glow"></circle>
-          <circle r="3.6" class="mt-sun-disc"></circle>
-        </g>
+
         <path
-          d="M95 77V67.5h5v-2h3.5v2h4v-3h3v3h3.2v-1.8h3v-6.2l1.2-2.6 1.2 2.6v8h3.6v-2.4h4.4v2.4h3.2v-1.5h4.2v1.5H147V77Z"
-          class="mt-ground"></path>
-        <path d="M95 72.6h52" class="mt-river"></path>
-        <rect x="95" y="39" width="52" height="38" fill="url(#mth-glare)" opacity="0.5"></rect>
-      </g>
-      <text x="121" y="93.5" class="mt-eng" data-alt>{altText(alt0)}</text>
-    </g>
+          d="M33 12H167Q172 12 172 17V49Q172 54 167 54H66C61 54 60 60.5 53 60.5H36Q28 60.5 28 52.5V17Q28 12 33 12Z"
+          fill="url(#cam-leather)"
+        ></path>
+        <path d="M66 54C61 54 60 60.5 53 60.5H36Q28 60.5 28 52.5" fill="none" stroke="#fff" stroke-opacity="0.08" stroke-width="0.4"></path>
 
-    <g class="mt-meter">
-      <rect x="196" y="112" width="68" height="12" rx="2" fill="url(#mth-chrome)" opacity="0.8"></rect>
-      <rect x="158" y="14" width="144" height="104" rx="12" fill="url(#mth-paint)" stroke="#000" stroke-opacity="0.5"></rect>
-      <path d="M170 14.8H290" stroke="#fff" stroke-opacity="0.22" stroke-linecap="round"></path>
-      <rect x="163.5" y="19.5" width="133" height="77" rx="8" fill="url(#mth-chrome)"></rect>
-      <rect x="168" y="24" width="124" height="68" rx="5" fill="url(#mth-face)"></rect>
-      <g clip-path="url(#mth-meter-glass)">
-        <EvScale cx={M.cx} cy={M.cy} r={60} sweep={M.sweep} font={7.6} />
-        <text x="230" y="84" class="mt-face-ev">EV</text>
-        <g class="mt-face-icon" transform="translate(178 84)">
-          <path d="M2.6-3.4A3.6 3.6 0 1 0 3 2.6 2.8 2.8 0 1 1 2.6-3.4Z"></path>
+        <path d="M33.5 13H166.5Q171 13 171 17.5V44.6Q171 48.6 167 48.6H66C60.5 48.6 60 59.2 52.5 59.2H36Q29 59.2 29 52V17.5Q29 13 33.5 13Z" fill="url(#cam-plate)"></path>
+        <path d="M33.5 13H166.5Q171 13 171 17.5V44.6Q171 48.6 167 48.6H66C60.5 48.6 60 59.2 52.5 59.2H36Q29 59.2 29 52V17.5Q29 13 33.5 13Z" fill="url(#cam-brush)"></path>
+        <path d="M34 13.5H166" stroke="#fff" stroke-opacity="0.75" stroke-width="0.5" stroke-linecap="round"></path>
+        <path d="M66 48.2C60.5 48.2 60 58.8 52.5 58.8H36Q29.5 58.8 29.5 52M134 48.2H167Q170.6 48.2 170.6 44.6" fill="none" stroke="#000" stroke-opacity="0.35" stroke-width="0.5"></path>
+
+        <rect x="86" y="3.6" width="28" height="8" rx="2.6" fill="#15191d"></rect>
+        <rect x="86" y="3.6" width="28" height="8" rx="2.6" fill="url(#cam-glare)"></rect>
+        <path d="M88.4 5.4H111.6M88.4 7.2H111.6" stroke="#fff" stroke-opacity="0.07" stroke-width="0.5"></path>
+        <rect x="89" y="9.4" width="22" height="1.8" fill="#0b0d10"></rect>
+
+        <polygon points="77,10.6 123,10.6 116,15 84,15" fill="url(#cam-facet-b)"></polygon>
+        <polygon points="77,10.6 84,15 84,40 77,54" fill="url(#cam-facet-l)"></polygon>
+        <polygon points="123,10.6 116,15 116,40 123,54" fill="url(#cam-facet-r)"></polygon>
+        <polygon points="84,40 116,40 123,54 77,54" fill="url(#cam-facet-f)"></polygon>
+        <rect x="123" y="13" width="5" height="35.6" fill="url(#cam-cast)"></rect>
+        <rect x="84" y="15" width="32" height="25" fill="url(#cam-plate)"></rect>
+        <rect x="84" y="15" width="32" height="25" fill="url(#cam-brush)"></rect>
+        <path d="M77 10.6H123L116 15H84ZM84 40H116L123 54H77Z" fill="none" stroke="#000" stroke-opacity="0.18" stroke-width="0.3"></path>
+        <text x="100" y="49.3" class="cam-eng cam-eng-wide" font-size="2.7">{sheet.city.toUpperCase()}</text>
+
+        <g class="cam-shoe">
+          <rect x="90" y="17.4" width="20" height="20.2" rx="0.8" fill="#20262c"></rect>
+          <rect x="90" y="17.4" width="2.7" height="20.2" rx="0.5" fill="url(#cam-chrome)"></rect>
+          <rect x="107.3" y="17.4" width="2.7" height="20.2" rx="0.5" fill="url(#cam-chrome)"></rect>
+          <rect x="93.6" y="18.2" width="12.8" height="18.4" fill="#14181c"></rect>
+          <rect x="97" y="23.6" width="6" height="8.4" rx="0.6" fill="#0b0e11" stroke="#3b444c" stroke-width="0.3"></rect>
+          <circle cx="98.6" cy="25.6" r="0.5" fill="#c7a46a"></circle>
+          <circle cx="101.4" cy="25.6" r="0.5" fill="#c7a46a"></circle>
+          <circle cx="98.6" cy="29.8" r="0.5" fill="#c7a46a"></circle>
+          <circle cx="101.4" cy="29.8" r="0.5" fill="#c7a46a"></circle>
+          <circle cx="100" cy="27.7" r="0.7" fill="#c7a46a"></circle>
         </g>
-        <g class="mt-face-icon" transform="translate(282 84)">
-          <circle r="2.1"></circle>
-          <path d="M0-4.2V-3.3M0 3.3V4.2M-4.2 0H-3.3M3.3 0H4.2M-3 -3-2.3-2.3M2.3 2.3 3 3M-3 3-2.3 2.3M2.3-2.3 3-3"></path>
+
+        <path d="M38.4 14.9l-1.3-1.9h2.6Z" class="mt-index"></path>
+        <TopDial cx={38.4} cy={23.6} r={8.4} marks={COMP} font={1.7} />
+
+        <path d="M61.5 15.4l-1.4-2h2.8Z" class="mt-index"></path>
+        <TopDial cx={61.5} cy={29} r={13.4} marks={SHUTTER} turn={dialTurn(read0.k)} font={1.95} at={0.645} />
+
+        <rect x="48" y="44" width="14.6" height="6.2" rx="1" fill="#2a3035"></rect>
+        <rect x="48.7" y="44.6" width="13.2" height="5" rx="0.6" fill="url(#cam-lcd)"></rect>
+        <text x="61" y="48.35" class="cam-lcd" font-size="3.3" data-lcd>{`F${read0.f}`}</text>
+        <rect x="48.7" y="44.6" width="13.2" height="5" rx="0.6" fill="url(#cam-glare)"></rect>
+
+        <g class="cam-release">
+          <polygon points={pts(lever)} fill="url(#cam-chrome)" stroke="#4d565e" stroke-width="0.3"></polygon>
+          <text x={on.x.toFixed(2)} y={(on.y + 0.65).toFixed(2)} class="cam-eng" font-size="1.7">ON</text>
+          <text x={off.x.toFixed(2)} y={(off.y + 0.65).toFixed(2)} class="cam-eng" font-size="1.7">OFF</text>
+          <circle cx={REL.x} cy={REL.y + 0.7} r="6.4" fill="#000" opacity="0.3"></circle>
+          <circle cx={REL.x} cy={REL.y} r="6.2" fill="#1a1f24"></circle>
+          <circle cx={REL.x} cy={REL.y} r="6.2" fill="none" stroke="url(#cam-knurl)" stroke-width="0.7"></circle>
+          <g class="cam-button" style={`transform-origin:${REL.x}px ${REL.y}px`}>
+            <circle cx={REL.x} cy={REL.y} r="3.9" fill="url(#cam-cap)"></circle>
+            <circle cx={REL.x} cy={REL.y} r="2.6" fill="none" stroke="#59626a" stroke-width="0.5" stroke-dasharray="0.35 0.35"></circle>
+            <circle cx={REL.x} cy={REL.y} r="1.05" class="cam-socket"></circle>
+          </g>
         </g>
-        <g class="mt-needle" data-needle style={`transform-origin:${M.cx}px ${M.cy}px;transform:rotate(${needleAngle(sceneEv(alt0), M.sweep).toFixed(2)}deg)`}>
-          <path d={`M${M.cx + 1.6} ${M.cy + 1}V${M.cy - 62}`} class="mt-needle-shadow"></path>
-          <path d={`M${M.cx} ${M.cy}V${M.cy - 62}`} class="mt-needle-line"></path>
-        </g>
-        <rect x="168" y="24" width="124" height="68" fill="url(#mth-glare)" opacity="0.35"></rect>
+
+        <path d="M138.5 15.7l-1.4-2h2.8Z" class="mt-index"></path>
+        <polygon points={pts(isoLever)} fill="url(#cam-chrome)" stroke="#4d565e" stroke-width="0.3"></polygon>
+        <TopDial cx={138.5} cy={28.6} r={11.6} marks={ISO} turn={isoTurn(read0.sv)} iso font={1.6} />
+        <text x="138.5" y="45.9" class="cam-eng cam-eng-wide" font-size="2.2">ISO</text>
+        <text x="157.5" y="45.9" class="cam-eng" font-size="1.75">{coords}</text>
+
+        <rect x="66" y="53.2" width="68" height="2.4" fill="#111518"></rect>
+        <rect x="67" y="55.2" width="66" height="3.5" rx="0.6" fill="url(#cam-chrome)"></rect>
+        <rect x="67" y="55.2" width="66" height="3.5" rx="0.6" fill="url(#cam-cyl)" opacity="0.6"></rect>
+        <circle cx={CX + MOUNT_DOT} cy="56.95" r="0.8" class="cam-mount-dot"></circle>
+        <rect x="136" y="53.4" width="4.6" height="4" rx="1.6" fill="url(#cam-chrome)" stroke="#4d565e" stroke-width="0.3"></rect>
       </g>
-      <rect x="168" y="24" width="124" height="68" rx="5" fill="none" stroke="#000" stroke-opacity="0.35"></rect>
-      <text x="230" y="108.5" class="mt-eng">EV · ISO 100</text>
-      <g class="mt-screw"><circle cx="171" cy="107" r="3"></circle><path d="M169 105.6 173 108.4"></path></g>
-      <g class="mt-screw"><circle cx="289" cy="107" r="3"></circle><path d="M287 108.4 291 105.6"></path></g>
-    </g>
+    </svg>
 
-    <path d="M366 24.5l-3 -4.6h6Z" class="mt-index"></path>
-    <ShutterDial cx={366} cy={64} r={35.5} turn={dialTurn(read0.k)} ids="mth" />
-
-    <g class="mt-advance">
-      <circle cx="426" cy="64" r="15" class="mt-collar"></circle>
-      <circle cx="426" cy="64" r="12.5" fill="url(#mth-cap)"></circle>
-      <g class="mt-lever" data-lever>
-        <path d="M426 64 405 17" stroke="#0b0e11" stroke-width="8.5" stroke-linecap="round"></path>
-        <path d="M426 64 405 17" stroke="#2c343c" stroke-width="6" stroke-linecap="round"></path>
-        <path d="M423.6 60 406.2 21" stroke="#fff" stroke-opacity="0.25" stroke-width="0.9" stroke-linecap="round"></path>
-        <circle cx="404.2" cy="15.2" r="5.6" fill="#1a1f24" stroke="#0b0e11"></circle>
-      </g>
-      <circle cx="426" cy="64" r="6.6" fill="url(#mth-cap)" stroke="#5b646d" stroke-width="0.6"></circle>
-      <circle cx="426" cy="64" r="2.4" class="mt-release"></circle>
-    </g>
-
-    <text x="52" y="113.5" class="mt-eng mt-eng-wide">{sheet.city.toUpperCase()}</text>
-    <text x="366" y="113.5" class="mt-eng">{coords}</text>
-  </svg>
-    <div class="absolute left-0 w-[36%] pr-1 text-right" style="top:59%">
+    <div class="absolute left-0 pr-1 text-right" style={`top:${pct(Y0 + 7, H)};width:${side}`}>
       <p class="m-0 font-mono text-[10px] tracking-[0.08em] text-muted uppercase">Aperture</p>
       <p class="m-0 font-mono text-[16px] leading-6 font-semibold text-ink" data-aperture>f/{read0.f}</p>
-      <p class="m-0 font-mono text-[11px] text-muted" data-shutter>{read0.shutter} on the dial</p>
+      <p class="m-0 font-mono text-[11px] text-muted"><span data-shutter>{read0.shutter}</span><span class="hidden sm:inline"> shutter</span></p>
     </div>
-    <div class="absolute right-0 w-[36%] pl-1" style="top:59%">
+    <div class="absolute right-0 pl-1" style={`top:${pct(Y0 + 7, H)};width:${side}`}>
       <p class="m-0 font-mono text-[10px] tracking-[0.08em] text-muted uppercase">Lens</p>
-      <p class="m-0 truncate text-[15px] leading-6 font-bold text-ink" data-lens-name>{lens0}</p>
+      <p class="m-0 truncate text-[14px] leading-6 font-bold text-ink sm:text-[15px]" data-lens-name>{lens0}</p>
       <p class="m-0 font-mono text-[11px] text-muted" data-support>{needsSupport(still.kit) ? 'On a tripod' : 'Handheld'}</p>
     </div>
   </div>
@@ -331,7 +309,7 @@ const stop0 = stops.find((s) => m0 >= s.from && m0 <= s.to) ?? still;
   <div class="mt-readout mt-2 rounded-2xl border border-line bg-surface-2 px-3.5 pt-2.5 pb-3">
     <p class="m-0 flex h-[22px] items-baseline justify-between gap-3 whitespace-nowrap">
       <span class="font-mono text-[14.5px] font-semibold text-ink tabular-nums sm:text-[15.5px]" data-reading>{readingText(read0)}</span>
-      <span class="font-mono text-[11px] text-muted">at ISO 100</span>
+      <span class="font-mono text-[11px] text-muted">at ISO <span data-iso>{read0.iso}</span></span>
     </p>
     <div class="mt-2 grid h-[36px] grid-cols-[minmax(0,1fr)_minmax(0,2.2fr)] gap-3">
       <div class="min-w-0">

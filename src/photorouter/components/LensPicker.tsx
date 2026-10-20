@@ -32,9 +32,9 @@ export function LensField() {
     <div className="grid gap-1.5">
       <div className="flex flex-wrap gap-1.5">
         {chosen.map((l) => (
-          <span key={l.id} className="inline-flex h-7 items-center gap-1 rounded-full border border-ink bg-ink pr-1 pl-2.5 text-xs font-semibold text-surface">
+          <span key={l.id} className="inline-flex h-7 items-center gap-1 rounded-full border border-accent/50 bg-accent/15 pr-1 pl-2.5 text-xs font-semibold text-ink">
             {lensLabel(l)}
-            <button type="button" aria-label={`Remove ${lensLabel(l)}`} onClick={() => toggle('gear', l.id)} className="grid size-5 place-items-center rounded-full border-0 bg-transparent text-surface hover:bg-white/15">
+            <button type="button" aria-label={`Remove ${lensLabel(l)}`} onClick={() => toggle('gear', l.id)} className="grid size-5 place-items-center rounded-full border-0 bg-transparent text-muted hover:bg-accent/20 hover:text-ink">
               <X className="size-3" aria-hidden />
             </button>
           </span>

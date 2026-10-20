@@ -10,9 +10,8 @@
     "text": "I want to photograph the tiled streets, trams and viewpoints of Lisbon, then take the train to Porto for the river and the bridges. I like working the old quarters by day and doing long exposures over the water at blue hour and after dark.",
     "gear": [
       "ff-body",
-      "wz-16-35",
-      "std-24-70",
-      "tz-70-200",
+      "lens:p:28:2.8",
+      "p40",
       "tripod",
       "nd6",
       "cpl"
@@ -112,7 +111,7 @@
           "day"
         ],
         "when": "After dark, from the street below",
-        "tip": "Stand on Rua do Ouro at the foot of the lift and shoot up the lit iron tower with the 16-35. A two-second exposure turns a moving cabin into a soft streak.",
+        "tip": "Stand on Rua do Ouro at the foot of the lift and shoot up the lit iron tower with the 28mm. A two-second exposure turns a moving cabin into a soft streak.",
         "styles": [
           "architecture",
           "night",
@@ -173,7 +172,7 @@
           "golden"
         ],
         "when": "Afternoon, from the roof",
-        "tip": "Walk up onto the curved roof and use the 70-200 to line up its tiled curves with the 25 de Abril Bridge upriver.",
+        "tip": "Walk up onto the curved roof and use the 28mm to line up its tiled curves with the 25 de Abril Bridge upriver.",
         "styles": [
           "architecture",
           "cityscape"
@@ -264,7 +263,7 @@
           "golden"
         ],
         "when": "Midday, as the trams pass",
-        "tip": "Stand uphill on Rua Augusto Rosa and wait for a yellow tram to round the bend in front of the cathedral towers. The 70-200 compresses tram and facade together.",
+        "tip": "Stand uphill on Rua Augusto Rosa and wait for a yellow tram to round the bend in front of the cathedral towers. The 40mm frames tram and facade together.",
         "styles": [
           "street",
           "heritage"
@@ -293,7 +292,7 @@
           "golden"
         ],
         "when": "Afternoon, in the lanes",
-        "tip": "Start at the old fountain square and climb into Beco do Mexias and Rua de São Miguel for laundry lines, tiled doorways and neighbours on their steps. Work at 35 to 50mm and ask before close portraits.",
+        "tip": "Start at the old fountain square and climb into Beco do Mexias and Rua de São Miguel for laundry lines, tiled doorways and neighbours on their steps. Work with the 40mm and ask before close portraits.",
         "styles": [
           "street",
           "heritage"
@@ -321,7 +320,7 @@
           "day"
         ],
         "when": "Morning, first entry slot",
-        "tip": "Take the train from Rossio to Sintra and the bus up, and shoot the red and yellow towers from the terraces before the tour groups arrive. The 70-200 picks out the Moorish Castle on the next ridge.",
+        "tip": "Take the train from Rossio to Sintra and the bus up, and shoot the red and yellow towers from the terraces with the 28mm before the tour groups arrive.",
         "styles": [
           "heritage",
           "architecture"
@@ -413,7 +412,7 @@
           "day"
         ],
         "when": "Tuesday or Saturday morning",
-        "tip": "Walk the stalls of Campo de Santa Clara with the 24-70 for traders, old tiles and bric-a-brac laid out on blankets. Go early, before the lanes between stalls fill up.",
+        "tip": "Walk the stalls of Campo de Santa Clara with the 40mm for traders, old tiles and bric-a-brac laid out on blankets. Go early, before the lanes between stalls fill up.",
         "styles": [
           "street"
         ],
@@ -471,7 +470,7 @@
           "golden"
         ],
         "when": "After dark, castle floodlit",
-        "tip": "Stand at the balustrade and shoot east across Baixa to the floodlit castle with the 70-200, keeping the railing out of the frame.",
+        "tip": "Stand at the balustrade and shoot east across Baixa to the floodlit castle with the 40mm, keeping the railing out of the frame.",
         "styles": [
           "cityscape",
           "night"
@@ -500,7 +499,7 @@
           "golden"
         ],
         "when": "Morning, from the top of the street",
-        "tip": "Stand at the top by Largo do Calhariz and shoot down the steep street with the 70-200 to stack the yellow car, the houses and a slice of river. Wait for the car to climb toward you.",
+        "tip": "Stand at the top by Largo do Calhariz and shoot down the steep street with the 40mm to line up the yellow car, the houses and a slice of river. Wait for the car to climb toward you.",
         "styles": [
           "street",
           "heritage"
@@ -528,7 +527,7 @@
           "day"
         ],
         "when": "Midday, sky through the open nave",
-        "tip": "Shoot the roofless Gothic arches from the west end of the nave with the 16-35, letting the sky stand in for the vault. Closed on Sundays.",
+        "tip": "Shoot the roofless Gothic arches from the west end of the nave with the 28mm, letting the sky stand in for the vault. Closed on Sundays.",
         "styles": [
           "heritage",
           "architecture"
@@ -557,7 +556,7 @@
           "day"
         ],
         "when": "Sunset, toward the bridge",
-        "tip": "Stand at the edge of the terrace by the Adamastor statue and frame the 25 de Abril Bridge over the river as the sun goes down to its right. The 70-200 isolates the bridge and the Cristo Rei statue across the water.",
+        "tip": "Stand at the edge of the terrace by the Adamastor statue and frame the 25 de Abril Bridge over the river as the sun goes down to its right. The 40mm frames the bridge and the Cristo Rei statue across the water.",
         "styles": [
           "cityscape"
         ],
@@ -646,7 +645,7 @@
           "day"
         ],
         "when": "Morning, in the main hall",
-        "tip": "Stand at the back of the hall and shoot the blue and white azulejo panels wide, then use the 70-200 to pick out single scenes. Keep the tripod packed in the busy hall.",
+        "tip": "Stand at the back of the hall and shoot the blue and white azulejo panels with the 28mm, then walk up close to pick out single scenes. Keep the tripod packed in the busy hall.",
         "styles": [
           "heritage",
           "architecture"
@@ -676,7 +675,7 @@
           "golden"
         ],
         "when": "Midday, on the side wall",
-        "tip": "Cross to the far side of Rua do Carmo and fit the whole azulejo side wall in with the 16-35. Then step back to show the narrow house squeezed between Carmo and the Carmelitas church.",
+        "tip": "Cross to the far side of Rua do Carmo and fit the whole azulejo side wall in with the 28mm. Then step back to show the narrow house squeezed between Carmo and the Carmelitas church.",
         "styles": [
           "heritage",
           "architecture",
@@ -715,9 +714,9 @@
           "night"
         ],
         "focal": [
+          "standard",
           "wide",
-          "ultrawide",
-          "standard"
+          "ultrawide"
         ],
         "tripod": "helps",
         "minutes": 75,
@@ -769,7 +768,7 @@
           "day"
         ],
         "when": "Midday, from across the street",
-        "tip": "Stand across Rua de Santa Catarina and fit the tiled facade in at 16mm, then wait for a passer-by in front of the blue panels.",
+        "tip": "Stand across Rua de Santa Catarina and fit the tiled facade in at 28mm, then wait for a passer-by in front of the blue panels.",
         "styles": [
           "heritage",
           "architecture",
@@ -860,7 +859,7 @@
           "night"
         ],
         "when": "Late afternoon, over the rooftops",
-        "tip": "Use the 70-200 to compress the tiled roofs falling to the river against the port cellars of Gaia on the far bank. The cathedral sits on the ridge to your left.",
+        "tip": "Use the 40mm to frame the tiled roofs falling to the river against the port cellars of Gaia on the far bank. The cathedral sits on the ridge to your left.",
         "styles": [
           "cityscape",
           "heritage"

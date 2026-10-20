@@ -1,38 +1,25 @@
-/* "Light meter" theme: a black paint rangefinder with chrome dials and a cream meter face.
-   The camera is a physical object, so its metals keep their colours in both site themes;
-   the light, the needle and the text come from the tokens. */
+/* "Light meter" theme: a retro camera with a chrome top plate and black dials in the hero,
+   and a cream meter face in the header track. The camera is a physical object, so its metals
+   keep their colours in both site themes; the light, the needle and the text come from the tokens. */
 .th-meter {
   --sun-c: var(--day);
   --mt-night: color-mix(in oklab, var(--night) 35%, #10151c);
-  --mt-eng: #d5dbe0;
-  --mt-sky: color-mix(in oklab, var(--night) 55%, #cfe6ff);
+  --cam-eng: #1d2328;
+  --cam-cream: #ece4cf;
 }
 .th-meter[data-phase='golden'],
 .pr-header[data-phase='golden'] .th-meter {
   --sun-c: var(--golden);
-  --mt-sky: color-mix(in oklab, var(--golden) 60%, #4b3550);
 }
 .th-meter[data-phase='blue'],
 .pr-header[data-phase='blue'] .th-meter {
   --sun-c: var(--night);
-  --mt-sky: color-mix(in oklab, var(--night) 55%, #0d1530);
 }
 .th-meter[data-phase='night'],
 .pr-header[data-phase='night'] .th-meter {
   --sun-c: var(--night);
-  --mt-sky: #0a1022;
 }
 
-.th-meter .mt-eng {
-  font-family: var(--font-mono);
-  font-size: 7.4px;
-  letter-spacing: 0.06em;
-  fill: var(--mt-eng);
-  fill-opacity: 0.78;
-  text-anchor: middle;
-  text-transform: uppercase;
-}
-.th-meter .mt-eng-wide { letter-spacing: 0.24em; }
 .th-meter .mt-collar { fill: #0a0d10; stroke: #000; stroke-opacity: 0.6; }
 .th-meter .mt-index { fill: var(--accent); }
 
@@ -72,75 +59,120 @@
   fill-opacity: 0.7;
   text-anchor: middle;
 }
-.th-meter .mt-face-icon { fill: none; stroke: #2a2620; stroke-opacity: 0.6; stroke-width: 0.8; stroke-linecap: round; }
 .th-meter .mt-needle { transition: transform 0.2s linear; }
 .th-meter .mt-needle-line { stroke: #d2551b; stroke-width: 1.5; stroke-linecap: round; }
 .th-meter .mt-needle-shadow { stroke: #000; stroke-opacity: 0.2; stroke-width: 1.6; stroke-linecap: round; }
-.th-meter .mt-screw circle { fill: url(#mth-cap); stroke: #000; stroke-opacity: 0.4; stroke-width: 0.5; }
-.th-meter .mt-screw path { stroke: #4a525b; stroke-width: 0.7; }
 
-/* Sun and moon window. */
-.th-meter .mt-sky { fill: var(--mt-sky); transition: fill 0.8s; }
-.th-meter .mt-stars circle { fill: #fff; }
-.th-meter .mt-stars,
-.th-meter .mt-moon { opacity: 0; transition: opacity 0.8s; }
-.th-meter[data-phase='night'] .mt-stars { opacity: 0.85; }
-.th-meter[data-phase='night'] .mt-moon { opacity: 1; }
-.th-meter[data-phase='blue'] .mt-moon { opacity: 0.55; }
-.th-meter .mt-moon-dark { fill: #000; fill-opacity: 0.3; }
-.th-meter .mt-moon-lit { fill: #f1ecdc; }
-.th-meter .mt-sun-disc { fill: color-mix(in oklab, var(--sun-c) 70%, #fff); transition: fill 0.8s; }
-.th-meter .mt-sun-glow { fill: var(--sun-c); opacity: 0.3; transition: fill 0.8s; }
-.th-meter .mt-ground { fill: #07090c; }
-.th-meter .mt-river { stroke: var(--sun-c); stroke-opacity: 0.35; stroke-width: 0.8; transition: stroke 0.8s; }
-
-/* Lenses: one mounted at a time, retracting into the mount and coming back on a change. */
-.th-meter .mt-band-aperture { fill: #14181d; }
-.th-meter .mt-band-ribs { fill: url(#mth-ribs); }
-.th-meter .mt-band-fine { fill: url(#mth-fine); }
-.th-meter .mt-band-barrel { fill: #1e242a; }
-.th-meter .mt-band-chrome { fill: url(#mth-chrome); }
-.th-meter .mt-band-front { fill: #191e23; }
-.th-meter .mt-band-hood { fill: #111418; }
-.th-meter .mt-grip { stroke: #59626b; stroke-width: 3.2; stroke-dasharray: 1 2; }
-.th-meter .mt-ring-num {
+/* Hero camera, drawn in mm: engraving on the chrome plate, cream numbers on black dials. */
+.th-meter .cam-eng {
   font-family: var(--font-mono);
-  font-size: 7.6px;
-  font-weight: 700;
-  fill: #e7ebee;
+  font-weight: 600;
+  fill: var(--cam-eng);
+  fill-opacity: 0.72;
   text-anchor: middle;
 }
-.th-meter .mt-shift { transition: transform 0.55s cubic-bezier(0.3, 0.8, 0.25, 1); }
-.th-meter .mt-lens-name {
+.th-meter .cam-eng-wide { letter-spacing: 0.32em; }
+.th-meter .cam-dial-num {
   font-family: var(--font-mono);
-  font-size: 6.6px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  fill: var(--mt-eng);
+  font-weight: 700;
+  fill: var(--cam-cream);
   text-anchor: middle;
   dominant-baseline: central;
 }
-.th-meter .mt-lens {
-  opacity: 0;
-  transform: translateY(-16px);
-  transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.3, 0.7, 0.2, 1);
+.th-meter .cam-dial-slow,
+.th-meter .cam-dial-zero { fill: #e39a52; }
+.th-meter .cam-dial-tick { stroke: var(--cam-cream); stroke-opacity: 0.55; stroke-width: 0.3; stroke-linecap: round; }
+.th-meter .cam-ring { fill: none; stroke: #c3cad0; stroke-width: 1; stroke-linejoin: round; stroke-linecap: round; }
+.th-meter .cam-lcd {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  fill: #f3e7c8;
+  text-anchor: end;
+  letter-spacing: 0.04em;
 }
-.th-meter .mt-lenses[data-lens='wide'] .mt-lens[data-kind='wide'],
-.th-meter .mt-lenses[data-lens='standard'] .mt-lens[data-kind='standard'],
-.th-meter .mt-lenses[data-lens='tele'] .mt-lens[data-kind='tele'] {
+.th-meter .cam-socket { fill: #1a1f24; transition: fill 0.2s; }
+.th-meter .cam-mount-dot { fill: var(--accent); }
+
+/* Lenses: a brushed silver barrel to match the top plate, knurled rings in darker
+   silver, a black accent ring and black engraving. */
+.th-meter .cam-band-collar { fill: #1a1e22; }
+.th-meter .cam-band-rear,
+.th-meter .cam-band-front,
+.th-meter .cam-band-taper,
+.th-meter .cam-band-barrel { fill: #c6cbcf; }
+.th-meter .cam-band-aperture { fill: #b4babf; }
+.th-meter .cam-band-chrome { fill: #15191c; }
+.th-meter .cam-band-focus,
+.th-meter .cam-band-zoom,
+.th-meter .cam-band-focus-fine { fill: #6a7177; }
+.th-meter .cam-band-filter { fill: #9aa1a7; stroke: #5b6268; stroke-width: 0.3; }
+.th-meter .cam-band-hood { fill: #2a2f33; }
+.th-meter .cam-ring-grip { stroke: #5a6167; stroke-width: 1; stroke-dasharray: 0.45 0.55; }
+.th-meter .cam-ring-num {
+  font-family: var(--font-mono);
+  font-size: 2.6px;
+  font-weight: 700;
+  fill: var(--cam-eng);
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+.th-meter .cam-ring-open { fill: #a8481a; }
+.th-meter .cam-ring-index { stroke: var(--cam-eng); stroke-width: 0.5; }
+.th-meter .cam-edge { stroke: #fff; stroke-opacity: 0.4; stroke-width: 0.35; }
+.th-meter .cam-lens-name {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  fill: var(--cam-eng);
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+.th-meter .cam-lens-sub {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  fill: var(--cam-eng);
+  fill-opacity: 0.65;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+.th-meter .cam-break path { stroke: var(--cam-eng); stroke-opacity: 0.6; stroke-width: 0.4; }
+.th-meter .cam-break .cam-break-gap { fill: #050607; stroke: none; }
+.th-meter .mt-shift { transition: transform 0.55s cubic-bezier(0.3, 0.8, 0.25, 1); }
+
+/* Lens swap, 1.1 s in all (SWAP_MS in play.ts): the mounted lens twists off and slides away
+   from the mount, then the next one slides in, turned off its index, and twists on until its
+   dot meets the mount's. */
+.th-meter .cam-lens {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    transform 0.32s cubic-bezier(0.55, 0, 0.8, 0.4) 0.12s,
+    opacity 0.2s ease-in 0.24s;
+}
+.th-meter .cam-lens .cam-twist {
+  transform: translateX(-11px);
+  transition: transform 0.18s cubic-bezier(0.4, 0, 0.6, 1);
+}
+.th-meter .cam-lens[data-on] {
   opacity: 1;
   transform: none;
-  transition-delay: 0.2s;
+  transition:
+    transform 0.38s cubic-bezier(0.2, 0.7, 0.3, 1) 0.48s,
+    opacity 0.16s ease-out 0.48s;
+}
+.th-meter .cam-lens[data-on] .cam-twist {
+  transform: none;
+  transition: transform 0.26s cubic-bezier(0.3, 0.6, 0.3, 1) 0.84s;
 }
 
-/* Film advance: the lever swings out and back when a stop starts. */
-.th-meter .mt-lever { transform-origin: 426px 64px; }
-.th-meter .mt-release { fill: #20262c; transition: fill 0.2s; }
-.th-meter[data-wind='a'] .mt-lever { animation: mt-wind-a 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
-.th-meter[data-wind='b'] .mt-lever { animation: mt-wind-b 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
-.th-meter[data-wind] .mt-release { fill: var(--accent); }
-@keyframes mt-wind-a { 45% { transform: rotate(72deg); } }
-@keyframes mt-wind-b { 45% { transform: rotate(72deg); } }
+/* Shutter press when a stop starts. */
+.th-meter .cam-button { transition: transform 0.15s; }
+.th-meter[data-wind='a'] .cam-button { animation: cam-press-a 0.5s ease-out; }
+.th-meter[data-wind='b'] .cam-button { animation: cam-press-b 0.5s ease-out; }
+.th-meter[data-wind] .cam-socket { fill: var(--accent); }
+@keyframes cam-press-a { 25% { transform: scale(0.86); } }
+@keyframes cam-press-b { 25% { transform: scale(0.86); } }
 
 /* Day scale and readout. */
 .th-meter .mt-band { box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.2); }
@@ -163,13 +195,18 @@
     radial-gradient(circle at 30% 40%, rgb(255 255 255 / 0.035) 0.8px, transparent 1.2px) 0 0 / 5px 5px;
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
 }
+.th-meter .mt-ring-num {
+  font-family: var(--font-mono);
+  font-size: 7.6px;
+  font-weight: 700;
+  fill: #e7ebee;
+  text-anchor: middle;
+}
 .th-meter .mt-fring-num { font-size: 4.6px; dominant-baseline: central; }
 .th-meter .mt-blades { fill: #20262c; stroke: #0b0e11; stroke-width: 0.6; }
 .th-meter .mt-iris { transition: transform 0.55s cubic-bezier(0.3, 0.8, 0.25, 1); }
 .th-meter .mt-iris-light { fill: var(--sun-c); fill-opacity: 0.22; transition: fill 0.8s; }
 .th-meter .mt-tick-stop { background: var(--c); box-shadow: 0 0 0 1px var(--surface); }
-.th-meter .mt-leader { fill: none; stroke: var(--muted); stroke-opacity: 0.55; stroke-width: 0.8; stroke-dasharray: 2 2; }
-.th-meter .mt-leader-dot { fill: var(--muted); }
 .th-meter .mt-face-start { text-anchor: start; font-size: 5.6px; }
 .th-meter .mt-face-end { text-anchor: end; font-size: 5.6px; letter-spacing: 0.04em; }
 /* Hour labels beside sunrise and sunset need the room of a wide scale. */

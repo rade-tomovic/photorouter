@@ -74,7 +74,7 @@ export function Timeline() {
               aria-checked={speed === v}
               tabIndex={speed === v ? 0 : -1}
               onClick={() => set({ speed: v })}
-              className={cx('h-7 rounded-full px-2.5 font-mono text-xs', speed === v ? 'bg-ink text-surface' : 'text-muted hover:text-ink')}
+              className={cx('h-7 rounded-full px-2.5 font-mono text-xs', speed === v ? 'bg-accent text-accent-ink' : 'text-muted hover:text-ink')}
             >
               {v}×
             </button>

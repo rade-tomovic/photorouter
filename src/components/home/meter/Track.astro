@@ -10,7 +10,7 @@ import { hhmm, tzOffset } from '@/photorouter/lib/sun';
 import ShutterDial from './ShutterDial.astro';
 import EvScale from './EvScale.astro';
 import DayScale from './DayScale.astro';
-import { F_STOPS, altitude, exposure, readingText, sceneEv, solarFor } from './meter';
+import { F_STOPS, altitude, exposure, readingText, sceneEv, setupFor, solarFor } from './meter';
 import { dialTurn, irisScale, needleAngle, polar } from './plate';
 import './meter.css';
 
@@ -19,9 +19,9 @@ const solar = solarFor(sheet.date, sheet.ll[1], sheet.ll[0], tzOffset(sheet.date
 
 // The track only shows after a scroll, when play.ts has set it; this is the top of the day.
 const m0 = start;
-const read0 = exposure(sceneEv(altitude(m0, solar)));
 const first = stops[0]!;
 const lens0 = mountedLens(first, m0) ?? '';
+const read0 = exposure(sceneEv(altitude(m0, solar)), setupFor(first.kit, lens0));
 
 const METER = { cx: 60, cy: 112, sweep: 32 };
 const hexagon = Array.from({ length: 6 }, (_, i) => polar(30, 34, 11, i * 60 + 30))
@@ -63,7 +63,7 @@ const hexagon = Array.from({ length: 6 }, (_, i) => polar(30, 34, 11, i * 60 + 3
       <g clip-path="url(#mtt-glass)">
         <EvScale cx={METER.cx} cy={METER.cy} r={88} sweep={METER.sweep} font={7.4} />
         <text x="10" y="54.5" class="mt-face-ev mt-face-start">EV</text>
-        <text x="110" y="54.5" class="mt-face-ev mt-face-end">ISO 100</text>
+        <text x="110" y="54.5" class="mt-face-ev mt-face-end">ISO <tspan data-iso>{read0.iso}</tspan></text>
         <g class="mt-needle" data-needle data-sweep={METER.sweep} style={`transform-origin:${METER.cx}px ${METER.cy}px;transform:rotate(${needleAngle(sceneEv(altitude(m0, solar)), METER.sweep).toFixed(2)}deg)`}>
           <path d={`M${METER.cx + 1.4} ${METER.cy}V${METER.cy - 92}`} class="mt-needle-shadow"></path>
           <path d={`M${METER.cx} ${METER.cy}V${METER.cy - 92}`} class="mt-needle-line"></path>
@@ -103,7 +103,8 @@ const hexagon = Array.from({ length: 6 }, (_, i) => polar(30, 34, 11, i * 60 + 3
       <circle cx="30" cy="34" r="25" fill="#171c21" stroke="#3a434c" stroke-width="0.8"></circle>
       <g class="mt-turn" data-fring style={`transform-origin:30px 34px;transform:rotate(${-(read0.av - 4) * 36}deg)`}>
         {
-          F_STOPS.slice(1).map((f, i) => {
+          F_STOPS.slice(2).map((f, j) => {
+            const i = j - 2;
             const p = polar(30, 34, 20.5, i * 36);
             return (
               <text x={p.x.toFixed(2)} y={p.y.toFixed(2)} transform={`rotate(${i * 36} ${p.x.toFixed(2)} ${p.y.toFixed(2)})`} class="mt-ring-num mt-fring-num">
