@@ -5,6 +5,7 @@ import { PlanColumn } from './components/PlanColumn';
 import { PlanStepper } from './components/PlanStepper';
 import { SidePanel } from './components/DayPanel';
 import { MapView } from './components/MapView';
+import { PhoneLayout } from './components/PhoneLayout';
 import { Timeline } from './components/Timeline';
 import { cx } from './components/ui';
 
@@ -42,7 +43,7 @@ export default function App() {
   }, [wide]);
 
   return (
-    <div className={cx('flex flex-col bg-bg text-ink', mid ? 'h-dvh' : 'min-h-dvh')}>
+    <div className="flex h-dvh flex-col bg-bg text-ink">
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-full focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-accent-ink"
@@ -56,21 +57,27 @@ export default function App() {
         className={cx(
           'outline-none',
           'grid min-h-0 flex-1',
-          // On wide screens the page is exactly one viewport tall: the single row is capped so each panel scrolls inside itself.
-          mid && 'grid-rows-[minmax(0,1fr)] overflow-hidden',
+          // The page is exactly one viewport tall: the single row is capped so each panel scrolls inside itself.
+          'grid-rows-[minmax(0,1fr)] overflow-hidden',
           wide ? 'grid-cols-[auto_minmax(0,1fr)_400px]' : mid ? 'grid-cols-[minmax(0,1fr)_390px]' : 'grid-cols-1',
         )}
       >
-        {wide && <PlanColumn />}
-        <div className="flex min-h-0 flex-col">
-          <div className={cx('relative min-h-0', mid ? 'flex-1' : 'h-[58svh] min-h-[360px]')}>
-            <MapView />
-          </div>
-          <Timeline />
-        </div>
-        <aside className={cx('bg-surface', mid ? 'min-h-0 border-l border-line' : 'min-h-[70svh] border-t border-line')}>
-          <SidePanel withPlan={!wide} />
-        </aside>
+        {mid ? (
+          <>
+            {wide && <PlanColumn />}
+            <div className="flex min-h-0 flex-col">
+              <div className="relative min-h-0 flex-1">
+                <MapView />
+              </div>
+              <Timeline />
+            </div>
+            <aside className="min-h-0 border-l border-line bg-surface">
+              <SidePanel withPlan={!wide} />
+            </aside>
+          </>
+        ) : (
+          <PhoneLayout />
+        )}
       </main>
       <PlanStepper />
     </div>
@@ -96,12 +103,12 @@ function TopBar() {
           aria-pressed={terrain}
           onClick={() => set({ terrain: !terrain })}
           className={cx(
-            'inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-semibold',
+            'inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-semibold max-sm:w-8 max-sm:justify-center max-sm:px-0',
             terrain ? 'rt-btn' : 'rt-btn-quiet text-muted hover:text-ink',
           )}
         >
           <Mountain className="size-3.5" aria-hidden />
-          3D terrain
+          <span className="max-sm:sr-only">3D terrain</span>
         </button>
         <button
           type="button"

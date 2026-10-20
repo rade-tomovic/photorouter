@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { Compass, Copy, ExternalLink, FileJson, Minus, Plus, Route, X } from 'lucide-react';
+import { Compass, Copy, ExternalLink, FileJson, Layers, Minus, Plus, Route, X } from 'lucide-react';
 import { SPOT, TRIP, dayLabel, tripDates } from '../lib/data';
 import { TripMap } from '../map/engine';
 import { getEngine, selectDay, selectSpot, setEngine, stop } from '../map/player';
 import { loadExample, openStepper, useStore } from '../store';
-import { Button, CityChip, LightChip, Pill, radioKeys } from './ui';
+import { Button, CityChip, LightChip, Pill, cx, radioKeys } from './ui';
 
 const BASEMAPS = ['detailed', 'clean'] as const;
+const TOOL = 'pointer-events-auto grid size-8 place-items-center rounded-lg border border-line bg-surface text-ink shadow-card hover:border-muted [&_svg]:size-4';
 
 export function MapView() {
   const ref = useRef<HTMLDivElement>(null);
@@ -74,9 +75,10 @@ function MapTools() {
   return (
     <div className="pointer-events-none absolute top-2.5 right-2.5 z-10 flex flex-col items-end gap-1">
       {[
-        { label: 'Zoom in', icon: <Plus />, run: () => getEngine()?.zoomBy(0.8) },
-        { label: 'Zoom out', icon: <Minus />, run: () => getEngine()?.zoomBy(-0.8) },
-        { label: 'Reset north and tilt', icon: <Compass />, run: () => getEngine()?.resetNorth() },
+        // Touch screens pinch to zoom, so the zoom buttons are for mouse and keyboard.
+        { label: 'Zoom in', icon: <Plus />, run: () => getEngine()?.zoomBy(0.8), touch: false },
+        { label: 'Zoom out', icon: <Minus />, run: () => getEngine()?.zoomBy(-0.8), touch: false },
+        { label: 'Reset north and tilt', icon: <Compass />, run: () => getEngine()?.resetNorth(), touch: true },
       ].map((b) => (
         <button
           key={b.label}
@@ -84,16 +86,26 @@ function MapTools() {
           aria-label={b.label}
           title={b.label}
           onClick={() => { stop(); b.run(); }}
-          className="pointer-events-auto grid size-8 place-items-center rounded-lg border border-line bg-surface text-ink shadow-card hover:border-muted [&_svg]:size-4"
+          className={cx(TOOL, !b.touch && 'pointer-coarse:hidden')}
         >
           {b.icon}
         </button>
       ))}
+      {/* Phones get one button that swaps the style; wider screens show both choices. */}
+      <button
+        type="button"
+        aria-label={`Map style: ${basemap === 'detailed' ? 'Detailed' : 'Clean'}. Switch to ${basemap === 'detailed' ? 'Clean' : 'Detailed'}`}
+        title="Map style"
+        onClick={() => useStore.setState({ basemap: basemap === 'detailed' ? 'clean' : 'detailed' })}
+        className={cx(TOOL, 'sm:hidden')}
+      >
+        <Layers />
+      </button>
       <div
         role="radiogroup"
         aria-label="Map style"
         onKeyDown={radioKeys(BASEMAPS, BASEMAPS.indexOf(basemap), (b) => useStore.setState({ basemap: b }))}
-        className="pointer-events-auto mt-1 inline-flex rounded-lg border border-line bg-surface p-0.5 shadow-card"
+        className="pointer-events-auto mt-1 inline-flex rounded-lg border border-line bg-surface p-0.5 shadow-card max-sm:hidden"
       >
         {BASEMAPS.map((b) => (
           <button
@@ -122,7 +134,7 @@ function EmptyHint() {
   const dates = tripDates(brief.start, brief.days);
   return (
     <div className="pointer-events-none absolute inset-x-0 top-3 z-10 flex justify-center px-14">
-      <div className="pointer-events-auto flex flex-wrap items-center justify-center gap-2 rounded-full border border-line bg-surface/95 py-1.5 pr-1.5 pl-4 text-[13px] shadow-card backdrop-blur">
+      <div className="pointer-events-auto flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-line bg-surface/95 px-3 py-2 sm:rounded-full sm:py-1.5 sm:pr-1.5 sm:pl-4 text-[13px] shadow-card backdrop-blur">
         <span className="text-muted">
           {custom
             ? `${brief.destination.trim() || 'Your trip'}${dates.length ? `, ${dayLabel(dates[0]!)} to ${dayLabel(dates.at(-1)!)}` : ''}. No route yet.`
@@ -166,7 +178,7 @@ function SpotCard() {
   };
 
   return (
-    <div key={id} className="pr-enter absolute bottom-2.5 left-2.5 z-10 grid max-h-[calc(100%-20px)] w-[min(380px,calc(100%-20px))] gap-2 overflow-y-auto rounded-xl border border-line bg-surface p-3.5 shadow-card" aria-live="polite">
+    <div key={id} className="pr-enter absolute bottom-[calc(var(--map-inset,0px)_+_10px)] left-2.5 z-10 grid max-h-[calc(100%_-_var(--map-inset,0px)_-_20px)] w-[min(380px,calc(100%-20px))] gap-2 overflow-y-auto rounded-xl border border-line bg-surface p-3.5 shadow-card" aria-live="polite">
       <button type="button" aria-label="Close" onClick={() => selectSpot(null)} className="absolute top-2 right-2 grid size-7 place-items-center rounded-lg border-0 bg-surface-2 text-ink">
         <X className="size-4" aria-hidden />
       </button>

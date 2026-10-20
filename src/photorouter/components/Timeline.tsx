@@ -30,6 +30,10 @@ export function Timeline() {
   const set = useStore((s) => s.set);
   useStore((s) => s.trip); // re-render when the trip changes
   const disabled = !plan;
+  const hasWork = TRIP.days.some((d, i) => {
+    const kind = plan?.days[i]?.kind ?? d.kind;
+    return kind === 'work' || kind === 'movework';
+  });
   const cols = { gridTemplateColumns: `repeat(${Math.max(1, TRIP.days.length)}, minmax(0, 1fr))` };
 
   const status = !plan
@@ -50,8 +54,9 @@ export function Timeline() {
           {playing ? <Pause className="size-4 fill-current" aria-hidden /> : <Play className="size-4 fill-current" aria-hidden />}
           {playing ? 'Pause' : 'Play trip'}
         </button>
-        <IconButton label="Previous day" disabled={disabled} onClick={() => step(-1)}><ChevronLeft /></IconButton>
-        <IconButton label="Next day" disabled={disabled} onClick={() => step(1)}><ChevronRight /></IconButton>
+        {/* On a phone the dates below are the way to step; arrows and speed are for wider screens. */}
+        <IconButton label="Previous day" disabled={disabled} onClick={() => step(-1)} className="max-sm:hidden"><ChevronLeft /></IconButton>
+        <IconButton label="Next day" disabled={disabled} onClick={() => step(1)} className="max-sm:hidden"><ChevronRight /></IconButton>
         <button
           type="button"
           disabled={disabled}
@@ -64,7 +69,7 @@ export function Timeline() {
           role="radiogroup"
           aria-label="Playback speed"
           onKeyDown={radioKeys(SPEEDS, SPEEDS.indexOf(speed), (v) => set({ speed: v }))}
-          className="inline-flex rounded-full border border-line bg-surface-2 p-0.5"
+          className="inline-flex rounded-full border border-line bg-surface-2 p-0.5 max-sm:hidden"
         >
           {SPEEDS.map((v) => (
             <button
@@ -80,7 +85,8 @@ export function Timeline() {
             </button>
           ))}
         </div>
-        <span className="ml-auto basis-full font-mono text-xs text-muted sm:basis-auto" aria-live="polite">{status}</span>
+        {/* Beside the buttons on a phone, where the arrows and speed are hidden; on its own line or at the end on wider screens. */}
+        <span className="min-w-0 flex-1 basis-0 text-right font-mono text-[11px] leading-snug text-muted sm:ml-auto sm:flex-none sm:basis-auto sm:text-left sm:text-xs" aria-live="polite">{status}</span>
       </div>
 
       <div className="grid gap-0.5 sm:gap-1" style={cols} aria-hidden>
@@ -131,10 +137,13 @@ export function Timeline() {
           );
         })}
       </div>
-      <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-muted">
-        <span className="inline-flex items-center gap-1.5"><i className="inline-block h-1.5 w-4 rounded-full bg-muted" />Free day</span>
-        <span className="inline-flex items-center gap-1.5"><i className="inline-block h-1.5 w-4 rounded-full bg-muted opacity-35" />Work day: shoot before and after hours</span>
-      </div>
+      {/* The key only matters when free and work days are mixed. */}
+      {hasWork && (
+        <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-muted">
+          <span className="inline-flex items-center gap-1.5"><i className="inline-block h-1.5 w-4 rounded-full bg-muted" />Free day</span>
+          <span className="inline-flex items-center gap-1.5"><i className="inline-block h-1.5 w-4 rounded-full bg-muted opacity-35" />Work day<span className="max-sm:hidden">: shoot before and after hours</span></span>
+        </div>
+      )}
     </section>
   );
 }

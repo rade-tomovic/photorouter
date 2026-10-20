@@ -29,15 +29,6 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const speed = () => useStore.getState().speed;
 const dur = (ms: number) => ms / speed();
 
-/** On the stacked phone layout the map can be scrolled away; bring it back for map actions. */
-function reveal() {
-  const el = engine?.map.getContainer();
-  if (!el) return;
-  const r = el.getBoundingClientRect();
-  if (r.bottom < 120 || r.top > innerHeight * 0.5) {
-    el.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
-  }
-}
 
 function begin(): number {
   engine?.cancel();
@@ -52,7 +43,6 @@ export async function selectDay(i: number) {
   const { plan } = useStore.getState();
   if (!engine || !plan) return;
   const day = plan.days[i]!;
-  reveal();
   running = true;
   useStore.setState({ day: i, spot: null, activeStep: null, progress: 0 });
   engine.setSelected(null);
@@ -181,8 +171,5 @@ export function selectSpot(id: string | null) {
   stop();
   useStore.setState({ spot: id });
   engine?.setSelected(id);
-  if (id) {
-    reveal();
-    void engine?.focusSpot(id);
-  }
+  if (id) void engine?.focusSpot(id);
 }
