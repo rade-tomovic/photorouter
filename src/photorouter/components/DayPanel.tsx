@@ -3,7 +3,7 @@ import { BedDouble, Bus, Car, FileJson, Footprints, MapPinned, Plane, Route, Shi
 import { CITY_IDS, KIND_LABEL, LIGHT_LABEL, SPOT, SPOTS, TRIP, cityStyle, dayLabel, dayNum, gearItem, monthName, weekday } from '../lib/data';
 import { hhmm, sunDay, tzOffset } from '../lib/sun';
 import type { Light, Plan } from '../lib/types';
-import { loadExample, useStore, type Tab } from '../store';
+import { loadExample, openStepper, useStore, type Tab } from '../store';
 import { selectDay, selectSpot } from '../map/player';
 import { PlanPanel } from './PlanPanel';
 import { Button, CityChip, Kicker, LightChip, Pill, Toggle, cx } from './ui';
@@ -65,7 +65,6 @@ export function SidePanel({ withPlan }: { withPlan: boolean }) {
 }
 
 function NoPlan() {
-  const set = useStore((s) => s.set);
   return (
     <div className="grid gap-3 p-5">
       <Kicker>No route yet</Kicker>
@@ -76,7 +75,7 @@ function NoPlan() {
         the map.
       </p>
       <div className="flex flex-wrap gap-2">
-        <Button variant="primary" onClick={() => set({ tab: 'plan' })}>
+        <Button variant="primary" onClick={() => openStepper()}>
           <Route className="size-4" aria-hidden /> Plan your trip
         </Button>
         <Button onClick={() => loadExample()}>

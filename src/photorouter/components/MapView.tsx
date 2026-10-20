@@ -3,7 +3,7 @@ import { Compass, Copy, ExternalLink, FileJson, Minus, Plus, Route, X } from 'lu
 import { SPOT, TRIP, dayLabel, tripDates } from '../lib/data';
 import { TripMap } from '../map/engine';
 import { getEngine, selectDay, selectSpot, setEngine, stop } from '../map/player';
-import { loadExample, useStore } from '../store';
+import { loadExample, openStepper, useStore } from '../store';
 import { Button, CityChip, LightChip, Pill, radioKeys } from './ui';
 
 const BASEMAPS = ['detailed', 'clean'] as const;
@@ -131,7 +131,7 @@ function EmptyHint() {
         <Button size="sm" onClick={() => loadExample()}>
           <FileJson className="size-3.5" aria-hidden /> Load the example
         </Button>
-        <Button size="sm" variant="primary" onClick={() => useStore.setState({ tab: 'plan' })}>
+        <Button size="sm" variant="primary" onClick={() => openStepper()}>
           <Route className="size-3.5" aria-hidden /> Plan your trip
         </Button>
       </div>

@@ -69,7 +69,7 @@ export function MissingNote({ items, onFix, lead = 'Still needed:' }: { items: {
 }
 
 /** The prompt built from the brief: copy it, download it, or look at it first. */
-export function PromptCopy({ onFix }: { onFix?: ((part: BriefPart) => void) | undefined }) {
+export function PromptCopy({ onFix, large }: { onFix?: ((part: BriefPart) => void) | undefined; large?: boolean }) {
   const brief = useStore((s) => s.brief);
   const cfg = useStore((s) => s.prompt);
   const prompt = useMemo(() => buildPrompt(brief, cfg), [brief, cfg]);
@@ -82,11 +82,11 @@ export function PromptCopy({ onFix }: { onFix?: ((part: BriefPart) => void) | un
     <div className="grid gap-2.5">
       <MissingNote items={gaps} onFix={onFix} lead="The prompt works best once you add:" />
       <div className="flex flex-wrap gap-2">
-        <Button variant="primary" onClick={() => void copy('prompt', prompt)}>
+        <Button variant="primary" size={large ? 'lg' : 'md'} onClick={() => void copy('prompt', prompt)}>
           {state === 'prompt' ? <Check className="size-3.5" aria-hidden /> : <ClipboardCopy className="size-3.5" aria-hidden />}
           {state === 'prompt' ? 'Copied' : 'Copy prompt'}
         </Button>
-        <Button onClick={() => download('photorouter-prompt.md', prompt, 'text/markdown')}>
+        <Button size={large ? 'lg' : 'md'} onClick={() => download('photorouter-prompt.md', prompt, 'text/markdown')}>
           <Download className="size-3.5" aria-hidden /> Download
         </Button>
         {cfg.target === 'api' && (

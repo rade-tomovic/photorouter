@@ -41,6 +41,8 @@ interface State {
   terrain: boolean;
   lights: Light[];
   tab: Tab;
+  /** The full screen, step-by-step planner: whether it is open, the step shown and the furthest step reached. */
+  stepper: { open: boolean; step: number; reached: number };
 
   // The plan panel moves between columns at the wide breakpoint, so the pasted
   // answer and its check result live here rather than in the component.
@@ -185,6 +187,7 @@ export const useStore = create<State>((set) => ({
   terrain: false,
   lights: ['dawn', 'day', 'golden', 'night'],
   tab: 'plan',
+  stepper: { open: false, step: 0, reached: 0 },
   answer: saved?.answer ?? '',
   result: null,
   set: (p) => set(p),
@@ -267,6 +270,14 @@ export function loadExample(): ImportResult | null {
   if (s.custom) show(result.plan.trip, result.plan, { demo: demo.id, result, exampleOf: demo.label, tab: 'plan' });
   else show(result.plan.trip, result.plan, { demo: demo.id, brief: structuredClone(demo.brief), answer, result, exampleOf: null, tab: 'plan' });
   return result;
+}
+
+/** Open the step-by-step planner, where it was left or at a given step. */
+export function openStepper(step?: number) {
+  useStore.setState((s) => {
+    const at = step ?? s.stepper.step;
+    return { stepper: { open: true, step: at, reached: Math.max(s.stepper.reached, at) } };
+  });
 }
 
 /** Drop the plan and the pasted answer. The brief and prompt settings stay; the map goes back to the brief's trip. */

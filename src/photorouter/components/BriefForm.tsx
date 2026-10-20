@@ -1,5 +1,5 @@
 import { useEffect, useId, useState } from 'react';
-import { GEAR, GEAR_GROUPS, STYLES, tripDates } from '../lib/data';
+import { GEAR, GEAR_GROUPS, STYLES, gearItem, tripDates } from '../lib/data';
 import { CONTINENT_LABEL, DEMOS } from '../lib/demos';
 import { chooseDemo, useStore } from '../store';
 import { LensField } from './LensPicker';
@@ -25,6 +25,27 @@ export function DemoPicker() {
         {custom ? 'Picking a demo replaces your brief with its own.' : DEMOS.find((d) => d.id === demo)?.blurb ?? 'Fills the brief; change anything.'}
       </span>
     </label>
+  );
+}
+
+/** The brief at a glance, as small chips. */
+export function BriefChips() {
+  const brief = useStore((s) => s.brief);
+  const chips = [
+    ...(brief.destination ? [brief.destination] : []),
+    `${brief.days} days from ${brief.start}`,
+    ...brief.gear.map((g) => gearItem(g)?.short ?? g),
+    ...brief.styles.map((s) => STYLES.find((x) => x.id === s)?.label ?? s),
+    `${brief.pace} pace`,
+    brief.work ? 'works weekdays' : 'on holiday',
+    ...(brief.must.length ? [`${brief.must.length} must-see`] : []),
+  ];
+  return (
+    <div className="flex flex-wrap gap-1">
+      {chips.map((c) => (
+        <span key={c} className="inline-flex h-5 items-center rounded-full border border-line px-2 text-[11px] text-muted">{c}</span>
+      ))}
+    </div>
   );
 }
 

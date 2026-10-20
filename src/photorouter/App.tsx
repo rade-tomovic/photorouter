@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Mountain, Moon, Sun } from 'lucide-react';
 import { useStore } from './store';
 import { PlanPanel } from './components/PlanPanel';
+import { PlanStepper } from './components/PlanStepper';
 import { SidePanel } from './components/DayPanel';
 import { MapView } from './components/MapView';
 import { Timeline } from './components/Timeline';
@@ -70,6 +71,7 @@ export default function App() {
           <SidePanel withPlan={!wide} />
         </aside>
       </main>
+      <PlanStepper />
     </div>
   );
 }

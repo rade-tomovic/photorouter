@@ -8,7 +8,7 @@ export function Kicker({ children, className }: { children: ReactNode; className
   return <p className={cx('m-0 font-mono text-[11px] uppercase tracking-[0.08em] text-muted', className)}>{children}</p>;
 }
 
-type BtnProps = ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'ghost' | 'soft'; size?: 'sm' | 'md' };
+type BtnProps = ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'ghost' | 'soft'; size?: 'sm' | 'md' | 'lg' };
 
 export function Button({ variant = 'soft', size = 'md', className, ...rest }: BtnProps) {
   return (
@@ -16,7 +16,7 @@ export function Button({ variant = 'soft', size = 'md', className, ...rest }: Bt
       type="button"
       className={cx(
         'inline-flex items-center justify-center gap-1.5 rounded-full border font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-45',
-        size === 'md' ? 'h-9 px-3.5 text-[13px]' : 'h-7 px-2.5 text-xs',
+        { sm: 'h-7 px-2.5 text-xs', md: 'h-9 px-3.5 text-[13px]', lg: 'h-11 px-5 text-sm' }[size],
         variant === 'primary' && 'rt-btn border-transparent',
         variant === 'soft' && 'rt-btn-quiet border-transparent',
         variant === 'ghost' && 'border-transparent bg-transparent text-muted hover:text-ink',
