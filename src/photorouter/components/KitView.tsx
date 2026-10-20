@@ -62,7 +62,7 @@ export function KitView({ plan }: { plan: Plan }) {
   return (
     <div className="grid gap-6 p-5">
       {picked && picked.slots.length > 0 && (
-        <section className="grid gap-2 rounded-xl bg-accent-soft p-3.5" aria-label={`Bag for ${dayLabel(picked.date)}`}>
+        <section key={picked.index} className="pr-enter grid gap-2 rounded-xl bg-accent-soft p-3.5" aria-label={`Bag for ${dayLabel(picked.date)}`}>
           <p className="m-0 flex items-center gap-2 text-sm font-bold">
             <Backpack className="size-4 text-accent" aria-hidden />
             Bag for {dayLabel(picked.date)}
@@ -179,13 +179,22 @@ function KitStrips({ plan, groups, shooting }: { plan: Plan; groups: { label: st
   const day = useStore((s) => s.day);
   const scroller = useRef<HTMLDivElement>(null);
   const [edges, setEdges] = useState({ left: false, right: false });
+  const [width, setWidth] = useState(0);
+  const [band, setBand] = useState<{ x: number; w: number; slide: boolean } | null>(null);
   const cols = { gridTemplateColumns: `repeat(${plan.days.length}, minmax(${COL}px, 1fr))`, gap: GAP };
 
   const measure = () => {
     const el = scroller.current;
     if (!el) return;
     setEdges({ left: el.scrollLeft > 2, right: el.scrollLeft + el.clientWidth < el.scrollWidth - 2 });
+    setWidth(el.clientWidth);
   };
+
+  // The band follows the open day; it appears in place and slides only between days.
+  useLayoutEffect(() => {
+    const btn = day != null ? scroller.current?.querySelector<HTMLElement>(`[data-day="${day}"]`) : null;
+    setBand((prev) => (btn ? { x: btn.offsetLeft, w: btn.offsetWidth, slide: prev != null } : null));
+  }, [day, width, plan]);
   useLayoutEffect(() => {
     const el = scroller.current!;
     const ro = new ResizeObserver(measure);
@@ -210,7 +219,18 @@ function KitStrips({ plan, groups, shooting }: { plan: Plan; groups: { label: st
     <div className="relative -mx-5">
       <div ref={scroller} onScroll={measure} className="@container overflow-x-auto px-5 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {/* As wide as the days need, so the sticky names have room to stay put. */}
-        <div className="grid w-max min-w-full gap-3">
+        <div className="relative isolate grid w-max min-w-full gap-3">
+          {/* A band down the open day's column, from its date through every strip; it slides to the next day picked. */}
+          {band && (
+            <span
+              aria-hidden
+              className={cx(
+                'pointer-events-none absolute inset-y-0 left-0 -z-10 rounded-xl bg-accent-soft',
+                band.slide && 'transition-[translate,width] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none',
+              )}
+              style={{ width: band.w, translate: `${band.x}px 0` }}
+            />
+          )}
           <div className="grid" style={cols}>
             {plan.days.map((d) => (
               <button
@@ -222,12 +242,20 @@ function KitStrips({ plan, groups, shooting }: { plan: Plan; groups: { label: st
                 aria-label={`Open ${dayLabel(d.date)}`}
                 aria-current={day === d.index ? 'date' : undefined}
                 className={cx(
-                  'grid justify-items-center gap-0.5 rounded-lg border py-1.5 leading-none transition-colors disabled:cursor-default disabled:opacity-40',
-                  day === d.index ? 'border-ink bg-surface-2 text-ink' : 'border-transparent text-ink hover:bg-surface-2',
+                  'grid justify-items-center gap-1 rounded-xl pt-2 pb-2.5 leading-none transition-[background-color,color,box-shadow] duration-300 disabled:cursor-default disabled:opacity-40 motion-reduce:transition-none',
+                  day === d.index ? 'bg-accent text-accent-ink shadow-card' : 'text-ink hover:bg-surface-2',
                 )}
               >
-                <span className="font-mono text-[10px] text-muted uppercase">{weekday(d.date).slice(0, 2)}</span>
-                <span className="font-display text-2xl font-extrabold">{dayNum(d.date)}</span>
+                <span className={cx('font-mono text-[10px] uppercase', day === d.index ? 'font-semibold' : 'text-muted')}>{weekday(d.date).slice(0, 2)}</span>
+                {/* The open day's date grows with a small overshoot; the others ease back. */}
+                <span
+                  className={cx(
+                    'origin-top font-display text-2xl font-extrabold transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] motion-reduce:transition-none',
+                    day === d.index && 'scale-[1.3]',
+                  )}
+                >
+                  {dayNum(d.date)}
+                </span>
               </button>
             ))}
           </div>
@@ -252,7 +280,6 @@ function KitStrips({ plan, groups, shooting }: { plan: Plan; groups: { label: st
                           className={cx(
                             'h-2 rounded-full',
                             u.days.has(d.index) ? 'bg-(--c)' : d.slots.length ? 'bg-surface-2' : 'bg-transparent',
-                            day === d.index && 'outline-2 outline-offset-1 outline-ink',
                           )}
                         />
                       ))}
