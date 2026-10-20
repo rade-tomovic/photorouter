@@ -1,9 +1,9 @@
-import { useMemo, type KeyboardEvent } from 'react';
+import { useEffect, useMemo, useRef, type KeyboardEvent, type RefObject } from 'react';
 import { BedDouble, Bus, Car, FileJson, Footprints, MapPinned, Plane, Route, Ship, Sparkles, Sunrise, Sunset, TrainFront, TriangleAlert } from 'lucide-react';
 import { CITY_IDS, KIND_LABEL, LIGHT_LABEL, SPOT, SPOTS, TRIP, cityStyle, dayLabel, dayNum, gearItem, monthName, weekday } from '../lib/data';
 import { hhmm, sunDay, tzOffset } from '../lib/sun';
 import type { Light, Plan } from '../lib/types';
-import { loadExample, useStore, type Tab } from '../store';
+import { loadExample, openStepper, useStore, type Tab } from '../store';
 import { selectDay, selectSpot } from '../map/player';
 import { PlanPanel } from './PlanPanel';
 import { Button, CityChip, Kicker, LightChip, Pill, Toggle, cx } from './ui';
@@ -19,6 +19,8 @@ export function SidePanel({ withPlan }: { withPlan: boolean }) {
     { id: 'info', label: 'Trip info' },
   ];
   const active = !withPlan && tab === 'plan' ? 'day' : tab;
+  const panel = useRef<HTMLDivElement>(null);
+  useFollowStop(panel, active);
 
   // Arrow keys, Home and End move between tabs; only the selected tab is in the tab order.
   const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
@@ -53,7 +55,7 @@ export function SidePanel({ withPlan }: { withPlan: boolean }) {
           </button>
         ))}
       </div>
-      <div role="tabpanel" id={`panel-${active}`} aria-labelledby={`tab-${active}`} className={cx('relative min-h-0 flex-1', active === 'plan' ? 'flex flex-col' : 'scroll-thin overflow-y-auto')}>
+      <div ref={panel} role="tabpanel" id={`panel-${active}`} aria-labelledby={`tab-${active}`} className={cx('relative min-h-0 flex-1', active === 'plan' ? 'flex flex-col' : 'scroll-thin overflow-y-auto')}>
         {active === 'plan' && <PlanPanel />}
         {active === 'day' && <DayView />}
         {active === 'spots' && <SpotIndex />}
@@ -65,7 +67,6 @@ export function SidePanel({ withPlan }: { withPlan: boolean }) {
 }
 
 function NoPlan() {
-  const set = useStore((s) => s.set);
   return (
     <div className="grid gap-3 p-5">
       <Kicker>No route yet</Kicker>
@@ -76,7 +77,7 @@ function NoPlan() {
         the map.
       </p>
       <div className="flex flex-wrap gap-2">
-        <Button variant="primary" onClick={() => set({ tab: 'plan' })}>
+        <Button variant="primary" onClick={() => openStepper()}>
           <Route className="size-4" aria-hidden /> Plan your trip
         </Button>
         <Button onClick={() => loadExample()}>
@@ -99,6 +100,7 @@ function DayView() {
   const plan = useStore((s) => s.plan);
   const day = useStore((s) => s.day);
   const activeStep = useStore((s) => s.activeStep);
+  const spot = useStore((s) => s.spot);
   if (!plan) return <NoPlan />;
   if (day == null) return <Overview plan={plan} />;
 
@@ -107,7 +109,7 @@ function DayView() {
   const leg = d.leg ? TRIP.legs[d.leg] : null;
   const LegIcon = MODE_ICON[leg?.mode ?? 'train'];
   const legCard = leg && (
-    <div className={cx('grid grid-cols-[20px_minmax(0,1fr)] gap-2.5 rounded-xl p-3 text-[13.5px] transition-colors', activeStep === -1 ? 'bg-accent-soft' : 'bg-surface-2')}>
+    <div data-step={-1} className={cx('grid grid-cols-[20px_minmax(0,1fr)] gap-2.5 rounded-xl p-3 text-[13.5px] transition-colors', activeStep === -1 ? 'bg-accent-soft' : 'bg-surface-2')}>
       <LegIcon className="mt-0.5 size-[18px] text-accent" aria-hidden />
       <div>
         <p className="m-0 font-semibold">{leg.label}</p>
@@ -126,9 +128,9 @@ function DayView() {
   {d.slots.map((slot, i) => {
     if (!which(i)) return null;
         const s = SPOT[slot.spotId]!;
-        const on = activeStep === i;
+        const on = activeStep === i || (activeStep == null && spot === slot.spotId);
         return (
-          <li key={slot.spotId} className={cx('grid grid-cols-[96px_minmax(0,1fr)] gap-2.5 border-t border-line py-3 transition-colors first:border-t-0 max-sm:grid-cols-1 max-sm:gap-1', on && '-mx-3 rounded-xl border-transparent bg-accent-soft px-3')}>
+          <li key={slot.spotId} data-step={i} data-spot={slot.spotId} className={cx('grid grid-cols-[96px_minmax(0,1fr)] gap-2.5 border-t border-line py-3 transition-colors first:border-t-0 max-sm:grid-cols-1 max-sm:gap-1', on && '-mx-3 rounded-xl border-transparent bg-accent-soft px-3')}>
             <div className="pt-0.5 font-mono text-[11px] tracking-wide text-muted uppercase">
               {slot.label}
               <b className="block font-medium text-ink">{slot.window}</b>
@@ -308,7 +310,7 @@ function SpotIndex() {
               {list.map((s) => {
                 const d = when.get(s.id);
                 return (
-                  <li key={s.id} className="border-t border-line first:border-t-0">
+                  <li key={s.id} data-spot={s.id} className="border-t border-line first:border-t-0">
                     <button type="button" onClick={() => selectSpot(s.id)} className="group grid w-full grid-cols-[10px_minmax(0,1fr)_auto] items-center gap-2.5 border-0 bg-transparent px-0.5 py-2 text-left">
                       <i className={cx('size-2.5 rounded-full', d != null ? 'bg-(--c)' : 'border-2 border-(--c)')} />
                       <span className="truncate text-sm font-semibold group-hover:underline">{s.name}</span>
@@ -414,4 +416,40 @@ function InfoView() {
       </p>
     </div>
   );
+}
+
+/**
+ * Keeps the stop being played or picked in view in the side panel: playback moves along the
+ * day, a click on a stop or a dot on the map picks one, and a new day starts at its top. Only
+ * when the panel scrolls by itself beside the map; on the stacked phone layout the page
+ * scrolls, and moving it would take the map out of view.
+ */
+function useFollowStop(panel: RefObject<HTMLDivElement | null>, tab: Tab) {
+  const day = useStore((s) => s.day);
+  const activeStep = useStore((s) => s.activeStep);
+  const spot = useStore((s) => s.spot);
+  const lastDay = useRef(day);
+  useEffect(() => {
+    const el = panel.current;
+    const newDay = lastDay.current !== day;
+    lastDay.current = day;
+    if (!el || el.scrollHeight <= el.clientHeight || getComputedStyle(el).overflowY !== 'auto') return;
+    const behavior = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+    const target =
+      tab === 'day' && activeStep != null
+        ? el.querySelector<HTMLElement>(`[data-step="${activeStep}"]`)
+        : spot
+          ? el.querySelector<HTMLElement>(`[data-spot="${CSS.escape(spot)}"]`)
+          : null;
+    if (!target) {
+      if (newDay && tab === 'day') el.scrollTo({ top: 0, behavior });
+      return;
+    }
+    const box = el.getBoundingClientRect();
+    const r = target.getBoundingClientRect();
+    if (r.top >= box.top && r.bottom <= box.bottom) return;
+    // Centre the stop, or line up its top when it is taller than the panel.
+    const offset = r.height < box.height ? (box.height - r.height) / 2 : 12;
+    el.scrollTo({ top: el.scrollTop + r.top - box.top - offset, behavior });
+  }, [panel, tab, day, activeStep, spot]);
 }

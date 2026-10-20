@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { GEAR, GEAR_GROUPS, STYLES, tripDates } from '../lib/data';
+import { useEffect, useId, useState } from 'react';
+import { GEAR, GEAR_GROUPS, STYLES, gearItem, tripDates } from '../lib/data';
 import { CONTINENT_LABEL, DEMOS } from '../lib/demos';
 import { chooseDemo, useStore } from '../store';
 import { LensField } from './LensPicker';
@@ -28,111 +28,176 @@ export function DemoPicker() {
   );
 }
 
+/** The brief at a glance, as small chips. */
+export function BriefChips() {
+  const brief = useStore((s) => s.brief);
+  const chips = [
+    ...(brief.destination ? [brief.destination] : []),
+    `${brief.days} days from ${brief.start}`,
+    ...brief.gear.map((g) => gearItem(g)?.short ?? g),
+    ...brief.styles.map((s) => STYLES.find((x) => x.id === s)?.label ?? s),
+    `${brief.pace} pace`,
+    brief.work ? 'works weekdays' : 'on holiday',
+    ...(brief.must.length ? [`${brief.must.length} must-see`] : []),
+  ];
+  return (
+    <div className="flex flex-wrap gap-1">
+      {chips.map((c) => (
+        <span key={c} className="inline-flex h-5 items-center rounded-full border border-line px-2 text-[11px] text-muted">{c}</span>
+      ))}
+    </div>
+  );
+}
+
 /**
  * The trip brief the prompt is built from. Edits apply as you make them: the
  * prompt updates live, and a loaded plan keeps the brief it was checked
- * against until the next import.
+ * against until the next import. The step-by-step planner shows the same
+ * sections one or two at a time.
  */
 export function BriefForm() {
-  const brief = useStore((s) => s.brief);
-  const setBrief = useStore((s) => s.setBrief);
-  const toggle = useStore((s) => s.toggle);
-  const dates = tripDates(brief.start, brief.days);
-
   return (
     <div className="grid gap-5">
-      <div className="grid gap-3">
+      <WhereWhen />
+      <TripNotes />
+      <GearSection />
+      <StyleSection />
+      <TravelSection />
+      <PlacesSection />
+    </div>
+  );
+}
+
+export function WhereWhen() {
+  const brief = useStore((s) => s.brief);
+  const setBrief = useStore((s) => s.setBrief);
+  const dates = tripDates(brief.start, brief.days);
+  return (
+    <div className="grid gap-3">
+      <label className="grid gap-1.5 text-sm font-bold">
+        Where to
+        <input
+          value={brief.destination}
+          onChange={(e) => setBrief({ destination: e.target.value })}
+          placeholder="A country, a region or a list of cities"
+          className={cx(field, 'h-10 font-normal')}
+        />
+      </label>
+      <div className="grid grid-cols-[minmax(0,1fr)_96px] gap-2">
         <label className="grid gap-1.5 text-sm font-bold">
-          Where to
+          First day
+          <input type="date" value={brief.start} onChange={(e) => e.target.value && setBrief({ start: e.target.value })} className={cx(field, 'h-10 font-normal')} />
+        </label>
+        <label className="grid gap-1.5 text-sm font-bold">
+          Days
           <input
-            value={brief.destination}
-            onChange={(e) => setBrief({ destination: e.target.value })}
-            placeholder="A country, a region or a list of cities"
+            type="number"
+            min={2}
+            max={21}
+            value={brief.days}
+            onChange={(e) => setBrief({ days: Math.max(2, Math.min(21, Number(e.target.value) || 2)) })}
             className={cx(field, 'h-10 font-normal')}
           />
         </label>
-        <div className="grid grid-cols-[minmax(0,1fr)_96px] gap-2">
-          <label className="grid gap-1.5 text-sm font-bold">
-            First day
-            <input type="date" value={brief.start} onChange={(e) => e.target.value && setBrief({ start: e.target.value })} className={cx(field, 'h-10 font-normal')} />
-          </label>
-          <label className="grid gap-1.5 text-sm font-bold">
-            Days
-            <input
-              type="number"
-              min={2}
-              max={21}
-              value={brief.days}
-              onChange={(e) => setBrief({ days: Math.max(2, Math.min(21, Number(e.target.value) || 2)) })}
-              className={cx(field, 'h-10 font-normal')}
-            />
-          </label>
-        </div>
-        {dates.length > 0 && (
-          <p className="m-0 font-mono text-[11px] text-muted">{dates[0]} to {dates.at(-1)} · the first day is the arrival</p>
-        )}
       </div>
-
-      <div className="grid gap-2">
-        <label htmlFor="brief" className="text-sm font-bold">What kind of trip is it?</label>
-        <textarea
-          id="brief"
-          rows={4}
-          value={brief.text}
-          onChange={(e) => setBrief({ text: e.target.value })}
-          className={cx(field, 'resize-y py-2.5 leading-relaxed')}
-          placeholder="Who you are, what you shoot, what to avoid…"
-        />
-        <p className="m-0 text-xs text-muted">Your AI assistant reads this as background. The settings below are the rules it has to follow.</p>
-      </div>
-
-      <fieldset className="m-0 grid gap-3 border-0 p-0">
-        <legend className="mb-2 text-sm font-bold">Gear you're bringing</legend>
-        {GEAR_GROUPS.map((g) => (
-          <div key={g.kind} className="grid gap-1.5">
-            <Kicker>{g.label}</Kicker>
-            {g.kind === 'lens' ? (
-              <LensField />
-            ) : (
-              <div className="flex flex-wrap gap-1.5">
-                {GEAR.filter((i) => i.kind === g.kind).map((i) => (
-                  <Toggle key={i.id} on={brief.gear.includes(i.id)} onClick={() => toggle('gear', i.id)}>{i.label}</Toggle>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
-      </fieldset>
-
-      <fieldset className="m-0 grid gap-2 border-0 p-0">
-        <legend className="mb-2 text-sm font-bold">What you like to shoot</legend>
-        <div className="flex flex-wrap gap-1.5">
-          {STYLES.map((s) => (
-            <Toggle key={s.id} on={brief.styles.includes(s.id)} onClick={() => toggle('styles', s.id)}>{s.label}</Toggle>
-          ))}
-        </div>
-      </fieldset>
-
-      <fieldset className="m-0 grid gap-3 border-0 p-0">
-        <legend className="mb-2 text-sm font-bold">How you travel</legend>
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <span className="text-sm text-muted">Pace</span>
-          <Seg label="Pace" value={brief.pace} onChange={(v) => setBrief({ pace: v })}
-            options={[{ v: 'relaxed', label: 'Relaxed' }, { v: 'balanced', label: 'Balanced' }, { v: 'packed', label: 'Packed' }]} />
-        </div>
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <span className="text-sm text-muted">Walking</span>
-          <Seg label="Walking" value={brief.walking} onChange={(v) => setBrief({ walking: v })}
-            options={[{ v: 'low', label: 'Easy' }, { v: 'medium', label: 'Some' }, { v: 'high', label: 'Hikes' }]} />
-        </div>
-        <Switch on={brief.work} onChange={(v) => setBrief({ work: v })} label="Working Mon-Fri, 09:00-18:00" />
-        <Switch on={brief.fridayEarly} disabled={!brief.work} onChange={(v) => setBrief({ fridayEarly: v })} label="Finish early on Fridays" />
-        <Switch on={brief.avoidCrowds} onChange={(v) => setBrief({ avoidCrowds: v })} label="Avoid crowded spots" />
-      </fieldset>
-
-      <PlaceList label="Must-see places" hint="Your AI assistant plans these or explains why not." value={brief.must} onChange={(must) => setBrief({ must })} />
-      <PlaceList label="Places to skip" hint="Never planned." value={brief.avoid} onChange={(avoid) => setBrief({ avoid })} />
+      {dates.length > 0 && (
+        <p className="m-0 font-mono text-[11px] text-muted">{dates[0]} to {dates.at(-1)} · the first day is the arrival</p>
+      )}
     </div>
+  );
+}
+
+export function TripNotes({ label = 'What kind of trip is it?' }: { label?: string }) {
+  const text = useStore((s) => s.brief.text);
+  const setBrief = useStore((s) => s.setBrief);
+  const id = useId();
+  return (
+    <div className="grid gap-2">
+      <label htmlFor={id} className="text-sm font-bold">{label}</label>
+      <textarea
+        id={id}
+        rows={4}
+        value={text}
+        onChange={(e) => setBrief({ text: e.target.value })}
+        className={cx(field, 'resize-y py-2.5 leading-relaxed')}
+        placeholder="Who you are, what you shoot, what to avoid…"
+      />
+      <p className="m-0 text-xs text-muted">Your AI assistant reads this as background. The other settings are the rules it has to follow.</p>
+    </div>
+  );
+}
+
+export function GearSection({ legend = "Gear you're bringing" }: { legend?: string | null }) {
+  const gear = useStore((s) => s.brief.gear);
+  const toggle = useStore((s) => s.toggle);
+  return (
+    <fieldset className="m-0 grid gap-3 border-0 p-0">
+      {legend ? <legend className="mb-2 text-sm font-bold">{legend}</legend> : <legend className="sr-only">Gear you're bringing</legend>}
+      {GEAR_GROUPS.map((g) => (
+        <div key={g.kind} className="grid gap-1.5">
+          <Kicker>{g.label}</Kicker>
+          {g.kind === 'lens' ? (
+            <LensField />
+          ) : (
+            <div className="flex flex-wrap gap-1.5">
+              {GEAR.filter((i) => i.kind === g.kind).map((i) => (
+                <Toggle key={i.id} on={gear.includes(i.id)} onClick={() => toggle('gear', i.id)}>{i.label}</Toggle>
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
+    </fieldset>
+  );
+}
+
+export function StyleSection() {
+  const styles = useStore((s) => s.brief.styles);
+  const toggle = useStore((s) => s.toggle);
+  return (
+    <fieldset className="m-0 grid gap-2 border-0 p-0">
+      <legend className="mb-2 text-sm font-bold">What you like to shoot</legend>
+      <div className="flex flex-wrap gap-1.5">
+        {STYLES.map((s) => (
+          <Toggle key={s.id} on={styles.includes(s.id)} onClick={() => toggle('styles', s.id)}>{s.label}</Toggle>
+        ))}
+      </div>
+    </fieldset>
+  );
+}
+
+export function TravelSection() {
+  const brief = useStore((s) => s.brief);
+  const setBrief = useStore((s) => s.setBrief);
+  return (
+    <fieldset className="m-0 grid gap-3 border-0 p-0">
+      <legend className="mb-2 text-sm font-bold">How you travel</legend>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <span className="text-sm text-muted">Pace</span>
+        <Seg label="Pace" value={brief.pace} onChange={(v) => setBrief({ pace: v })}
+          options={[{ v: 'relaxed', label: 'Relaxed' }, { v: 'balanced', label: 'Balanced' }, { v: 'packed', label: 'Packed' }]} />
+      </div>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <span className="text-sm text-muted">Walking</span>
+        <Seg label="Walking" value={brief.walking} onChange={(v) => setBrief({ walking: v })}
+          options={[{ v: 'low', label: 'Easy' }, { v: 'medium', label: 'Some' }, { v: 'high', label: 'Hikes' }]} />
+      </div>
+      <Switch on={brief.work} onChange={(v) => setBrief({ work: v })} label="Working Mon-Fri, 09:00-18:00" />
+      <Switch on={brief.fridayEarly} disabled={!brief.work} onChange={(v) => setBrief({ fridayEarly: v })} label="Finish early on Fridays" />
+      <Switch on={brief.avoidCrowds} onChange={(v) => setBrief({ avoidCrowds: v })} label="Avoid crowded spots" />
+    </fieldset>
+  );
+}
+
+export function PlacesSection() {
+  const must = useStore((s) => s.brief.must);
+  const avoid = useStore((s) => s.brief.avoid);
+  const setBrief = useStore((s) => s.setBrief);
+  return (
+    <>
+      <PlaceList label="Must-see places" hint="Your AI assistant plans these or explains why not." value={must} onChange={(v) => setBrief({ must: v })} />
+      <PlaceList label="Places to skip" hint="Never planned." value={avoid} onChange={(v) => setBrief({ avoid: v })} />
+    </>
   );
 }
 

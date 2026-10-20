@@ -9,6 +9,8 @@ import type { Brief, Light, Plan, Trip } from './lib/types';
 export type Theme = 'light' | 'dark';
 export type Basemap = 'detailed' | 'clean';
 export type Tab = 'day' | 'plan' | 'spots' | 'kit' | 'info';
+/** The plan panel's own column on wide screens: open beside the map, or folded to a slim rail. */
+export type PlanView = 'docked' | 'collapsed';
 
 interface State {
   brief: Brief;
@@ -36,9 +38,14 @@ interface State {
   basemap: Basemap;
   /** Prompt builder settings. */
   prompt: PromptConfig;
+  /** The prompt settings saved in this browser as "My template", if any. */
+  template: PromptConfig | null;
   terrain: boolean;
   lights: Light[];
   tab: Tab;
+  planView: PlanView;
+  /** The full screen, step-by-step planner: whether it is open, the step shown and the furthest step reached. */
+  stepper: { open: boolean; step: number; reached: number };
 
   // The plan panel moves between columns at the wide breakpoint, so the pasted
   // answer and its check result live here rather than in the component.
@@ -65,6 +72,7 @@ export function savedTemplate(): PromptConfig | null {
 export function saveTemplate(cfg: PromptConfig): boolean {
   try {
     localStorage.setItem(TEMPLATE_KEY, JSON.stringify(cfg));
+    useStore.setState({ template: cfg });
     return true;
   } catch {
     return false;
@@ -77,6 +85,13 @@ function initialTheme(): Theme {
     if (saved === 'light' || saved === 'dark') return saved;
   } catch { /* storage blocked: fall back to the system preference */ }
   return typeof matchMedia !== 'undefined' && matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+}
+
+function initialPlanView(): PlanView {
+  try {
+    if (localStorage.getItem('photorouter:plan-view') === 'collapsed') return 'collapsed';
+  } catch { /* storage blocked: start docked */ }
+  return 'docked';
 }
 
 const EMPTY_BRIEF: Brief = {
@@ -178,9 +193,12 @@ export const useStore = create<State>((set) => ({
   theme: initialTheme(),
   basemap: 'detailed',
   prompt: (typeof localStorage !== 'undefined' && savedTemplate()) || DEFAULT_PROMPT,
+  template: typeof localStorage !== 'undefined' ? savedTemplate() : null,
   terrain: false,
   lights: ['dawn', 'day', 'golden', 'night'],
   tab: 'plan',
+  planView: initialPlanView(),
+  stepper: { open: false, step: 0, reached: 0 },
   answer: saved?.answer ?? '',
   result: null,
   set: (p) => set(p),
@@ -263,6 +281,14 @@ export function loadExample(): ImportResult | null {
   if (s.custom) show(result.plan.trip, result.plan, { demo: demo.id, result, exampleOf: demo.label, tab: 'plan' });
   else show(result.plan.trip, result.plan, { demo: demo.id, brief: structuredClone(demo.brief), answer, result, exampleOf: null, tab: 'plan' });
   return result;
+}
+
+/** Open the step-by-step planner, where it was left or at a given step. */
+export function openStepper(step?: number) {
+  useStore.setState((s) => {
+    const at = step ?? s.stepper.step;
+    return { stepper: { open: true, step: at, reached: Math.max(s.stepper.reached, at) } };
+  });
 }
 
 /** Drop the plan and the pasted answer. The brief and prompt settings stay; the map goes back to the brief's trip. */
