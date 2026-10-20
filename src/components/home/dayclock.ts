@@ -1,5 +1,6 @@
-// The two clocks every hero day theme runs on, in the browser: an autoplay loop for the
-// hero drawing and the page scroll for the header track. Themes only draw a minute.
+// The clocks the hero day runs on, in the browser: an autoplay loop or the hero's own pass
+// through the screen for the hero drawing, and the page scroll for the header track.
+// Themes only draw a minute.
 import { phaseAt, type PlayDay, type PlayStop } from './daylight';
 
 export const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -58,26 +59,58 @@ export function autoplay(
   return true;
 }
 
-/** How far down the page the header track starts, in px: past the header itself. */
+const clamp01 = (p: number) => Math.min(1, Math.max(0, p));
+
+/**
+ * Play a day as an element scrolls up the screen: dawn while its top is in the lower part
+ * of the screen, night once its top reaches the header, so the whole day plays while the
+ * element is in view. Does nothing with reduced motion, so the element keeps its static
+ * drawing. Returns whether it plays.
+ */
+export function scrollPlay(el: Element, day: PlayDay, draw: (m: number) => void): boolean {
+  if (reduceMotion()) return false;
+  let pending = false;
+  const update = () => {
+    pending = false;
+    const r = el.getBoundingClientRect();
+    if (r.bottom < 0 || r.top > innerHeight) return;
+    const from = innerHeight * 0.6;
+    const p = clamp01((from - r.top) / Math.max(1, from - TRACK_START));
+    draw(day.start + (day.end - day.start) * p);
+  };
+  const schedule = () => {
+    if (pending) return;
+    pending = true;
+    requestAnimationFrame(update);
+  };
+  addEventListener('scroll', schedule, { passive: true });
+  addEventListener('resize', schedule);
+  update();
+  return true;
+}
+
+/** The height of the header's link row, in px: the track never starts above it. */
 export const TRACK_START = 64;
 
 /**
- * Follow the page scroll as one day: dawn at the top, night at the bottom. Sets
- * data-tracking on the header once the visitor scrolls past it, which swaps the links
- * for the track, and data-phase for the light at that minute. `draw` gets the minute
- * and the scroll progress from 0 to 1, only while the track shows.
+ * Follow the page scroll as one day: dawn where the track starts, night at the bottom. The
+ * track starts once `after` (the hero drawing) has gone under the header, or just past the
+ * header without it. Sets data-tracking on the header from there, which swaps the links for
+ * the track, and data-phase for the light at that minute. `draw` gets the minute and the
+ * scroll progress from 0 to 1, only while the track shows.
  */
-export function followScroll(day: PlayDay, draw: (m: number, p: number) => void) {
+export function followScroll(day: PlayDay, draw: (m: number, p: number) => void, after?: Element | null) {
   const header = document.querySelector<HTMLElement>('[data-header]');
   if (!header) return;
   let pending = false;
   const update = () => {
     pending = false;
-    const tracking = scrollY > TRACK_START;
+    const start = after ? Math.max(TRACK_START, after.getBoundingClientRect().bottom + scrollY - TRACK_START) : TRACK_START;
+    const tracking = scrollY > start;
     header.toggleAttribute('data-tracking', tracking);
     if (!tracking) return;
-    const max = Math.max(1, document.documentElement.scrollHeight - innerHeight - TRACK_START);
-    const p = Math.min(1, Math.max(0, (scrollY - TRACK_START) / max));
+    const max = Math.max(1, document.documentElement.scrollHeight - innerHeight - start);
+    const p = clamp01((scrollY - start) / max);
     const m = day.start + (day.end - day.start) * p;
     header.dataset.phase = phaseAt(m, day.sun);
     draw(m, p);

@@ -59,6 +59,8 @@
 
 @layer base {
   html, body { height: 100%; }
+  /* Also on the root: Safari on iPhone falls back to it for the status bar area. */
+  html { background-color: var(--bg); }
   body {
     margin: 0;
     background: var(--bg);
