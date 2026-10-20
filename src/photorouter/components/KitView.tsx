@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Backpack, ChevronLeft, ChevronRight, MapPinned } from 'lucide-react';
-import { GEAR_GROUPS, cityStyle, dayLabel, dayNum, gearItem, weekday } from '../lib/data';
+import { GEAR_GROUPS, dayLabel, dayNum, gearItem, weekday } from '../lib/data';
 import type { Plan } from '../lib/types';
 import { useStore } from '../store';
 import { selectDay } from '../map/player';
@@ -149,9 +149,9 @@ export function KitView({ plan }: { plan: Plan }) {
             </ul>
           </details>
         )}
-        {plain > 0 && (
+        {plain > 0 && listed.length > 0 && (
           <p className="m-0 px-2 text-xs text-muted">
-            {listed.length ? `The other ${plain === 1 ? 'day needs' : `${plain} days need`} only the everyday kit.` : 'Every day needs only the everyday kit.'}
+            The other {plain === 1 ? 'day needs' : `${plain} days need`} only the everyday kit.
           </p>
         )}
       </section>
@@ -179,22 +179,13 @@ function KitStrips({ plan, groups, shooting }: { plan: Plan; groups: { label: st
   const day = useStore((s) => s.day);
   const scroller = useRef<HTMLDivElement>(null);
   const [edges, setEdges] = useState({ left: false, right: false });
-  const [width, setWidth] = useState(0);
-  const [band, setBand] = useState<{ x: number; w: number; slide: boolean } | null>(null);
   const cols = { gridTemplateColumns: `repeat(${plan.days.length}, minmax(${COL}px, 1fr))`, gap: GAP };
 
   const measure = () => {
     const el = scroller.current;
     if (!el) return;
     setEdges({ left: el.scrollLeft > 2, right: el.scrollLeft + el.clientWidth < el.scrollWidth - 2 });
-    setWidth(el.clientWidth);
   };
-
-  // The band follows the open day; it appears in place and slides only between days.
-  useLayoutEffect(() => {
-    const btn = day != null ? scroller.current?.querySelector<HTMLElement>(`[data-day="${day}"]`) : null;
-    setBand((prev) => (btn ? { x: btn.offsetLeft, w: btn.offsetWidth, slide: prev != null } : null));
-  }, [day, width, plan]);
   useLayoutEffect(() => {
     const el = scroller.current!;
     const ro = new ResizeObserver(measure);
@@ -219,18 +210,7 @@ function KitStrips({ plan, groups, shooting }: { plan: Plan; groups: { label: st
     <div className="relative -mx-5">
       <div ref={scroller} onScroll={measure} className="@container overflow-x-auto px-5 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {/* As wide as the days need, so the sticky names have room to stay put. */}
-        <div className="relative isolate grid w-max min-w-full gap-3">
-          {/* A band down the open day's column, from its date through every strip; it slides to the next day picked. */}
-          {band && (
-            <span
-              aria-hidden
-              className={cx(
-                'pointer-events-none absolute inset-y-0 left-0 -z-10 rounded-xl bg-accent-soft',
-                band.slide && 'transition-[translate,width] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none',
-              )}
-              style={{ width: band.w, translate: `${band.x}px 0` }}
-            />
-          )}
+        <div className="grid w-max min-w-full gap-3">
           <div className="grid" style={cols}>
             {plan.days.map((d) => (
               <button
@@ -272,14 +252,17 @@ function KitStrips({ plan, groups, shooting }: { plan: Plan; groups: { label: st
                         {u.days.size === shooting ? 'Every day' : `${u.days.size} of ${shooting} days`}
                       </span>
                     </div>
+                    {/* One neutral tone for the marks; the open day's column takes the accent of its date. */}
                     <div className="grid" style={cols} aria-hidden>
                       {plan.days.map((d) => (
                         <span
                           key={d.date}
-                          style={cityStyle(d.city)}
                           className={cx(
-                            'h-2 rounded-full',
-                            u.days.has(d.index) ? 'bg-(--c)' : d.slots.length ? 'bg-surface-2' : 'bg-transparent',
+                            'h-2 rounded-full transition-colors duration-300 motion-reduce:transition-none',
+                            !u.days.has(d.index) ? (d.slots.length ? 'bg-surface-2' : 'bg-transparent')
+                              : day == null ? 'bg-ink/55'
+                              : day === d.index ? 'bg-accent'
+                              : 'bg-ink/25',
                           )}
                         />
                       ))}
